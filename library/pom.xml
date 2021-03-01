@@ -46,7 +46,6 @@
                 <version>5.4.28.Final</version>
             </dependency>
 
-
             <dependency>
                 <groupId>javax.persistence</groupId>
                 <artifactId>javax.persistence-api</artifactId>
@@ -100,6 +99,19 @@
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>42.2.19</version>
+            </dependency>
+
+            <!--Only it`s need for example spring jdbc-->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-jdbc</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>1.4.200</version>
             </dependency>
 
         </dependencies>

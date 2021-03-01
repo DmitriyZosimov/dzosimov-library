@@ -1,25 +1,12 @@
 package com.epam.brest.model;
 
-import javax.persistence.*;
-
-@Entity
-@Table(name = "lib_book")
 public class Book {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "book_id", nullable = false, unique = true)
     private Integer id;
-    @Column(name = "authors", nullable = false)
     private String authors;
-    @Column(name = "title", nullable = false)
     private String title;
-    @Column(name = "genre", nullable = false)
-    @Enumerated
     private Genre genre;
-    @ManyToOne(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
-    @JoinColumn(name = "reader_id")
-    private Reader reader;
+    private IReader reader;
 
     public Book() {
     }
@@ -33,6 +20,8 @@ public class Book {
     public Integer getId() {
         return id;
     }
+
+    public void setId(Integer id) { this.id = id; }
 
     public String getAuthors() {
         return authors;
@@ -58,11 +47,11 @@ public class Book {
         this.genre = genre;
     }
 
-    public Reader getReader() {
+    public IReader getReader() {
         return reader;
     }
 
-    public void setReader(Reader reader) {
+    public void setReader(IReader reader) {
         this.reader = reader;
     }
 

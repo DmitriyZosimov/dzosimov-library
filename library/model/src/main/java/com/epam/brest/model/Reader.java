@@ -1,28 +1,16 @@
 package com.epam.brest.model;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
 
-@Entity
-@Table(name = "lib_reader")
-public class Reader {
+public class Reader implements IReader{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "reader_id", nullable = false, unique = true)
     private Integer readerId;
-    @Column(name = "first_name", nullable = false)
     private String firstName;
-    @Column(name = "last_name", nullable = false)
     private String lastName;
-    @Column(name = "patronymic")
     private String patronymic;
-    @Column(name = "date_of_registry", nullable = false)
     private LocalDate dateOfRegistry;
-    @Column(name = "active", nullable = false, columnDefinition = "boolean default true")
     private Boolean active;
-    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "reader")
     private List<Book> books;
 
     public Reader(){}
@@ -47,6 +35,11 @@ public class Reader {
 
     public Integer getReaderId() {
         return readerId;
+    }
+
+    @Override
+    public void setReaderId(Integer readerId) {
+        this.readerId = readerId;
     }
 
     public String getFirstName() {

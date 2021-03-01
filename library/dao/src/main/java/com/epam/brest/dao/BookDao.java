@@ -1,9 +1,17 @@
 package com.epam.brest.dao;
 
 import com.epam.brest.model.Book;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
 
-@Repository
-public interface BookDao extends JpaRepository<Book, Integer> {
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Optional;
+
+public interface BookDao {
+
+    List<Book> findAll();
+    Optional<Book> findBookById(Integer id);
+    Book save(Book book);
+    Integer update(Book book);
+    Integer delete(Book book);
+    boolean exist(Book book);
 }

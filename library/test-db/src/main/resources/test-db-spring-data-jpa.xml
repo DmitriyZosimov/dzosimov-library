@@ -17,10 +17,10 @@
     <bean id="dataSource"
           class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName"
-                  value="org.postgresql.Driver" />
-        <property name="url" value="jdbc:postgresql://localhost/library" />
-        <property name="username" value="postgres" />
-        <property name="password" value="postgres" />
+                  value="${jdbc.driverClassName}" />
+        <property name="url" value="${jdbc.url}" />
+        <property name="username" value="${jdbc.username}" />
+        <property name="password" value="${jdbc.password}" />
     </bean>
 
     <context:component-scan
@@ -55,9 +55,9 @@
         </property>
         <property name="jpaProperties">
             <props>
-                <prop key="hibernate.dialect">org.hibernate.dialect.PostgreSQL10Dialect</prop>
-                <prop key="hibernate.show_sql">true</prop>
-                <prop key="hibernate.hbm2ddl.auto">none</prop>
+                <prop key="hibernate.dialect">${hibernate.dialect}</prop>
+                <prop key="hibernate.show_sql">${hibernate.show_sql}</prop>
+                <prop key="hibernate.hbm2ddl.auto">${hibernate.hbm2ddl.auto}</prop>
             </props>
         </property>
     </bean>

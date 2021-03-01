@@ -8,36 +8,10 @@
         <version>1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-    <packaging>jar</packaging>
 
     <artifactId>test-db</artifactId>
 
     <dependencies>
-        <dependency>
-            <groupId>com.epam.brest</groupId>
-            <artifactId>model</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>com.epam.brest</groupId>
-            <artifactId>dao</artifactId>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-core</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.springframework</groupId>
@@ -51,17 +25,12 @@
 
         <dependency>
             <groupId>org.springframework</groupId>
-            <artifactId>spring-tx</artifactId>
+            <artifactId>spring-jdbc</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jpa</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
         </dependency>
 
     </dependencies>
