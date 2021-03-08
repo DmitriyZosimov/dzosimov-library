@@ -1,6 +1,7 @@
 package com.epam.brest.dao;
 
 import com.epam.brest.model.Book;
+import com.epam.brest.model.IReader;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -14,4 +15,6 @@ public interface BookDao {
     Integer update(Book book);
     Integer delete(Book book);
     boolean exist(Book book);
+    Integer addReaderForBook(Book book, IReader reader);
+    Integer removeReaderFromBook(Book book);
 }

@@ -1,5 +1,7 @@
-package com.epam.brest.dao.jdbc.readerdaosupport;
+package com.epam.brest.dao.jdbc.support;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.object.SqlUpdate;
 
@@ -7,6 +9,8 @@ import javax.sql.DataSource;
 import java.sql.Types;
 
 public class SaveReader extends SqlUpdate {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SaveReader.class);
+
     private static final String INSERT_READER =
             "INSERT INTO lib_reader(first_name, last_name, patronymic, date_of_registry)" +
                     "VALUES(:firstName, :lastName, :patronymic, :dateOfRegistry)";
@@ -19,5 +23,8 @@ public class SaveReader extends SqlUpdate {
         super.declareParameter(new SqlParameter("dateOfRegistry", Types.DATE));
         super.setGeneratedKeysColumnNames("reader_id");
         super.setReturnGeneratedKeys(true);
+        LOGGER.info("constructor SaveReader(dataSource) was started");
+        LOGGER.debug("dataSource={}", ds);
+
     }
 }

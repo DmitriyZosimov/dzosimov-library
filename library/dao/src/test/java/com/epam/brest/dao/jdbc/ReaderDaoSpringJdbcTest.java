@@ -62,10 +62,6 @@ public class ReaderDaoSpringJdbcTest {
     }
 
     @Test
-    public void testFindReaderWithBooks() {
-    }
-
-    @Test
     public void testSave() {
         IReader reader = new Reader("Zosimov", "Dima", "Alex", LocalDate.now());
         reader = dao.save(reader);

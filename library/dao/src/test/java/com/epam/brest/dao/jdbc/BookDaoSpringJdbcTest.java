@@ -1,22 +1,16 @@
 package com.epam.brest.dao.jdbc;
 
-import com.epam.brest.dao.jdbc.BookDaoSpringJdbc;
 import com.epam.brest.model.Book;
 import com.epam.brest.model.Genre;
-import org.junit.After;
+import com.epam.brest.model.IReader;
+import com.epam.brest.model.ReaderProxy;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.datasource.embedded.*;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.junit4.SpringRunner;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -86,6 +80,39 @@ public class BookDaoSpringJdbcTest {
         Integer res = bookDaoSpringJdbc.delete(book);
         Assert.assertFalse(bookDaoSpringJdbc.exist(book));
         Assert.assertTrue(res == 1);
+    }
+
+    @Test
+    public void testAddReaderForBook(){
+        List<Book> books = bookDaoSpringJdbc.findAll();
+        Assert.assertNotNull(books);
+        Assert.assertTrue(books.size() > 0);
+
+        Book book = books.get(0);
+        IReader reader = new ReaderProxy(1);
+        int res = bookDaoSpringJdbc.addReaderForBook(book, reader);
+        Assert.assertTrue(res == 1);
+        book = bookDaoSpringJdbc.findBookById(book.getId()).get();
+        Assert.assertNotNull(book);
+        Assert.assertEquals(book.getReader().getReaderId(), reader.getReaderId());
+    }
+
+    @Test
+    public void testRemoveReaderFromBook(){
+        List<Book> books = bookDaoSpringJdbc.findAll();
+        Assert.assertNotNull(books);
+        Assert.assertTrue(books.size() > 0);
+        Book book = books.get(0);
+        IReader reader = new ReaderProxy(1);
+        int res = bookDaoSpringJdbc.addReaderForBook(book, reader);
+        Assert.assertTrue(res == 1);
+
+        book = bookDaoSpringJdbc.findBookById(book.getId()).get();
+        res = bookDaoSpringJdbc.removeReaderFromBook(book);
+        book = bookDaoSpringJdbc.findBookById(book.getId()).get();
+        Assert.assertTrue(res == 1);
+        Assert.assertNull(book.getReader());
+
     }
 
 }

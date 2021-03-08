@@ -1,8 +1,10 @@
 package com.epam.brest.dao.jdbc;
 
 import com.epam.brest.dao.ReaderDao;
-import com.epam.brest.dao.jdbc.readerdaosupport.*;
+import com.epam.brest.dao.jdbc.support.*;
 import com.epam.brest.model.IReader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -16,24 +18,31 @@ import java.util.Optional;
 @Repository("readerDaoSpringJdbc")
 public class ReaderDaoSpringJdbc implements ReaderDao{
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReaderDaoSpringJdbc.class);
+
     private DataSource dataSource;
 
     public void setDataSource(DataSource dataSource){
+        LOGGER.debug("setDataSource: {}", dataSource);
         this.dataSource = dataSource;
     }
 
     @Override
     public List<IReader> findAll() {
+        LOGGER.info("findAll() was started");
         return new FindAllReader(dataSource, true).execute();
     }
 
     @Override
     public List<IReader> findAllActive() {
+        LOGGER.info("findAllActive() was started");
         return new FindAllReader(dataSource).execute();
     }
 
     @Override
     public Optional<IReader> findReaderById(Integer id) {
+        LOGGER.info("findReaderById(id)  was started");
+        LOGGER.debug("id={}", id);
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource("readerId", id);
         return Optional.ofNullable((IReader) new FindReaderById(dataSource).
                 findObjectByNamedParam(sqlParameterSource.getValues()));
@@ -41,6 +50,8 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
 
     @Override
     public Optional<IReader> findReaderByIdWithBooks(Integer id) {
+        LOGGER.info("findReaderByIdWithBooks(id) was started");
+        LOGGER.debug("id={}", id);
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource("readerId", id);
         NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         FindReaderByIdWithBooks findReaderByIdWithBooks = new FindReaderByIdWithBooks();
@@ -50,12 +61,9 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
     }
 
     @Override
-    public List<IReader> findReaderWithBooks(Integer id) {
-        return null;
-    }
-
-    @Override
     public IReader save(IReader reader) {
+        LOGGER.info("save(reader)  was started");
+        LOGGER.debug("reader={}", reader);
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
         sqlParameterSource.addValue("firstName", reader.getFirstName());
         sqlParameterSource.addValue("lastName", reader.getLastName());
@@ -69,6 +77,8 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
 
     @Override
     public Integer update(IReader reader) {
+        LOGGER.info("update(reader) was started");
+        LOGGER.debug("reader={}", reader);
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
         sqlParameterSource.addValue("firstName", reader.getFirstName());
         sqlParameterSource.addValue("lastName", reader.getLastName());
@@ -81,18 +91,24 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
 
     @Override
     public Integer delete(IReader reader) {
+        LOGGER.info("delete(reader) was started");
+        LOGGER.debug("reader={}", reader);
         reader.setActive(false);
         return update(reader);
     }
 
     @Override
     public Integer restore(IReader reader) {
+        LOGGER.info("restore(reader) was started");
+        LOGGER.debug("reader={}", reader);
         reader.setActive(true);
         return update(reader);
     }
 
     @Override
     public boolean exist(IReader reader) {
+        LOGGER.info("exist(reader) was started");
+        LOGGER.debug("reader={}", reader);
         MapSqlParameterSource sqlParameterSource =
                 new MapSqlParameterSource("readerId", reader.getReaderId());
         return (boolean) new ExistReader(dataSource).findObjectByNamedParam(sqlParameterSource.getValues());

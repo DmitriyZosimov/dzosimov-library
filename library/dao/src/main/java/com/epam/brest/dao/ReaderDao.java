@@ -11,7 +11,6 @@ public interface ReaderDao {
     List<IReader> findAllActive();
     Optional<IReader> findReaderById(Integer id);
     Optional<IReader> findReaderByIdWithBooks(Integer id);
-    List<IReader> findReaderWithBooks(Integer id);
     IReader save(IReader reader);
     Integer update(IReader reader);
     Integer delete(IReader reader);
