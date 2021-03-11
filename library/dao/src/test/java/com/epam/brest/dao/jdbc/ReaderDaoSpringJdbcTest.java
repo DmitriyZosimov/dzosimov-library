@@ -13,7 +13,8 @@ import java.time.LocalDate;
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:test-db-h2.xml", "classpath*:springContextJdbc.xml"})
+@ContextConfiguration(locations = {"classpath*:test-db-h2.xml", "classpath*:springContextJdbc.xml",
+        "classpath*:dao.xml"})
 public class ReaderDaoSpringJdbcTest {
 
     @Autowired

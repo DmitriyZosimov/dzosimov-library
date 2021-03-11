@@ -1,10 +1,11 @@
 package com.epam.brest.dao.jdbc;
 
 import com.epam.brest.dao.ReaderDao;
-import com.epam.brest.dao.jdbc.support.*;
+import com.epam.brest.dao.jdbc.tools.*;
 import com.epam.brest.model.IReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -20,6 +21,21 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReaderDaoSpringJdbc.class);
 
+    @Value("${reader.jdbc.findAllReader}")
+    private String findAllReaderSql;
+    @Value("${reader.jdbc.findAllActiveReader}")
+    private String findAllActiveReaderSql;
+    @Value("${reader.jdbc.findReaderById}")
+    private String findReaderByIdSql;
+    @Value("${reader.jdbc.findReaderByIdWithBooks}")
+    private String findReaderByIdWithBooksSql;
+    @Value("${reader.jdbc.save}")
+    private String saveSql;
+    @Value("${reader.jdbc.update}")
+    private String updateSql;
+    @Value("${reader.jdbc.existReader}")
+    private String existReaderSql;
+
     private DataSource dataSource;
 
     public void setDataSource(DataSource dataSource){
@@ -30,13 +46,13 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
     @Override
     public List<IReader> findAll() {
         LOGGER.info("findAll() was started");
-        return new FindAllReader(dataSource, true).execute();
+        return new FindAllReader(dataSource, findAllReaderSql).execute();
     }
 
     @Override
     public List<IReader> findAllActive() {
         LOGGER.info("findAllActive() was started");
-        return new FindAllReader(dataSource).execute();
+        return new FindAllReader(dataSource, findAllActiveReaderSql).execute();
     }
 
     @Override
@@ -44,7 +60,7 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
         LOGGER.info("findReaderById(id)  was started");
         LOGGER.debug("id={}", id);
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource("readerId", id);
-        return Optional.ofNullable((IReader) new FindReaderById(dataSource).
+        return Optional.ofNullable((IReader) new FindReaderById(dataSource, findReaderByIdSql).
                 findObjectByNamedParam(sqlParameterSource.getValues()));
     }
 
@@ -56,7 +72,7 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
         NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         FindReaderByIdWithBooks findReaderByIdWithBooks = new FindReaderByIdWithBooks();
         return Optional.ofNullable((IReader) jdbcTemplate.
-                query(FindReaderByIdWithBooks.getFindReaderByIdWithBooks(), sqlParameterSource.getValues(),
+                query(findReaderByIdWithBooksSql, sqlParameterSource.getValues(),
                         findReaderByIdWithBooks));
     }
 
@@ -70,7 +86,7 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
         sqlParameterSource.addValue("patronymic", reader.getPatronymic());
         sqlParameterSource.addValue("dateOfRegistry", reader.getDateOfRegistry());
         KeyHolder keyHolder = new GeneratedKeyHolder();
-        new SaveReader(dataSource).updateByNamedParam(sqlParameterSource.getValues(),keyHolder);
+        new SaveReader(dataSource, saveSql).updateByNamedParam(sqlParameterSource.getValues(),keyHolder);
         reader.setReaderId(keyHolder.getKey().intValue());
         return reader;
     }
@@ -86,7 +102,7 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
         sqlParameterSource.addValue("dateOfRegistry", reader.getDateOfRegistry());
         sqlParameterSource.addValue("active", reader.getActive());
         sqlParameterSource.addValue("readerId", reader.getReaderId());
-        return new UpdateReader(dataSource).updateByNamedParam(sqlParameterSource.getValues());
+        return new UpdateReader(dataSource, updateSql).updateByNamedParam(sqlParameterSource.getValues());
     }
 
     @Override
@@ -106,12 +122,13 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
     }
 
     @Override
-    public boolean exist(IReader reader) {
+    public Boolean exist(IReader reader) {
         LOGGER.info("exist(reader) was started");
         LOGGER.debug("reader={}", reader);
         MapSqlParameterSource sqlParameterSource =
                 new MapSqlParameterSource("readerId", reader.getReaderId());
-        return (boolean) new ExistReader(dataSource).findObjectByNamedParam(sqlParameterSource.getValues());
+        return (Boolean) new ExistReader(dataSource, existReaderSql).
+                findObjectByNamedParam(sqlParameterSource.getValues());
     }
 
 }

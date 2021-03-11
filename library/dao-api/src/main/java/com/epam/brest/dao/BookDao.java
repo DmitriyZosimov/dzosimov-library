@@ -3,7 +3,6 @@ package com.epam.brest.dao;
 import com.epam.brest.model.Book;
 import com.epam.brest.model.IReader;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 

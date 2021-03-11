@@ -1,4 +1,4 @@
-package com.epam.brest.dao.jdbc.support;
+package com.epam.brest.dao.jdbc.tools;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,12 +11,8 @@ import java.sql.Types;
 public class SaveReader extends SqlUpdate {
     private static final Logger LOGGER = LoggerFactory.getLogger(SaveReader.class);
 
-    private static final String INSERT_READER =
-            "INSERT INTO lib_reader(first_name, last_name, patronymic, date_of_registry)" +
-                    "VALUES(:firstName, :lastName, :patronymic, :dateOfRegistry)";
-
-    public SaveReader(DataSource ds) {
-        super(ds, INSERT_READER);
+    public SaveReader(DataSource ds, String sql) {
+        super(ds, sql);
         super.declareParameter(new SqlParameter("firstName", Types.VARCHAR));
         super.declareParameter(new SqlParameter("lastName", Types.VARCHAR));
         super.declareParameter(new SqlParameter("patronymic", Types.VARCHAR));

@@ -12,6 +12,10 @@
         <module>model</module>
         <module>dao</module>
         <module>test-db</module>
+        <module>dao-api</module>
+        <module>service-api</module>
+        <module>service</module>
+        <module>web-app</module>
     </modules>
 
     <properties>
@@ -27,12 +31,37 @@
         <dependencies>
             <dependency>
                 <groupId>com.epam.brest</groupId>
-                <artifactId>model</artifactId>
+                <artifactId>dao-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.epam.brest</groupId>
                 <artifactId>dao</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.epam.brest</groupId>
+                <artifactId>model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.epam.brest</groupId>
+                <artifactId>service-api</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.epam.brest</groupId>
+                <artifactId>service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.epam.brest</groupId>
+                <artifactId>web-app</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -121,8 +150,6 @@
                 <version>${logback.version}</version>
             </dependency>
 
-
-            <!--Only it`s need for example spring jdbc-->
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-jdbc</artifactId>

@@ -1,4 +1,4 @@
-package com.epam.brest.dao.jdbc.support;
+package com.epam.brest.dao.jdbc.tools;
 
 import com.epam.brest.model.*;
 import org.slf4j.Logger;
@@ -12,18 +12,6 @@ import java.util.ArrayList;
 
 public class FindReaderByIdWithBooks implements ResultSetExtractor<IReader> {
     private static final Logger LOGGER = LoggerFactory.getLogger(FindReaderByIdWithBooks.class);
-
-    private static final String FIND_READER_BY_ID_WITH_BOOKS =
-            "SELECT r.reader_id, first_name, last_name, patronymic, date_of_registry, active, " +
-                    "book_id, authors, title, genre" +
-                    " FROM lib_reader r LEFT JOIN lib_book b " +
-                    "ON r.reader_id=b.reader_id " +
-                    "WHERE r.reader_id=:readerId";
-
-    public static String getFindReaderByIdWithBooks() {
-        LOGGER.info("method getFindReaderByIdWithBooks() was started");
-        return FIND_READER_BY_ID_WITH_BOOKS;
-    }
 
     @Override
     public IReader extractData(ResultSet resultSet) throws SQLException, DataAccessException {

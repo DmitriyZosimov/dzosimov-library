@@ -1,4 +1,4 @@
-package com.epam.brest.dao.jdbc.support;
+package com.epam.brest.dao.jdbc.tools;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,16 +12,8 @@ public class UpdateReader extends SqlUpdate {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UpdateReader.class);
 
-    private static final String UPDATE_READER =
-            "UPDATE lib_reader SET first_name=:firstName, " +
-                    "last_name=:lastName, " +
-                    "patronymic=:patronymic, " +
-                    "date_of_registry=:dateOfRegistry, " +
-                    "active=:active " +
-                    "WHERE reader_id=:readerId";
-
-    public UpdateReader(DataSource ds) {
-        super(ds, UPDATE_READER);
+    public UpdateReader(DataSource ds, String sql) {
+        super(ds, sql);
         super.declareParameter(new SqlParameter("firstName", Types.VARCHAR));
         super.declareParameter(new SqlParameter("lastName", Types.VARCHAR));
         super.declareParameter(new SqlParameter("patronymic", Types.VARCHAR));

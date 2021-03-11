@@ -1,4 +1,4 @@
-package com.epam.brest.dao.jdbc.support;
+package com.epam.brest.dao.jdbc.tools;
 
 import com.epam.brest.model.IReader;
 import com.epam.brest.model.Reader;
@@ -15,14 +15,12 @@ import java.sql.Types;
 public class FindReaderById extends MappingSqlQuery<IReader>{
     private static final Logger LOGGER = LoggerFactory.getLogger(FindReaderById.class);
 
-    private static final String FIND_READER_BY_ID =
-            "SELECT * FROM lib_reader WHERE reader_id=:readerId";
-
-    public FindReaderById(DataSource ds) {
-        super(ds, FIND_READER_BY_ID);
+    public FindReaderById(DataSource ds, String sql) {
+        super(ds, sql);
         super.declareParameter(new SqlParameter("readerId", Types.INTEGER));
         LOGGER.info("constructor FindReaderById(dataSource) was started");
         LOGGER.debug("dataSource={}", ds);
+        LOGGER.debug("sql={}",sql);
     }
 
     @Override

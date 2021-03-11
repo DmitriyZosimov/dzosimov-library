@@ -15,5 +15,5 @@ public interface ReaderDao {
     Integer update(IReader reader);
     Integer delete(IReader reader);
     Integer restore(IReader reader);
-    boolean exist(IReader reader);
+    Boolean exist(IReader reader);
 }

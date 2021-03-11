@@ -1,4 +1,4 @@
-package com.epam.brest.dao.jdbc.support;
+package com.epam.brest.dao.jdbc.tools;
 
 import com.epam.brest.model.IReader;
 import com.epam.brest.model.Reader;
@@ -13,29 +13,11 @@ import java.sql.SQLException;
 public class FindAllReader extends MappingSqlQuery<IReader> {
     private static final Logger LOGGER = LoggerFactory.getLogger(FindAllReader.class);
 
-    private static final String FIND_ALL_READER =
-            "SELECT * FROM lib_reader";
-    private static final String FIND_ALL_ACTIVE_READER =
-            "SELECT * FROM lib_reader WHERE active=true";
-
-    public FindAllReader(DataSource dataSource){
-        super(dataSource, FIND_ALL_ACTIVE_READER);
-        LOGGER.info("constructor FindAllReader(dataSource) was started");
+    public FindAllReader(DataSource dataSource, String sql){
+        super(dataSource, sql);
+        LOGGER.info("constructor FindAllReader(dataSource,sql) was started");
         LOGGER.debug("dataSource={}", dataSource);
-    }
-
-    public FindAllReader(DataSource dataSource, boolean withDeleted){
-       super.setDataSource(dataSource);
-        LOGGER.info("constructor FindAllReader(dataSource, withDeleted) was started");
-        LOGGER.debug("dataSource={}", dataSource);
-        LOGGER.debug("withDeleted={}", withDeleted);
-       if(withDeleted){
-           LOGGER.debug("FindAllReader used SQL:FIND_ALL_READER");
-           super.setSql(FIND_ALL_READER);
-       } else {
-           LOGGER.debug("FindAllReader used SQL:FIND_ALL_ACTIVE_READER");
-           super.setSql(FIND_ALL_ACTIVE_READER);
-       }
+        LOGGER.debug("sql={}",sql);
     }
 
     @Override

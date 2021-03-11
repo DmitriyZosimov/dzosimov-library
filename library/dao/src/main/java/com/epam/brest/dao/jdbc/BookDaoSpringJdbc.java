@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -25,20 +26,20 @@ import org.springframework.jdbc.support.KeyHolder;
 public class BookDaoSpringJdbc implements BookDao, InitializingBean {
     private static final Logger LOGGER = LoggerFactory.getLogger(BookDaoSpringJdbc.class);
 
-    private static final String FIND_ALL = "select * from lib_book";
-    private static final String FIND_BOOK_BY_ID =
-            "select * from lib_book where book_id = :bookId";
-    private static final String INSERT_BOOK =
-            "insert into lib_book (authors, title, genre) VALUES (:authors, :title, :genre)";
-    private static final String UPDATE_BOOK =
-            "UPDATE lib_book SET authors=:authors, title=:title, genre=:genre WHERE book_id=:bookId";
-    private static final String DELETE_BOOK =
-            "delete from lib_book where book_id = :bookId";
-    private static final String EXIST_BOOK =
-            "select exists(select * from lib_book " +
-                    "where book_id=:bookId and authors=:authors and title=:title and genre=:genre)";
-    private static final String ADD_READER_FOR_BOOK =
-            "UPDATE lib_book SET reader_id=:readerId WHERE book_id=:bookId";
+    @Value("${book.jdbc.findAll}")
+    private String findAllSql;
+    @Value("${book.jdbc.findBookById}")
+    private String findBookByIdSql;
+    @Value("${book.jdbc.save}")
+    private String saveSql;
+    @Value("${book.jdbc.update}")
+    private String updateSql;
+    @Value("${book.jdbc.delete}")
+    private String deleteSql;
+    @Value("${book.jdbc.exist}")
+    private String existSql;
+    @Value("${book.jdbc.addReaderForBook}")
+    private String addReaderForBookSql;
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -50,7 +51,7 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
     @Override
     public List<Book> findAll() {
         LOGGER.info("findAll() was started");
-        return namedParameterJdbcTemplate.query(FIND_ALL, new BookMapper());
+        return namedParameterJdbcTemplate.query(findAllSql, new BookMapper());
     }
 
     @Override
@@ -59,7 +60,7 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
         LOGGER.debug("id={}", id);
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource("bookId", id);
         return Optional.ofNullable((Book) namedParameterJdbcTemplate.
-                queryForObject(FIND_BOOK_BY_ID, sqlParameterSource, new BookMapper()));
+                queryForObject(findBookByIdSql, sqlParameterSource, new BookMapper()));
     }
 
     @Override
@@ -71,7 +72,7 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
         sqlParameterSource.addValue("authors", book.getAuthors());
         sqlParameterSource.addValue("title", book.getTitle());
         sqlParameterSource.addValue("genre", book.getGenre().ordinal());
-        namedParameterJdbcTemplate.update(INSERT_BOOK, sqlParameterSource, keyHolder);
+        namedParameterJdbcTemplate.update(saveSql, sqlParameterSource, keyHolder);
         book.setId(Objects.requireNonNull(keyHolder.getKey().intValue()));
         return book;
     }
@@ -85,7 +86,7 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
         sqlParameterSource.addValue("authors", book.getAuthors());
         sqlParameterSource.addValue("title", book.getTitle());
         sqlParameterSource.addValue("genre", book.getGenre().ordinal());
-        return namedParameterJdbcTemplate.update(UPDATE_BOOK, sqlParameterSource);
+        return namedParameterJdbcTemplate.update(updateSql, sqlParameterSource);
     }
 
     @Override
@@ -93,7 +94,7 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
         LOGGER.info("delete(book) was started");
         LOGGER.debug("book={}", book);
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource("bookId", book.getId());
-        return namedParameterJdbcTemplate.update(DELETE_BOOK, sqlParameterSource);
+        return namedParameterJdbcTemplate.update(deleteSql, sqlParameterSource);
     }
 
     @Override
@@ -105,7 +106,7 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
         sqlParameterSource.addValue("authors", book.getAuthors());
         sqlParameterSource.addValue("title", book.getTitle());
         sqlParameterSource.addValue("genre", book.getGenre().ordinal());
-        return namedParameterJdbcTemplate.queryForObject(EXIST_BOOK, sqlParameterSource, Boolean.class);
+        return namedParameterJdbcTemplate.queryForObject(existSql, sqlParameterSource, Boolean.class);
     }
 
     @Override
@@ -115,7 +116,7 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
         sqlParameterSource.addValue("readerId", reader.getReaderId());
         sqlParameterSource.addValue("bookId", book.getId());
-        return  namedParameterJdbcTemplate.update(ADD_READER_FOR_BOOK, sqlParameterSource.getValues());
+        return  namedParameterJdbcTemplate.update(addReaderForBookSql, sqlParameterSource.getValues());
     }
 
     @Override
@@ -125,7 +126,7 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
         sqlParameterSource.addValue("readerId", null);
         sqlParameterSource.addValue("bookId", book.getId());
-        return  namedParameterJdbcTemplate.update(ADD_READER_FOR_BOOK, sqlParameterSource.getValues());
+        return  namedParameterJdbcTemplate.update(addReaderForBookSql, sqlParameterSource.getValues());
     }
 
 

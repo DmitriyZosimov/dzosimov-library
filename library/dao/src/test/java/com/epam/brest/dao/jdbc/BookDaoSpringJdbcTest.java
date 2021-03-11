@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath*:test-db-h2.xml", "classpath*:springContextJdbc.xml"})
+@ContextConfiguration(locations = {"classpath*:test-db-h2.xml", "classpath*:springContextJdbc.xml",
+        "classpath*:dao.xml"})
 public class BookDaoSpringJdbcTest {
 
     @Autowired
