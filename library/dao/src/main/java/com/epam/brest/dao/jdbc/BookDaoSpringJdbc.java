@@ -59,8 +59,9 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
         LOGGER.info("findBookById(id) was started");
         LOGGER.debug("id={}", id);
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource("bookId", id);
-        return Optional.ofNullable((Book) namedParameterJdbcTemplate.
-                queryForObject(findBookByIdSql, sqlParameterSource, new BookMapper()));
+        Book book = namedParameterJdbcTemplate.
+                queryForObject(findBookByIdSql, sqlParameterSource, new BookMapper());
+        return Optional.ofNullable(book);
     }
 
     @Override
