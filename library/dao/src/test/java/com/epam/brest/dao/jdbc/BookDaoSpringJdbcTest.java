@@ -70,6 +70,16 @@ public class BookDaoSpringJdbcTest {
         book.setId(15);
         Assert.assertFalse(bookDaoSpringJdbc.exist(book));
     }
+    @Test
+    public void existReader(){
+        Book book = bookDaoSpringJdbc.findBookById(1).get();
+        Assert.assertNotNull(book);
+        int res = bookDaoSpringJdbc.addReaderForBook(book, 1);
+        Assert.assertTrue(res == 1);
+        boolean result = bookDaoSpringJdbc.existReader(1);
+        Assert.assertTrue(result);
+
+    }
 
     @Test
     public void deleteTest() {
@@ -78,7 +88,7 @@ public class BookDaoSpringJdbcTest {
         Assert.assertNotNull(book.getId());
         Assert.assertTrue(book.getId() > 0);
 
-        Integer res = bookDaoSpringJdbc.delete(book);
+        Integer res = bookDaoSpringJdbc.delete(book.getId());
         Assert.assertFalse(bookDaoSpringJdbc.exist(book));
         Assert.assertTrue(res == 1);
     }
@@ -90,12 +100,11 @@ public class BookDaoSpringJdbcTest {
         Assert.assertTrue(books.size() > 0);
 
         Book book = books.get(0);
-        IReader reader = new ReaderProxy(1);
-        int res = bookDaoSpringJdbc.addReaderForBook(book, reader);
+        int res = bookDaoSpringJdbc.addReaderForBook(book, 1);
         Assert.assertTrue(res == 1);
         book = bookDaoSpringJdbc.findBookById(book.getId()).get();
         Assert.assertNotNull(book);
-        Assert.assertEquals(book.getReader().getReaderId(), reader.getReaderId());
+        Assert.assertEquals(book.getReader().getReaderId(), Integer.valueOf(1));
     }
 
     @Test
@@ -103,16 +112,20 @@ public class BookDaoSpringJdbcTest {
         List<Book> books = bookDaoSpringJdbc.findAll();
         Assert.assertNotNull(books);
         Assert.assertTrue(books.size() > 0);
-        Book book = books.get(0);
-        IReader reader = new ReaderProxy(1);
-        int res = bookDaoSpringJdbc.addReaderForBook(book, reader);
-        Assert.assertTrue(res == 1);
+        for(Book book : books) {
+            int res = bookDaoSpringJdbc.addReaderForBook(book, 1);
+            Assert.assertTrue(res == 1);
+        }
 
-        book = bookDaoSpringJdbc.findBookById(book.getId()).get();
-        res = bookDaoSpringJdbc.removeReaderFromBook(book);
-        book = bookDaoSpringJdbc.findBookById(book.getId()).get();
-        Assert.assertTrue(res == 1);
-        Assert.assertNull(book.getReader());
+        int res = bookDaoSpringJdbc.removeReaderFromBook(1);
+        Assert.assertTrue(res >= 1);
+        Assert.assertTrue(res == books.size());
+        books = bookDaoSpringJdbc.findAll();
+        for(Book book : books){
+            Assert.assertNull(book.getReader());
+        }
+
+
 
     }
 

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!--Bootstrap CSS-->
+    <link rel="stylesheet" href="../../resources/static/css/bootstrap.css"
+          th:href="@{../../resources/static/css/bootstrap.css}">
+
+    <title>Profile</title>
+</head>
+<body class="bg-secondary">
+<header>
+    <div class="container-sm">
+        <div class="container-fluid py-1 d-none d-sm-block">
+            <div class="d-flex">
+                <div class="flex-grow-1"><span class="text-light h1">Library</span></div>
+                <div class="btn-group btn-group-sm my-auto">
+                    <a th:href="@{/profile?lan=ru}" class="btn btn-outline-dark">ru</a>
+                    <a th:href="@{/profile?lan=en}" class="btn btn-outline-dark">en</a>
+                </div>
+
+            </div>
+        </div>
+        <nav class="navbar navbar-expand-sm d-flex justify-content-between bg-dark">
+            <ul class="navbar-nav ms-2">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/catalog}"><span th:text="#{nav.catalog}">Catalog</span></a>
+                </li>
+                <li class="navbar-item">
+                    <a class="nav-link" th:href="@{/profile}"><span th:text="#{nav.profile}">Profile</span></a>
+                </li>
+            </ul>
+            <div class="d-flex mx-2">
+                <ul class="navbar-nav ms-2">
+                    <th:block th:if="${#session.getAttribute('libraryCard')} != null">
+                        <li class="nav-item px-1">
+                            <span class="text text-primary"
+                                  th:text="#{profile.card}+' : '+${#session.getAttribute('libraryCard')}"></span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-primary btn-sm d-none d-sm-block"
+                               th:href="@{/logout}">
+                                <span th:text="#{nav.logout}">Logout</span>
+                            </a>
+                        </li>
+                    </th:block>
+                    <th:block th:unless="${#session.getAttribute('libraryCard')} != null">
+                        <li class="nav-item">
+                            <a class="btn btn-outline-primary btn-sm d-none d-sm-block"
+                               th:href="@{/login}"><span th:text="#{nav.login}">Sing in</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-primary btn-sm d-none d-sm-block"
+                               th:href="@{/registry}"><span th:text="#{nav.registry}">Registry</span></a>
+                        </li>
+                    </th:block>
+                </ul>
+            </div>
+        </nav>
+        <div class="container py-3">
+            <h1 th:text="#{profile.title}">Profile</h1>
+        </div>
+    </div>
+</header>
+<section>
+    <div class="container-sm">
+        <div class="d-flex mb-1 border-bottom border-dark">
+            <div class="flex-grow-1 px-1 mx-4">
+                <table class="table table-borderless">
+                    <tbody th:object="${readerDto}">
+                        <tr>
+                            <td class="col-4 fw-bold" th:text="#{profile.card}"></td>
+                            <td class="col-8" th:text="*{readerId}"></td>
+                        </tr>
+                        <tr>
+                            <td class="col-4 fw-bold" th:text="#{profile.name.first}"></td>
+                            <td class="col-8" th:text="*{firstName}"></td>
+                        </tr>
+                        <tr>
+                            <td class="col-4 fw-bold" th:text="#{profile.name.last}"></td>
+                            <td class="col-8" th:text="*{lastName}"></td>
+                        </tr>
+                        <tr>
+                            <td class="col-4 fw-bold" th:text="#{profile.name.middle}"></td>
+                            <td class="col-8" th:text="*{patronymic}"></td>
+                        </tr>
+                        <tr>
+                            <td class="col-4 fw-bold" th:text="#{profile.date.of.registry}"></td>
+                            <td class="col-8" th:text="*{dateOfRegistry}"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="mx-1 px-1">
+                <a th:href="@{/profile/edit}" class="btn btn-warning btn-sm" th:text="#{btn.edit}">Edit profile</a>
+            </div>
+            <div class="mx-1 px-1">
+                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal"
+                th:text="#{btn.delete}">
+                    Delete
+                </button>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel" th:text="#{profile.modal.delete.title}">
+                            Delete the user
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h6 th:text="#{profile.modal.delete.body} + ${readerDto.firstName} + ${readerDto.lastName} + '?'">
+                            Are you sure delete user?
+                        </h6>
+                        <h6 class="text text-bold" th:text="#{profile.card} ">Library card</h6>
+                        <h6 th:text="${readerDto.readerId}"></h6>
+                    </div>
+                    <div class="modal-footer">
+                        <form th:action="@{/profile/delete}" method="post">
+                            <button type="submit" class="btn btn-danger btn-sm" th:text="#{btn.delete}">Delete</button>
+                        </form>
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal"
+                                th:text="#{btn.cancel}">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mx-4">
+            <h3 th:text="#{profile.books}">Books</h3>
+            <table class="table table-hover table-sm">
+                <thead class="table-dark">
+                <th scope="col"><span th:text="#{catalog.table.authors}">Authors</span></th>
+                <th scope="col"><span th:text="#{catalog.table.title}">Title</span></th>
+                <th scope="col"><span th:text="#{catalog.table.genre}">Genre</span></th>
+                <th scope="col"><span th:text="#{catalog.table.delete}">Delete</span></th>
+                </thead>
+                <tbody id="myTable" class="table-warning">
+                <tr th:each="book : ${readerDto.books}">
+                    <td th:text="${book.authors}"></td>
+                    <td th:text="${book.title}"></td>
+                    <td th:text="${book.genre}"></td>
+                    <td>
+                        <!--TODO: delete book from reader-->
+                        <a th:href="@{/#}" class="btn btn-outline-danger btn-sm">
+                            <span th:text="#{catalog.table.btn.delete}">delete</span>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container-sm">
+        <hr/>
+        <p class="text-center">Library &copy; 2021</p>
+    </div>
+</footer>
+<!--Bootstrap JS-->
+<script src="../../resources/static/js/bootstrap.bundle.js"></script>
+</body>
+</html>

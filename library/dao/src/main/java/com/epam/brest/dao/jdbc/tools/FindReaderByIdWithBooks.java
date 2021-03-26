@@ -39,7 +39,7 @@ public class FindReaderByIdWithBooks implements ResultSetExtractor<IReader> {
                 book.setTitle(resultSet.getString("title"));
                 book.setAuthors(resultSet.getString("authors"));
                 reader.getBooks().add(book);
-                LOGGER.debug("extractData: book={}",book);
+                LOGGER.debug("extractData: BookDto={}",book);
             }
         }
         return reader;

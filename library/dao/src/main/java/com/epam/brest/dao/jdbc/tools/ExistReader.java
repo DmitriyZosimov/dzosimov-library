@@ -15,6 +15,7 @@ public class ExistReader extends SqlFunction<Boolean> {
     public ExistReader(DataSource ds, String sql) {
         super(ds, sql);
         super.declareParameter(new SqlParameter("readerId", Types.INTEGER));
+        super.declareParameter(new SqlParameter("active", Types.BOOLEAN));
         LOGGER.info("constructor ExistReader(dataSource) was started");
     }
 

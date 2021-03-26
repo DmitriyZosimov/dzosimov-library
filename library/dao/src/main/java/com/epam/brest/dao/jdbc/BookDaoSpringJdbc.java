@@ -12,6 +12,7 @@ import java.util.Optional;
 import com.epam.brest.model.Genre;
 import com.epam.brest.model.IReader;
 import com.epam.brest.model.ReaderProxy;
+import com.epam.brest.model.dto.BookDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanCreationException;
@@ -38,8 +39,17 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
     private String deleteSql;
     @Value("${book.jdbc.exist}")
     private String existSql;
+    @Value("${book.jdbc.existReader}")
+    private String existReaderSql;
     @Value("${book.jdbc.addReaderForBook}")
     private String addReaderForBookSql;
+    @Value("${book.jdbc.removeReaderForBooks}")
+    private String removeReaderForBooksSql;
+    @Value("${book.jdbc.searchBooks}")
+    private String searchBooksSql;
+    @Value("${book.jdbc.searchBooksWithGenre}")
+    private String searchBooksWithGenreSql;
+
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
@@ -66,22 +76,22 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
 
     @Override
     public Book save(Book book) {
-        LOGGER.info("save(book) was started");
-        LOGGER.debug("book={}", book);
+        LOGGER.info("save(BookDto) was started");
+        LOGGER.debug("BookDto={}", book);
         KeyHolder keyHolder = new GeneratedKeyHolder();
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
         sqlParameterSource.addValue("authors", book.getAuthors());
         sqlParameterSource.addValue("title", book.getTitle());
         sqlParameterSource.addValue("genre", book.getGenre().ordinal());
         namedParameterJdbcTemplate.update(saveSql, sqlParameterSource, keyHolder);
-        book.setId(Objects.requireNonNull(keyHolder.getKey().intValue()));
+        book.setId(keyHolder.getKey().intValue());
         return book;
     }
 
     @Override
     public Integer update(Book book) {
-        LOGGER.info("update(book) was started");
-        LOGGER.debug("book={}", book);
+        LOGGER.info("update(BookDto) was started");
+        LOGGER.debug("BookDto={}", book);
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
         sqlParameterSource.addValue("bookId", book.getId());
         sqlParameterSource.addValue("authors", book.getAuthors());
@@ -91,17 +101,17 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
     }
 
     @Override
-    public Integer delete(Book book) {
-        LOGGER.info("delete(book) was started");
-        LOGGER.debug("book={}", book);
-        MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource("bookId", book.getId());
+    public Integer delete(Integer bookId) {
+        LOGGER.info("delete(BookDto) was started");
+        LOGGER.debug("bookId={}", bookId);
+        MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource("bookId", bookId);
         return namedParameterJdbcTemplate.update(deleteSql, sqlParameterSource);
     }
 
     @Override
     public boolean exist(Book book) {
-        LOGGER.info("exist(book) was started");
-        LOGGER.debug("book={}", book);
+        LOGGER.info("exist(BookDto) was started");
+        LOGGER.debug("BookDto={}", book);
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
         sqlParameterSource.addValue("bookId", book.getId());
         sqlParameterSource.addValue("authors", book.getAuthors());
@@ -110,24 +120,63 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
         return namedParameterJdbcTemplate.queryForObject(existSql, sqlParameterSource, Boolean.class);
     }
 
+    /**
+     * check that this reader has any books
+     * @param readerId reader id
+     * @return true if this reader has any books, false if this reader has not books
+     */
     @Override
-    public Integer addReaderForBook(Book book, IReader reader) {
-        LOGGER.info("addReaderForBook(book, reader) was started");
-        LOGGER.debug("book={}, reader={}", book, reader);
+    public boolean existReader(Integer readerId) {
+        LOGGER.info("exist(BookDto) was started");
+        LOGGER.debug("readerID={}", readerId);
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
-        sqlParameterSource.addValue("readerId", reader.getReaderId());
+        sqlParameterSource.addValue("readerId", readerId);
+        return namedParameterJdbcTemplate.queryForObject(existReaderSql, sqlParameterSource, Boolean.class);
+    }
+
+    /**
+     * Add the reader to this book
+     * @param book book in DB what adds the reader
+     * @param readerId reader id of the reader
+     * @return count rows (books) what add the reader
+     */
+    @Override
+    public Integer addReaderForBook(Book book, Integer readerId) {
+        LOGGER.info("addReaderForBook(BookDto, reader) was started");
+        LOGGER.debug("Book={}, readerId={}", book, readerId);
+        MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
+        sqlParameterSource.addValue("readerId", readerId);
         sqlParameterSource.addValue("bookId", book.getId());
         return  namedParameterJdbcTemplate.update(addReaderForBookSql, sqlParameterSource.getValues());
     }
 
+    /**
+     * remove the reader with this id from all books
+     * @param readerId reader id
+     * @return count rows (books) what removed a reader
+     */
     @Override
-    public Integer removeReaderFromBook(Book book) {
-        LOGGER.info("removeReaderFromBook(book) was started");
-        LOGGER.debug("book={}", book);
+    public Integer removeReaderFromBook(Integer readerId) {
+        LOGGER.info("removeReaderFromBook(BookDto) was started");
+        LOGGER.debug("readerId={}", readerId);
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
-        sqlParameterSource.addValue("readerId", null);
-        sqlParameterSource.addValue("bookId", book.getId());
-        return  namedParameterJdbcTemplate.update(addReaderForBookSql, sqlParameterSource.getValues());
+        sqlParameterSource.addValue("readerId", readerId);
+        return  namedParameterJdbcTemplate.update(removeReaderForBooksSql, sqlParameterSource.getValues());
+    }
+
+    @Override
+    public List<Book> searchBooks(BookDto bookDto) {
+        LOGGER.info("searchBooks(BookDto) was started");
+        LOGGER.debug("bookDto={}", bookDto);
+        String sql = searchBooksSql;
+        MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
+        sqlParameterSource.addValue("authors", "%" + bookDto.getAuthors() + "%");
+        sqlParameterSource.addValue("title", "%" + bookDto.getTitle() + "%");
+        if(bookDto.getGenre() != Genre.DEFAULT) {
+            sqlParameterSource.addValue("genre", bookDto.getGenre().ordinal());
+            sql = searchBooksWithGenreSql;
+        }
+        return namedParameterJdbcTemplate.query(sql, sqlParameterSource, new BookMapper());
     }
 
 
@@ -154,7 +203,7 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
                 book.setReader(new ReaderProxy(readerId));
             }
             LOGGER.info("BookMapper.class mapRow(resultSet, i) was started");
-            LOGGER.debug("book={}", book);
+            LOGGER.debug("BookDto={}", book);
             return book;
         }
     }

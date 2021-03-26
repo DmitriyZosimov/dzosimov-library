@@ -119,6 +119,6 @@ public class ReaderDaoSpringJdbcTest {
         Assert.assertNotNull(readers);
         Assert.assertTrue(readers.size() > 0);
 
-        Assert.assertTrue(dao.exist(readers.get(0)));
+        Assert.assertTrue(dao.exist(readers.get(0).getReaderId()));
     }
 }

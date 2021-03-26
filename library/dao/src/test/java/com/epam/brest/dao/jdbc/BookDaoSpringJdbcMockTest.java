@@ -63,11 +63,11 @@ public class BookDaoSpringJdbcMockTest {
 //        String sql = "sql";
 //        ReflectionTestUtils.setField(bookDaoSpringJdbc, "findBookByIdSql", sql);
 //
-//        Book book = new Book();
-//        Optional<Book> opt = Optional.of(book);
+//        Book BookDto = new Book();
+//        Optional<Book> opt = Optional.of(BookDto);
 //
 //        Mockito.when(namedParameterJdbcTemplate.queryForObject(anyString(), any(MapSqlParameterSource.class),
-//                any(RowMapper.class))).thenReturn(book);
+//                any(RowMapper.class))).thenReturn(BookDto);
 //
 //        Optional<Book> result = bookDaoSpringJdbc.findBookById(anyInt());
 //
@@ -87,7 +87,7 @@ public class BookDaoSpringJdbcMockTest {
 //    @Test
 //    public void saveTest(){
 //
-//        Book book = new Book();
+//        Book BookDto = new Book();
 //        Mockito.when(namedParameterJdbcTemplate.update(any(), any(SqlParameterSource.class),
 //                any(KeyHolder.class))).thenReturn(1);
 //        Mockito.when(captorKeyHolder.capture().getKey()).thenReturn(1);
@@ -95,18 +95,18 @@ public class BookDaoSpringJdbcMockTest {
 //        Mockito.verify(namedParameterJdbcTemplate).update(any(), any(SqlParameterSource.class),
 //                captorKeyHolder.capture());
 //
-//        Book savedBook = bookDaoSpringJdbc.save(book);
+//        Book savedBook = bookDaoSpringJdbc.save(BookDto);
 //        Assert.assertEquals(savedBook.getId(), Integer.valueOf(1));
 //    }
 //
 //    @Test
 //    public void updateTest(){
-//        Book book = new Book("", "", Genre.HISTORY);
+//        Book BookDto = new Book("", "", Genre.HISTORY);
 //
 //        Mockito.when(namedParameterJdbcTemplate.update(anyString(), any(SqlParameterSource.class))).
 //                thenReturn(1);
 //
-//        Integer result = bookDaoSpringJdbc.update(book);
+//        Integer result = bookDaoSpringJdbc.update(BookDto);
 //
 //        Assert.assertEquals(Integer.valueOf(1), result);
 //

@@ -1,0 +1,19 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="bookService" class="com.epam.brest.service.BookServiceImp">
+        <constructor-arg name="bookDao" ref="bookDaoSpringJdbc"/>
+    </bean>
+
+    <bean id="readerService" class="com.epam.brest.service.ReaderServiceImp">
+        <constructor-arg name="readerDao" ref="readerDaoSpringJdbc"/>
+        <constructor-arg name="bookDao" ref="bookDaoSpringJdbc"/>
+    </bean>
+
+    <bean id="loginService" class="com.epam.brest.service.LoginServiceImp">
+        <constructor-arg name="readerDao" ref="readerDaoSpringJdbc"/>
+    </bean>
+
+</beans>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!--Bootstrap CSS-->
+    <link rel="stylesheet" href="../../resources/static/css/bootstrap.css"
+          th:href="@{../../resources/static/css/bootstrap.css}">
+
+    <title>Edit profile</title>
+</head>
+<body class="bg-secondary">
+<header>
+    <div class="container-sm">
+        <div class="container-fluid py-1 d-none d-sm-block">
+            <div class="d-flex">
+                <div class="flex-grow-1"><span class="text-light h1">Library</span></div>
+                <div class="btn-group btn-group-sm my-auto">
+                    <a th:href="@{${#httpServletRequest.servletPath}(lan=ru)}" class="btn btn-outline-dark">ru</a>
+                    <a th:href="@{${#httpServletRequest.servletPath}(lan=en)}" class="btn btn-outline-dark">en</a>
+                </div>
+
+            </div>
+        </div>
+        <nav class="navbar navbar-expand-sm d-flex justify-content-between bg-dark">
+            <ul class="navbar-nav ms-2">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/catalog}"><span th:text="#{nav.catalog}">Catalog</span></a>
+                </li>
+                <li class="navbar-item">
+                    <a class="nav-link" th:href="@{/profile}"><span th:text="#{nav.profile}">Profile</span></a>
+                </li>
+            </ul>
+            <div class="d-flex mx-2">
+                <ul class="navbar-nav ms-2">
+                    <th:block th:if="${#session.getAttribute('libraryCard')} != null">
+                        <li class="nav-item px-1">
+                            <span class="text text-primary"
+                                  th:text="#{profile.card}+' : '+${#session.getAttribute('libraryCard')}"></span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-primary btn-sm d-none d-sm-block"
+                               th:href="@{/logout}">
+                                <span th:text="#{nav.logout}">Logout</span>
+                            </a>
+                        </li>
+                    </th:block>
+                    <th:block th:unless="${#session.getAttribute('libraryCard')} != null">
+                        <li class="nav-item">
+                            <a class="btn btn-outline-primary btn-sm d-none d-sm-block"
+                               th:href="@{/login}"><span th:text="#{nav.login}">Sing in</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-primary btn-sm d-none d-sm-block"
+                               th:href="@{/registry}"><span th:text="#{nav.registry}">Registry</span></a>
+                        </li>
+                    </th:block>
+                </ul>
+            </div>
+        </nav>
+        <div class="container py-3">
+            <h1 th:text="${isNew} ? #{reader.title.create} :#{reader.title.edit}">Edit the profile</h1>
+        </div>
+    </div>
+</header>
+<section>
+    <div class="container-sm">
+        <div class="d-flex mb-1">
+            <div class="flex-grow-1 px-1 mx-4">
+                <form th:action="@{${#httpServletRequest.servletPath}}"
+                      method="post"
+                      th:object="${readerDto}">
+                    <input id="card" type="hidden" th:value="*{readerId}" th:field="*{readerId}"/>
+                    <div class="col-auto">
+                        <label for="firstName" class="mb-1 fw-bold" th:text="#{profile.name.first}">First name</label>
+                        <input id="firstName" type="text" class="form-control form-control-sm"
+                               th:value="*{firstName}" th:field="*{firstName}"/>
+                    </div>
+                    <div class="col-auto" >
+                        <label for="lastName" class="mb-1 fw-bold" th:text="#{profile.name.last}">Last name</label>
+                        <input id="lastName" type="text" class="form-control form-control-sm"
+                               th:value="*{lastName}" th:field="*{lastName}"/>
+                    </div>
+                    <div class="col-auto">
+                        <label for="patronymic" class="mb-1 fw-bold" th:text="#{profile.name.middle}">Patronymic</label>
+                        <input id="patronymic" type="text" class="form-control form-control-sm"
+                               th:value="*{patronymic}" th:field="*{patronymic}"/>
+                    </div>
+                    <input type="hidden" th:value="*{dateOfRegistry}" th:field="*{dateOfRegistry}"/>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-sm btn-primary mt-4" th:text="#{btn.save}">save changes</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container-sm">
+        <hr/>
+        <p class="text-center">Library &copy; 2021</p>
+    </div>
+</footer>
+<!--Bootstrap JS-->
+<script src="../../resources/static/js/bootstrap.bundle.js"></script>
+</body>
+</html>
