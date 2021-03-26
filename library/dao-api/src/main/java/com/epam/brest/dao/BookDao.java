@@ -1,7 +1,6 @@
 package com.epam.brest.dao;
 
 import com.epam.brest.model.Book;
-import com.epam.brest.model.IReader;
 import com.epam.brest.model.dto.BookDto;
 
 import java.util.List;
@@ -16,7 +15,8 @@ public interface BookDao {
     Integer delete(Integer bookId);
     boolean exist(Book book);
     boolean existReader(Integer readerId);
-    Integer addReaderForBook(Book book, Integer readerId);
-    Integer removeReaderFromBook(Integer readerId);
+    Integer addReaderForBook(Integer bookId, Integer readerId);
+    Integer removeReaderFromBooks(Integer readerId);
     List<Book> searchBooks(BookDto bookDto);
+    Integer removeFieldReaderFromBook(Integer bookId, Integer readerId);
 }

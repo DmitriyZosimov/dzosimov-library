@@ -66,6 +66,11 @@
                 <h6 th:text="${card != null} ? #{result.registry.card}+':'+ ${card} : _ "></h6>
             </div>
         </th:block>
+        <th:block th:if="${resultMessage != null}">
+            <div class="container py-3">
+                <h6 th:text="${resultMessage}"></h6>
+            </div>
+        </th:block>
     </div>
 </header>
 <section>
@@ -209,8 +214,13 @@
                 <td th:text="${book.title}"></td>
                 <td th:text="${book.genre}"></td>
                 <td>
-                    <a th:href="@{catalog/select/{card}/{book}(card=1, book=${book.id})}"
-                       class="btn btn-outline-dark btn-sm" th:text="#{catalog.table.btn.select}">select</a>
+                    <form th:action="@{/catalog/select/{bookId}(bookId=${book.id})}" method="post">
+                        <button type="submit"
+                                class="btn btn-outline-dark btn-sm"
+                                th:text="#{catalog.table.btn.select}">
+                            select
+                        </button>
+                    </form>
                 </td>
                 <td>
                     <button class="btn btn-outline-danger btn-sm"

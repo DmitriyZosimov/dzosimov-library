@@ -6,12 +6,15 @@ import com.epam.brest.service.IBookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @SessionAttributes({"bookDto"})
@@ -21,12 +24,18 @@ public class CatalogController {
     private static final Logger LOGGER = LoggerFactory.getLogger(CatalogController.class);
 
     private final IBookService bookService;
+    private SessionLocaleResolver localeResolver;
+    private final MessageSource messageSource;
 
     @Autowired
-    public CatalogController(IBookService bookService) {
+    public CatalogController(IBookService bookService, SessionLocaleResolver localeResolver,
+                             MessageSource messageSource) {
         this.bookService = bookService;
+        this.localeResolver = localeResolver;
+        this.messageSource = messageSource;
     }
 
+    //TODO: rename to bookSample
     @ModelAttribute("bookDto")
     public BookDto getBookDto(){
         LOGGER.info("Create a ModelAttribute \"bookDto\"");
@@ -35,7 +44,6 @@ public class CatalogController {
 
     /**
      * Goto catalog list page.
-     *
      * @return view catalog
      */
 
@@ -78,22 +86,23 @@ public class CatalogController {
      * Add a book to the reader
      * and goto catalog list page.
      *
-     * @param readerId library card (reader)
      * @param bookId book id
      * @return view catalog
      */
-    @GetMapping(value = "/catalog/select/{card}/{book}")
-    public String selectBook(@PathVariable("card") int readerId, @PathVariable("book") int bookId,
-                             Model model){
-        LOGGER.info("GET select a book /readerId={}/bookId={}", readerId, bookId);
-
+    @PostMapping(value = "/catalog/select/{book}")
+    public String selectBook(@PathVariable("book") int bookId, Model model, HttpSession session,
+                             HttpServletRequest request){
+        LOGGER.info("GET select a book /bookId={}", bookId);
+        Integer readerId = (Integer) session.getAttribute("libraryCard");
+        String messageCode;
         if(bookService.addReaderForBook(readerId, bookId)){
-            LOGGER.info("The book {} was added by the reader {}", bookId, readerId);
-            model.addAttribute("result", true);
+            messageCode = "message.select.good";
         } else {
-            LOGGER.info("The book {} was not added by the reader {}", bookId, readerId);
-            model.addAttribute("result", false);
+            messageCode = "message.select.bad";
         }
+        String message = messageSource.getMessage(messageCode, null, localeResolver.resolveLocale(request));
+        LOGGER.info(message);
+        model.addAttribute("resultMessage", message);
         return getMainPage(model);
     }
 

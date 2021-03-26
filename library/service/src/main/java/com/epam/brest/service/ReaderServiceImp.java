@@ -152,7 +152,7 @@ public class ReaderServiceImp implements IReaderService {
     private void removeBooks(IReader reader) {
         if(bookDao.existReader(reader.getReaderId())){
             LOGGER.info("bookDao.existReader = true");
-            if(bookDao.removeReaderFromBook(reader.getReaderId()) >= 1){
+            if(bookDao.removeReaderFromBooks(reader.getReaderId()) >= 1){
                 LOGGER.info("the reader was removed from books");
             } else {
                 LOGGER.info("the reader was not removed from books");

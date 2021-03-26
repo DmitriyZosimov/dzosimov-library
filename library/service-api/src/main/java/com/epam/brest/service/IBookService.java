@@ -14,4 +14,5 @@ public interface IBookService {
     boolean delete(Integer bookId);
     Book createBook(BookDto bookDto) throws BookCreationException;
     List<Book> searchBooks(BookDto bookDto);
+    boolean removeFieldReaderFromBook(Integer bookId, Integer readerId);
 }

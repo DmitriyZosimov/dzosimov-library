@@ -6,11 +6,9 @@ import com.epam.brest.model.Book;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 import com.epam.brest.model.Genre;
-import com.epam.brest.model.IReader;
 import com.epam.brest.model.ReaderProxy;
 import com.epam.brest.model.dto.BookDto;
 import org.slf4j.Logger;
@@ -49,6 +47,8 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
     private String searchBooksSql;
     @Value("${book.jdbc.searchBooksWithGenre}")
     private String searchBooksWithGenreSql;
+    @Value("${book.jdbc.removeReaderFromBook}")
+    private String removeReaderFromBookSql;
 
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -136,17 +136,17 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
 
     /**
      * Add the reader to this book
-     * @param book book in DB what adds the reader
+     * @param bookId book id in DB what adds the reader
      * @param readerId reader id of the reader
      * @return count rows (books) what add the reader
      */
     @Override
-    public Integer addReaderForBook(Book book, Integer readerId) {
+    public Integer addReaderForBook(Integer bookId, Integer readerId) {
         LOGGER.info("addReaderForBook(BookDto, reader) was started");
-        LOGGER.debug("Book={}, readerId={}", book, readerId);
+        LOGGER.debug("BookId={}, readerId={}", bookId, readerId);
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
         sqlParameterSource.addValue("readerId", readerId);
-        sqlParameterSource.addValue("bookId", book.getId());
+        sqlParameterSource.addValue("bookId", bookId);
         return  namedParameterJdbcTemplate.update(addReaderForBookSql, sqlParameterSource.getValues());
     }
 
@@ -156,7 +156,7 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
      * @return count rows (books) what removed a reader
      */
     @Override
-    public Integer removeReaderFromBook(Integer readerId) {
+    public Integer removeReaderFromBooks(Integer readerId) {
         LOGGER.info("removeReaderFromBook(BookDto) was started");
         LOGGER.debug("readerId={}", readerId);
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
@@ -179,6 +179,15 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
         return namedParameterJdbcTemplate.query(sql, sqlParameterSource, new BookMapper());
     }
 
+    @Override
+    public Integer removeFieldReaderFromBook(Integer bookId, Integer readerId) {
+        LOGGER.info("removeFieldReaderFromBook was started");
+        LOGGER.debug("bookId={}, readerId={}", bookId, readerId);
+        MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
+        sqlParameterSource.addValue("bookId", bookId);
+        sqlParameterSource.addValue("readerId", readerId);
+        return namedParameterJdbcTemplate.update(removeReaderFromBookSql, sqlParameterSource);
+    }
 
     @Override
     public void afterPropertiesSet() throws BeanCreationException {

@@ -143,14 +143,44 @@
                     <td th:text="${book.title}"></td>
                     <td th:text="${book.genre}"></td>
                     <td>
-                        <!--TODO: delete book from reader-->
-                        <a th:href="@{/#}" class="btn btn-outline-danger btn-sm">
+                        <button class="btn btn-outline-danger btn-sm"
+                                data-bs-toggle="modal"
+                                data-bs-target="#deleteBookFromProfile"
+                                th:data-bs-authors="${book.authors}"
+                                th:data-bs-title="${book.title}"
+                                th:data-bs-id="${book.id}">
                             <span th:text="#{catalog.table.btn.delete}">delete</span>
-                        </a>
+                        </button>
                     </td>
                 </tr>
                 </tbody>
             </table>
+            <!-- Modal -->
+            <div class="modal fade" id="deleteBookFromProfile" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalLabel" th:text="#{catalog.modal.delete.title}">
+                                Delete the book
+                            </h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <h6 th:text="#{catalog.modal.delete.body}">
+                                Are you sure to delete the book?
+                            </h6>
+                            <span></span>
+                        </div>
+                        <div class="modal-footer">
+                            <form action="/profile/book/delete/" method="post">
+                                <button type="submit" class="btn btn-danger btn-sm" th:text="#{btn.delete}">Delete</button>
+                            </form>
+                            <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal"
+                                    th:text="#{btn.cancel}">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -163,5 +193,19 @@
 </footer>
 <!--Bootstrap JS-->
 <script src="../../resources/static/js/bootstrap.bundle.js"></script>
+<script>
+    var deleteModal = document.getElementById('deleteBookFromProfile')
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+      // Button that triggered the modal
+      var button = event.relatedTarget
+      // Extract info from data-bs-* attributes
+      var authors = button.getAttribute('data-bs-authors')
+      var title = button.getAttribute('data-bs-title')
+      var id = button.getAttribute('data-bs-id')
+      // Update the modal's content.
+      deleteModal.querySelector('.modal-body span').textContent = authors + ' "' + title +'" ?'
+      deleteModal.querySelector('.modal-footer form').action = '/profile/book/delete/' + id
+    })
+</script>
 </body>
 </html>

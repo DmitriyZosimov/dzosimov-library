@@ -9,9 +9,11 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Transactional()
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration({"classpath*:service-context.xml", "classpath*:test-db-h2.xml", "classpath*:springContextJdbc.xml"})
 public class BookServiceImpTest {
@@ -25,5 +27,41 @@ public class BookServiceImpTest {
         List<Book> bigBooks = bookService.findAll();
         List<Book> books = bookService.searchBooks(bookDto);
         Assert.assertFalse(books.isEmpty());
+    }
+
+    @Test
+    public void addReaderForBookTest(){
+        Assert.assertTrue(bookService.addReaderForBook(1, 1));
+    }
+
+    @Test
+    public void addReaderForBookWhenReaderNotNullTest(){
+        Book book = bookService.findBookById(1);
+        Assert.assertNotNull(book);
+        Assert.assertEquals(Integer.valueOf(1), book.getId());
+        if(book.getReader() == null){
+            Assert.assertTrue(bookService.addReaderForBook(1, book.getId()));
+        }
+
+        Assert.assertFalse(bookService.addReaderForBook(2, 1));
+    }
+
+    @Test
+    public void removeFieldReaderFromBookTest(){
+        Book book = bookService.findBookById(1);
+        Assert.assertNotNull(book);
+        Assert.assertEquals(Integer.valueOf(1), book.getId());
+        if(book.getReader() == null){
+            Assert.assertTrue(bookService.addReaderForBook(1, book.getId()));
+            book = bookService.findBookById(1);
+        }
+        Assert.assertTrue(bookService.removeFieldReaderFromBook(1, 1));
+        book = bookService.findBookById(1);
+        Assert.assertNull(book.getReader());
+    }
+
+    @Test
+    public void removeFieldReaderFromBookWhenBookHasReaderIdNullTest(){
+        Assert.assertFalse(bookService.removeFieldReaderFromBook(1, 1));
     }
 }

@@ -58,6 +58,7 @@
         <mvc:interceptor>
             <mvc:mapping path="/profile"/>
             <mvc:mapping path="/profile/*"/>
+            <mvc:mapping path="/catalog/select/*"/>
             <bean id="libraryCardInterceptor"
                   class="com.epam.brest.webapp.interceptor.LibraryCardInterceptor">
             </bean>
@@ -86,10 +87,13 @@
 
     <bean id="catalogController" class="com.epam.brest.webapp.CatalogController">
         <constructor-arg name="bookService" ref="bookService"/>
+        <constructor-arg name="localeResolver" ref="localeResolver"/>
+        <constructor-arg name="messageSource" ref="messageSource"/>
     </bean>
 
     <bean id="profileController" class="com.epam.brest.webapp.ProfileController">
         <constructor-arg name="readerService" ref="readerService"/>
+        <constructor-arg name="bookService" ref="bookService"/>
     </bean>
 
     <bean id="loginController" class="com.epam.brest.webapp.LoginController">

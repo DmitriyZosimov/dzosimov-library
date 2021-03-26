@@ -1,6 +1,7 @@
 package com.epam.brest.webapp;
 
 import com.epam.brest.model.dto.ReaderDto;
+import com.epam.brest.service.IBookService;
 import com.epam.brest.service.IReaderService;
 import com.epam.brest.service.exception.ReaderCreationException;
 import com.epam.brest.service.exception.ReaderNotFoundException;
@@ -20,10 +21,12 @@ public class ProfileController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileController.class);
 
     private final IReaderService readerService;
+    private final IBookService bookService;
 
     @Autowired
-    public ProfileController(IReaderService readerService) {
+    public ProfileController(IReaderService readerService, IBookService bookService) {
         this.readerService = readerService;
+        this.bookService = bookService;
     }
 
     /**
@@ -163,6 +166,15 @@ public class ProfileController {
             model.addAttribute("result", false);
             return "redirect:/catalog";
         }
+    }
+
+    //TODO Mock test
+    @PostMapping(value = "/profile/book/delete/{book}")
+    public String deleteBookFromProfile(@PathVariable("book") Integer bookId, Model model, HttpSession session){
+        LOGGER.info("POST /profile/book/delete/bookId={}", bookId);
+        Integer readerId = (Integer) session.getAttribute("libraryCard");
+        bookService.removeFieldReaderFromBook(bookId, readerId);
+        return "redirect:/profile";
     }
 
 }
