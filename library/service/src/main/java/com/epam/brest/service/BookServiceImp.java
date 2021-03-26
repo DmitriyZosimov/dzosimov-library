@@ -3,6 +3,7 @@ package com.epam.brest.service;
 import com.epam.brest.dao.BookDao;
 import com.epam.brest.model.Book;
 import com.epam.brest.model.dto.BookDto;
+import com.epam.brest.model.sample.BookSample;
 import com.epam.brest.model.tools.BookMapper;
 import com.epam.brest.service.exception.BookCreationException;
 import org.slf4j.Logger;
@@ -32,9 +33,9 @@ public class BookServiceImp implements IBookService {
      * @return BookDto
      */
     @Override
-    public BookDto getBookDto() {
-        LOGGER.info("Create BookDto");
-        return new BookDto();
+    public BookSample getBookSample() {
+        LOGGER.info("Create bookSample");
+        return new BookSample();
     }
 
     /**
@@ -76,11 +77,11 @@ public class BookServiceImp implements IBookService {
 
     /**
      * Create a new book
-     * @param bookDto model of a Book
-     * @return
+     * @param bookSample model of a Book
+     * @return book created book
      */
-    public Book createBook(BookDto bookDto) throws BookCreationException {
-        Book book = BookMapper.getBook(bookDto);
+    public Book createBook(BookSample bookSample) throws BookCreationException {
+        Book book = BookMapper.getBook(bookSample);
         book = bookDao.save(book);
         if(book.getId() == null){
             throw new BookCreationException("book id must be not null");
@@ -90,8 +91,8 @@ public class BookServiceImp implements IBookService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Book> searchBooks(BookDto bookDto) {
-        List<Book> books = bookDao.searchBooks(bookDto);
+    public List<Book> searchBooks(BookSample bookSample) {
+        List<Book> books = bookDao.searchBooks(bookSample);
         return books;
     }
 

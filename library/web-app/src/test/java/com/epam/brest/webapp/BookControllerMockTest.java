@@ -2,6 +2,7 @@ package com.epam.brest.webapp;
 
 import com.epam.brest.model.Book;
 import com.epam.brest.model.dto.BookDto;
+import com.epam.brest.model.sample.BookSample;
 import com.epam.brest.service.IBookService;
 import com.epam.brest.service.exception.BookCreationException;
 import org.junit.Assert;
@@ -41,11 +42,11 @@ public class BookControllerMockTest {
 
     @Test
     public void addBookPostRequest() throws BookCreationException {
-        BookDto bookDto = new BookDto();
+        BookSample bookSample = new BookSample();
 
         //all done correctly
         Mockito.when(bindingResult.hasErrors()).thenReturn(false);
-        String resultPage = bookController.addBook(bookDto, model, bindingResult);
+        String resultPage = bookController.addBook(bookSample, model, bindingResult);
         Assert.assertNotNull(resultPage);
         Assert.assertEquals("redirect:/catalog", resultPage);
         Assert.assertNotNull(model.getAttribute("result"));
@@ -53,12 +54,12 @@ public class BookControllerMockTest {
 
         //has any errors in BindingResult
         Mockito.when(bindingResult.hasErrors()).thenReturn(true);
-        resultPage = bookController.addBook(bookDto, model, bindingResult);
+        resultPage = bookController.addBook(bookSample, model, bindingResult);
         Assert.assertNotNull(resultPage);
         Assert.assertEquals("error", resultPage);
 
         // 2 times because 2 times used bookService during this test
-        Mockito.verify(bookService, Mockito.times(1)).createBook(any(BookDto.class));
+        Mockito.verify(bookService, Mockito.times(1)).createBook(any(BookSample.class));
         Mockito.verify(model, Mockito.times(1)).addAttribute(any(String.class), anyBoolean());
         Mockito.verify(bindingResult, Mockito.times(2)).hasErrors();
     }

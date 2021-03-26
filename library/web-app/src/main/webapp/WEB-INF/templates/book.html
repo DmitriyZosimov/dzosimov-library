@@ -64,7 +64,7 @@
     <div class="container-sm">
         <div class="d-flex mb-1">
             <div class="flex-grow-1 px-1">
-                <form th:action="@{${#httpServletRequest.servletPath}}" method="post" th:object="${bookDto}">
+                <form th:action="@{${#httpServletRequest.servletPath}}" method="post" th:object="${bookSample}">
                     <div class="col-auto">
                         <label for="authors">Authors</label>
                         <input id="authors" type="text" th:field="*{authors}" class="form-control form-control-sm"/>

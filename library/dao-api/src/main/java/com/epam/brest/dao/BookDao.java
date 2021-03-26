@@ -2,6 +2,7 @@ package com.epam.brest.dao;
 
 import com.epam.brest.model.Book;
 import com.epam.brest.model.dto.BookDto;
+import com.epam.brest.model.sample.BookSample;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,6 @@ public interface BookDao {
     boolean existReader(Integer readerId);
     Integer addReaderForBook(Integer bookId, Integer readerId);
     Integer removeReaderFromBooks(Integer readerId);
-    List<Book> searchBooks(BookDto bookDto);
+    List<Book> searchBooks(BookSample bookSample);
     Integer removeFieldReaderFromBook(Integer bookId, Integer readerId);
 }

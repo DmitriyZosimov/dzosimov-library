@@ -92,7 +92,7 @@
                         <div id="flush-collapseOne" class="accordion-collapse collapse"
                              aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlush">
                             <div class="accordion-body">
-                                <form class="row" th:action="@{/search}" method="get" th:object="${bookDto}">
+                                <form class="row" th:action="@{/search}" method="get" th:object="${bookSample}">
                                     <div class="col-sm-3">
                                         <label for="authors" th:text="#{catalog.form.search.authors}">Authors</label>
                                         <input id="authors" type="text" th:field="*{authors}"

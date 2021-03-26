@@ -2,6 +2,7 @@ package com.epam.brest.webapp;
 
 import com.epam.brest.model.Book;
 import com.epam.brest.model.dto.BookDto;
+import com.epam.brest.model.sample.BookSample;
 import com.epam.brest.service.IBookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.List;
 
-@SessionAttributes({"bookDto"})
+@SessionAttributes({"bookSample"})
 @Controller
 public class CatalogController {
 
@@ -35,11 +36,10 @@ public class CatalogController {
         this.messageSource = messageSource;
     }
 
-    //TODO: rename to bookSample
-    @ModelAttribute("bookDto")
-    public BookDto getBookDto(){
-        LOGGER.info("Create a ModelAttribute \"bookDto\"");
-        return bookService.getBookDto();
+    @ModelAttribute("bookSample")
+    public BookSample getBookSample(){
+        LOGGER.info("Create a ModelAttribute \"bookSample\"");
+        return bookService.getBookSample();
     }
 
     /**
@@ -109,11 +109,11 @@ public class CatalogController {
     /**
      * Search books
      *
-     * @param bookDto book request for search
+     * @param bookSample book request for searching
      * @return view catalog page
      */
     @GetMapping(value = "/search")
-    public String searchBooks(@ModelAttribute("bookDto") BookDto bookDto,
+    public String searchBooks(@ModelAttribute("bookSample") BookSample bookSample,
                              Model model, BindingResult bindingResult){
         LOGGER.info("POST search a book");
         if(bindingResult.hasErrors()){
@@ -121,7 +121,7 @@ public class CatalogController {
             return "error";
         }
 
-        List<Book> resultBook = bookService.searchBooks(bookDto);
+        List<Book> resultBook = bookService.searchBooks(bookSample);
         model.addAttribute("books", resultBook);
         return "catalog";
     }

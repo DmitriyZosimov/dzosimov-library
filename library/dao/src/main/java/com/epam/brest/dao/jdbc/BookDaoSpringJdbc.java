@@ -11,6 +11,7 @@ import java.util.Optional;
 import com.epam.brest.model.Genre;
 import com.epam.brest.model.ReaderProxy;
 import com.epam.brest.model.dto.BookDto;
+import com.epam.brest.model.sample.BookSample;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanCreationException;
@@ -165,15 +166,15 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
     }
 
     @Override
-    public List<Book> searchBooks(BookDto bookDto) {
-        LOGGER.info("searchBooks(BookDto) was started");
-        LOGGER.debug("bookDto={}", bookDto);
+    public List<Book> searchBooks(BookSample bookSample) {
+        LOGGER.info("searchBooks(bookSample) was started");
+        LOGGER.debug("bookSample={}", bookSample);
         String sql = searchBooksSql;
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
-        sqlParameterSource.addValue("authors", "%" + bookDto.getAuthors() + "%");
-        sqlParameterSource.addValue("title", "%" + bookDto.getTitle() + "%");
-        if(bookDto.getGenre() != Genre.DEFAULT) {
-            sqlParameterSource.addValue("genre", bookDto.getGenre().ordinal());
+        sqlParameterSource.addValue("authors", "%" + bookSample.getAuthors() + "%");
+        sqlParameterSource.addValue("title", "%" + bookSample.getTitle() + "%");
+        if(bookSample.getGenre() != Genre.DEFAULT) {
+            sqlParameterSource.addValue("genre", bookSample.getGenre().ordinal());
             sql = searchBooksWithGenreSql;
         }
         return namedParameterJdbcTemplate.query(sql, sqlParameterSource, new BookMapper());
@@ -199,6 +200,7 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
 
     private static final class BookMapper implements RowMapper<Book> {
 
+        //TODO: refactor
         @Override
         public Book mapRow(ResultSet resultSet, int i) throws SQLException {
             Book book = new Book();

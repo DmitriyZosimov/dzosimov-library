@@ -2,6 +2,7 @@ package com.epam.brest.webapp;
 
 import com.epam.brest.model.Book;
 import com.epam.brest.model.dto.BookDto;
+import com.epam.brest.model.sample.BookSample;
 import com.epam.brest.service.IBookService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -56,15 +57,15 @@ public class CatalogControllerMockTest {
 
     @Test
     public void getBookDto(){
-        BookDto bookDto = new BookDto();
-        Mockito.when(bookService.getBookDto()).thenReturn(bookDto);
+        BookSample bookSample = new BookSample();
+        Mockito.when(bookService.getBookSample()).thenReturn(bookSample);
 
-        BookDto result = catalogController.getBookDto();
+        BookSample result = catalogController.getBookSample();
 
         Assert.assertNotNull(result);
-        Assert.assertEquals(bookDto, result);
+        Assert.assertEquals(bookSample, result);
 
-        Mockito.verify(bookService).getBookDto();
+        Mockito.verify(bookService).getBookSample();
         Mockito.verifyNoMoreInteractions(bookService);
     }
 
@@ -137,7 +138,7 @@ public class CatalogControllerMockTest {
 
     @Test
     public void searchBooksTest(){
-        BookDto book = new BookDto();
+        BookSample book = new BookSample();
         List<Book> list = new ArrayList<>();
         list.add(new Book());
 
@@ -165,7 +166,7 @@ public class CatalogControllerMockTest {
         Mockito.verify(model, Mockito.times(1)).
                 addAttribute(any(String.class), any(List.class));
         Mockito.verify(bookService, Mockito.times(1)).
-                searchBooks(any(BookDto.class));
+                searchBooks(any(BookSample.class));
 
     }
     //TODO: added resultTest methods and refactor this tests method

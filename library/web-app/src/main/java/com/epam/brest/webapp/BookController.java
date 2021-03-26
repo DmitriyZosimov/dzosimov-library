@@ -1,6 +1,7 @@
 package com.epam.brest.webapp;
 
 import com.epam.brest.model.dto.BookDto;
+import com.epam.brest.model.sample.BookSample;
 import com.epam.brest.service.IBookService;
 import com.epam.brest.service.exception.BookCreationException;
 import org.slf4j.Logger;
@@ -44,15 +45,15 @@ public class BookController {
      * @return view catalog
      */
     @PostMapping(value = "/add")
-    public String addBook(@ModelAttribute("bookDto") BookDto bookDto, Model model, BindingResult bindingResult){
+    public String addBook(@ModelAttribute("bookSample") BookSample bookSample, Model model, BindingResult bindingResult){
         LOGGER.info("POST /add, create a book");
-        LOGGER.debug("bookDto={}", bookDto);
+        LOGGER.debug("bookSample={}", bookSample);
         if(bindingResult.hasErrors()){
             LOGGER.error("BindingResult has errors");
             return "error";
         }
         try {
-            bookService.createBook(bookDto);
+            bookService.createBook(bookSample);
             model.addAttribute("result", true);
         } catch (BookCreationException e) {
             LOGGER.warn(e.getMessage());
