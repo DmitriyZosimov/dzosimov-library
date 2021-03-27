@@ -58,26 +58,26 @@ public class CatalogController {
     /**
      * Goto catalog list page with param.
      * @param result boolean result
-     * @return view catalog
+     * @return load method getMainPage
      */
     @GetMapping(value = {"/result"})
-    public String getMainPage(@RequestParam("result") Boolean result, Model model){
+    public String getMainPage(@RequestParam("resultMessage") String result, Model model){
         LOGGER.info("GET /catalog?result={}", result);
-        model.addAttribute("result", result);
+        model.addAttribute("resultMessage", result);
         return getMainPage(model);
     }
 
     /**
      * Goto catalog list page with param.
-     * @param result boolean result
+     * @param result String resultMessage
      * @param card library card
      * @return view catalog
      */
     @GetMapping(value = {"/result/card"})
-    public String getMainPage(@RequestParam("result") Boolean result,
+    public String getMainPage(@RequestParam("resultMessage") String result,
                               @RequestParam("card") Integer card, Model model){
         LOGGER.info("GET /catalog?result={}&card={}", result, card);
-        model.addAttribute("result", result);
+        model.addAttribute("resultMessage", result);
         model.addAttribute("card", card);
         return getMainPage(model);
     }
@@ -92,7 +92,7 @@ public class CatalogController {
     @PostMapping(value = "/catalog/select/{book}")
     public String selectBook(@PathVariable("book") int bookId, Model model, HttpSession session,
                              HttpServletRequest request){
-        LOGGER.info("GET select a book /bookId={}", bookId);
+        LOGGER.info("POST select a book /catalog/select/bookId={}", bookId);
         Integer readerId = (Integer) session.getAttribute("libraryCard");
         String messageCode;
         if(bookService.addReaderForBook(readerId, bookId)){

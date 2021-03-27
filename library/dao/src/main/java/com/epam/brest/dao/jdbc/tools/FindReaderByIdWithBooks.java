@@ -10,13 +10,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class FindReaderByIdWithBooks implements ResultSetExtractor<IReader> {
+public class FindReaderByIdWithBooks implements ResultSetExtractor<Reader> {
     private static final Logger LOGGER = LoggerFactory.getLogger(FindReaderByIdWithBooks.class);
 
     @Override
-    public IReader extractData(ResultSet resultSet) throws SQLException, DataAccessException {
+    public Reader extractData(ResultSet resultSet) throws SQLException, DataAccessException {
         LOGGER.info("method extractData(...) started");
-        IReader reader = null;
+        Reader reader = null;
         while(resultSet.next()){
             Integer id = resultSet.getInt("reader_id");
             if(reader == null){
@@ -33,7 +33,7 @@ public class FindReaderByIdWithBooks implements ResultSetExtractor<IReader> {
             Integer bookId = resultSet.getInt("book_id");
             if(bookId > 0){
                 Book book = new Book();
-                book.setReader(new ReaderProxy(reader.getReaderId()));
+                book.setReaderId(reader.getReaderId());
                 book.setId(bookId);
                 book.setGenre(Genre.values()[resultSet.getInt("genre")]);
                 book.setTitle(resultSet.getString("title"));

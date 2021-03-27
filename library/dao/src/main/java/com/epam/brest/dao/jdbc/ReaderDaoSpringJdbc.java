@@ -2,7 +2,7 @@ package com.epam.brest.dao.jdbc;
 
 import com.epam.brest.dao.ReaderDao;
 import com.epam.brest.dao.jdbc.tools.*;
-import com.epam.brest.model.IReader;
+import com.epam.brest.model.Reader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,7 +49,7 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
      * @return List readers
      */
     @Override
-    public List<IReader> findAll() {
+    public List<Reader> findAll() {
         LOGGER.info("findAll() was started");
         return new FindAllReader(dataSource, findAllReaderSql).execute();
     }
@@ -60,7 +60,7 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
      * @return List readers
      */
     @Override
-    public List<IReader> findAllActive() {
+    public List<Reader> findAllActive() {
         LOGGER.info("findAllActive() was started");
         return new FindAllReader(dataSource, findAllActiveReaderSql).execute();
     }
@@ -71,11 +71,11 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
      * @return Optional of a reader if exist or null
      */
     @Override
-    public Optional<IReader> findReaderById(Integer id) {
+    public Optional<Reader> findReaderById(Integer id) {
         LOGGER.info("findReaderById(id)  was started");
         LOGGER.debug("id={}", id);
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource("readerId", id);
-        return Optional.ofNullable((IReader) new FindReaderById(dataSource, findReaderByIdSql).
+        return Optional.ofNullable((Reader) new FindReaderById(dataSource, findReaderByIdSql).
                 findObjectByNamedParam(sqlParameterSource.getValues()));
     }
 
@@ -86,13 +86,13 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
      * @return Optional of a reader if exist or null
      */
     @Override
-    public Optional<IReader> findReaderByIdWithBooks(Integer id) {
+    public Optional<Reader> findReaderByIdWithBooks(Integer id) {
         LOGGER.info("findReaderByIdWithBooks(id) was started");
         LOGGER.debug("id={}", id);
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource("readerId", id);
         NamedParameterJdbcTemplate jdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
         FindReaderByIdWithBooks findReaderByIdWithBooks = new FindReaderByIdWithBooks();
-        return Optional.ofNullable((IReader) jdbcTemplate.
+        return Optional.ofNullable((Reader) jdbcTemplate.
                 query(findReaderByIdWithBooksSql, sqlParameterSource.getValues(),
                         findReaderByIdWithBooks));
     }
@@ -103,7 +103,7 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
      * @return saved reader with unique readerId
      */
     @Override
-    public IReader save(IReader reader) {
+    public Reader save(Reader reader) {
         LOGGER.info("save(reader)  was started");
         LOGGER.debug("reader={}", reader);
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
@@ -123,7 +123,7 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
      * @return count updated rows(readers)
      */
     @Override
-    public Integer update(IReader reader) {
+    public Integer update(Reader reader) {
         LOGGER.info("update(reader) was started");
         LOGGER.debug("reader={}", reader);
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
@@ -142,7 +142,7 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
      * @return count updated rows (readers)
      */
     @Override
-    public Integer delete(IReader reader) {
+    public Integer delete(Reader reader) {
         LOGGER.info("delete(reader) was started");
         LOGGER.debug("reader={}", reader);
         reader.setActive(false);
@@ -155,7 +155,7 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
      * @return count updated rows (readers)
      */
     @Override
-    public Integer restore(IReader reader) {
+    public Integer restore(Reader reader) {
         LOGGER.info("restore(reader) was started");
         LOGGER.debug("reader={}", reader);
         reader.setActive(true);

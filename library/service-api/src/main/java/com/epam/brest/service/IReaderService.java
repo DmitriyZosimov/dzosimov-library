@@ -1,15 +1,14 @@
 package com.epam.brest.service;
 
-import com.epam.brest.model.dto.ReaderDto;
-import com.epam.brest.service.exception.ReaderCreationException;
-import com.epam.brest.service.exception.ReaderNotFoundException;
+
+import com.epam.brest.model.sample.ReaderSample;
 
 public interface IReaderService {
 
-    ReaderDto getProfile(Integer id) throws ReaderNotFoundException;
-    ReaderDto getProfileWithoutBooks(Integer id) throws ReaderNotFoundException;
-    ReaderDto createReader(ReaderDto readerDto) throws ReaderCreationException;
-    boolean editProfile(ReaderDto readerDto);
+    ReaderSample getProfile(Integer id);
+    ReaderSample getProfileWithoutBooks(Integer id);
+    ReaderSample createReader(ReaderSample readerDto);
+    boolean editProfile(ReaderSample readerDto);
     boolean removeProfile(Integer id);
     boolean restoreProfile(Integer id);
 

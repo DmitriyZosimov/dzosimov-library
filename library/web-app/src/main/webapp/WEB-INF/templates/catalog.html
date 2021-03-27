@@ -60,15 +60,10 @@
         <div class="container py-3">
             <h1 th:text="#{catalog.title}">Catalog</h1>
         </div>
-        <th:block th:if="${result != null}">
-            <div class="container py-3">
-                <h6 th:text="${result} ? #{result.true} : #{result.false}"></h6>
-                <h6 th:text="${card != null} ? #{result.registry.card}+':'+ ${card} : _ "></h6>
-            </div>
-        </th:block>
         <th:block th:if="${resultMessage != null}">
             <div class="container py-3">
                 <h6 th:text="${resultMessage}"></h6>
+                <h6 th:text="${card != null} ? #{result.registry.card}+':'+ ${card} : _ "></h6>
             </div>
         </th:block>
     </div>
@@ -206,6 +201,7 @@
             <th scope="col"><span th:text="#{catalog.table.title}">Title</span></th>
             <th scope="col"><span th:text="#{catalog.table.genre}">Genre</span></th>
             <th scope="col"><span th:text="#{catalog.table.select}">Select</span></th>
+            <th scope="col"><span th:text="#{catalog.table.edit}">Edit</span></th>
             <th scope="col"><span th:text="#{catalog.table.delete}">Delete</span></th>
             </thead>
             <tbody id="myTable" class="table-warning">
@@ -217,10 +213,17 @@
                     <form th:action="@{/catalog/select/{bookId}(bookId=${book.id})}" method="post">
                         <button type="submit"
                                 class="btn btn-outline-dark btn-sm"
-                                th:text="#{catalog.table.btn.select}">
+                                th:text="#{btn.select}">
                             select
                         </button>
                     </form>
+                </td>
+                <td>
+                    <a th:href="@{/book/edit/{bookId}(bookId=${book.id})}"
+                       class="btn btn-outline-primary btn-sm"
+                       th:text="#{btn.edit}">
+                        Edit
+                    </a>
                 </td>
                 <td>
                     <button class="btn btn-outline-danger btn-sm"
@@ -229,7 +232,7 @@
                             th:data-bs-authors="${book.authors}"
                             th:data-bs-title="${book.title}"
                             th:data-bs-id="${book.id}">
-                        <span th:text="#{catalog.table.btn.delete}">delete</span>
+                        <span th:text="#{btn.delete}">delete</span>
                     </button>
                 </td>
             </tr>

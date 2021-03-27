@@ -2,23 +2,20 @@ package com.epam.brest.service;
 
 import com.epam.brest.dao.BookDao;
 import com.epam.brest.dao.ReaderDao;
-import com.epam.brest.model.Book;
-import com.epam.brest.model.IReader;
-import com.epam.brest.model.dto.ReaderDto;
-import com.epam.brest.model.dto.ReaderDtoWithBooks;
+import com.epam.brest.model.Reader;
+import com.epam.brest.model.sample.ReaderSample;
 import com.epam.brest.model.tools.ReaderMapper;
-import com.epam.brest.service.exception.ReaderCreationException;
-import com.epam.brest.service.exception.ReaderNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Optional;
 
 @Service("readerService")
+@Transactional
 public class ReaderServiceImp implements IReaderService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReaderServiceImp.class);
 
@@ -34,80 +31,74 @@ public class ReaderServiceImp implements IReaderService {
     /**
      * Find a profile of a reader by id
      * @param id - reader id
-     * @return reader if exist or new ReaderDtoWithBooks();
+     * @return reader if exist or null;
      */
     @Override
-    public ReaderDto getProfile(Integer id) throws ReaderNotFoundException {
+    public ReaderSample getProfile(Integer id) {
         LOGGER.info("getProfile");
-        Optional<IReader> readerOpt = readerDao.findReaderByIdWithBooks(id);
+        Optional<Reader> readerOpt = readerDao.findReaderByIdWithBooks(id);
         if(readerOpt.isEmpty()){
-            throw new ReaderNotFoundException("reader with id=" + id + " not found");
+            return null;
         }
-        ReaderDto readerDto = ReaderMapper.getReaderDto(readerOpt.get());
-        return readerDto;
+        return ReaderMapper.getReaderSample(readerOpt.get());
     }
 
     /**
      * Find a profile of a reader by id
      * @param id - reader id
-     * @return reader if exist or new ReaderTto()
+     * @return reader if exist or null
      */
     @Override
-    public ReaderDto getProfileWithoutBooks(Integer id) throws ReaderNotFoundException {
+    public ReaderSample getProfileWithoutBooks(Integer id) {
         LOGGER.info("getProfileWithoutBooks");
-        Optional<IReader> readerOpt = readerDao.findReaderById(id);
+        Optional<Reader> readerOpt = readerDao.findReaderById(id);
         if(readerOpt.isEmpty()){
-            throw new ReaderNotFoundException("reader with id=" + id + " not found");
+            return null;
         }
-        ReaderDto readerDto = ReaderMapper.getReaderDto(readerOpt.get());
-        return readerDto;
+        return ReaderMapper.getReaderSample(readerOpt.get());
     }
 
     /**
      * Add a new reader
-     * @param readerDto reader
-     * @return saved ReaderDto
+     * @param readerSample reader
+     * @return saved ReaderSample or null
      */
     @Override
-    public ReaderDto createReader(ReaderDto readerDto) throws ReaderCreationException {
+    public ReaderSample createReader(ReaderSample readerSample) {
         LOGGER.info("createReader");
-        LOGGER.debug("readerDto={}", readerDto);
-        if (readerDto == null){
+        LOGGER.debug("ReaderSample={}", readerSample);
+        if (readerSample == null){
             LOGGER.info("reader is not added, because a request reader is null");
-            throw new ReaderCreationException("ReaderDto is null");
+            return null;
         }
-        IReader reader = ReaderMapper.getReader(readerDto);
+        Reader reader = ReaderMapper.getReader(readerSample);
         reader.setDateOfRegistry(LocalDate.now());
         reader = readerDao.save(reader);
         if(reader.getReaderId() != null){
             LOGGER.info("reader was added");
-            return ReaderMapper.getReaderDto(reader);
+            return ReaderMapper.getReaderSample(reader);
         } else {
             LOGGER.warn("happened some problem, a reader was not added");
-            throw new ReaderCreationException("happened some problem, a reader was not added");
+            return null;
         }
     }
 
     /**
      * Edit a profile of reader
-     * @param readerDto - the reader who edits a profile
+     * @param readerSample - the reader who edits a profile
      * @return true if the profile is edited, false if reader is null or reader is not exist or not active
      */
     @Override
-    public boolean editProfile(ReaderDto readerDto) {
+    public boolean editProfile(ReaderSample readerSample) {
         LOGGER.info("editProfile");
-        LOGGER.debug("readerDto={}", readerDto);
-        if(readerDto == null || !readerDao.exist(readerDto.getReaderId())){
+        LOGGER.debug("readerSample={}", readerSample);
+        if(readerSample == null || !readerDao.exist(readerSample.getReaderId())){
             LOGGER.info("reader is not edited, because a request reader is null or not exist or not active");
             return false;
         }
-        IReader reader = ReaderMapper.getReader(readerDto);
-        if(readerDao.update(reader) == 1){
-            LOGGER.info("reader is edited");
-            return true;
-        }
-        LOGGER.warn("happened some problem, a reader is not edited");
-        return false;
+        Reader reader = ReaderMapper.getReader(readerSample);
+        int result = readerDao.update(reader);
+        return checkResult(reader.getReaderId(), result);
     }
 
     /**
@@ -123,45 +114,30 @@ public class ReaderServiceImp implements IReaderService {
             LOGGER.warn("reader id is null");
             return false;
         }
-        Optional<IReader> readerOpt = readerDao.findReaderById(id);
+        Optional<Reader> readerOpt = readerDao.findReaderById(id);
         if(readerOpt.isEmpty()){
             LOGGER.info("reader is not found");
             return false;
         }
-        IReader reader = readerOpt.get();
+        Reader reader = readerOpt.get();
         if(!reader.getActive()){
             LOGGER.info("the reader has active = false");
             return false;
         }
-        removeBooks(reader);
+        bookDao.removeReaderFromBooks(reader.getReaderId());
         int result = readerDao.delete(reader);
-        if(result == 1){
-            LOGGER.info("the reader(id={}) was removed", id);
-        } else if(result > 1){
-            LOGGER.warn("result={} > 1 from readerDao.delete", result);
-        } else {
-            LOGGER.info("the reader(id={}) was not removed", id);
-            return false;
-        }
+        checkResult(reader.getReaderId(), result);
         if(!readerDao.exist(id)){
             return true;
         }
         return false;
     }
 
-    private void removeBooks(IReader reader) {
-        if(bookDao.existReader(reader.getReaderId())){
-            LOGGER.info("bookDao.existReader = true");
-            if(bookDao.removeReaderFromBooks(reader.getReaderId()) >= 1){
-                LOGGER.info("the reader was removed from books");
-            } else {
-                LOGGER.info("the reader was not removed from books");
-            }
-        } else {
-            LOGGER.info("bookDao.existReader = false");
-        }
-    }
-
+    /**
+     * restore a reader (edit active to true)
+     * @param id reader id
+     * @return true if the reader has active true, false if id is null or the reader don`t edit active to true
+     */
     @Override
     public boolean restoreProfile(Integer id) {
         LOGGER.info("restoreProfile");
@@ -170,28 +146,35 @@ public class ReaderServiceImp implements IReaderService {
             LOGGER.warn("reader id is null");
             return false;
         }
-        Optional<IReader> readerOpt = readerDao.findReaderById(id);
+        Optional<Reader> readerOpt = readerDao.findReaderById(id);
         if(readerOpt.isEmpty()){
             LOGGER.info("reader is not found");
             return false;
         }
-        IReader reader = readerOpt.get();
+        Reader reader = readerOpt.get();
         if(reader.getActive()){
             LOGGER.info("the reader is already restored");
             return false;
         }
         int result = readerDao.restore(reader);
-        if(result == 1){
-            LOGGER.info("the reader(id={}) was restored", id);
-        } else if(result > 1){
-            LOGGER.warn("result={} > 1 from readerDao.restore", result);
-        } else {
-            LOGGER.info("the reader(id={}) was not restored", id);
-            return false;
-        }
+        checkResult(id, result);
         if(readerDao.exist(id)){
             return true;
         }
         return false;
+    }
+
+    //TODO:maybe not needed
+    private boolean checkResult(Integer readerId, int result) {
+        if (result == 1) {
+            LOGGER.info("The reader(readerId={}) - all done correctly", readerId);
+            return true;
+        } else if (result > 1) {
+            LOGGER.warn("result={} > 1", result);
+            return true;
+        } else {
+            LOGGER.info("The reader(readerId={}) - some done wrong", readerId);
+            return false;
+        }
     }
 }

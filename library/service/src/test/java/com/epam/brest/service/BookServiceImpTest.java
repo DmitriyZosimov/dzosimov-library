@@ -23,6 +23,13 @@ public class BookServiceImpTest {
     private BookServiceImp bookService;
 
     @Test
+    public void findAllTest(){
+        List<Book> books = bookService.findAll();
+        Assert.assertNotNull(books);
+        Assert.assertFalse(books.isEmpty());
+    }
+
+    @Test
     public void findSearchBooksTest(){
         BookSample bookSample = new BookSample("о", "о", Genre.DEFAULT);
         List<Book> bigBooks = bookService.findAll();
@@ -37,28 +44,25 @@ public class BookServiceImpTest {
 
     @Test
     public void addReaderForBookWhenReaderNotNullTest(){
-        Book book = bookService.findBookById(1);
-        Assert.assertNotNull(book);
-        Assert.assertEquals(Integer.valueOf(1), book.getId());
-        if(book.getReader() == null){
-            Assert.assertTrue(bookService.addReaderForBook(1, book.getId()));
+        int bookId = 0;
+        boolean isAdded = false;
+        while(!isAdded){
+            bookId++;
+            isAdded = bookService.addReaderForBook(1, bookId);
         }
 
-        Assert.assertFalse(bookService.addReaderForBook(2, 1));
+        Assert.assertFalse(bookService.addReaderForBook(2, bookId));
     }
 
     @Test
     public void removeFieldReaderFromBookTest(){
-        Book book = bookService.findBookById(1);
-        Assert.assertNotNull(book);
-        Assert.assertEquals(Integer.valueOf(1), book.getId());
-        if(book.getReader() == null){
-            Assert.assertTrue(bookService.addReaderForBook(1, book.getId()));
-            book = bookService.findBookById(1);
+        int bookId = 0;
+        boolean isAdded = false;
+        while(!isAdded){
+            bookId++;
+            isAdded = bookService.addReaderForBook(1, bookId);
         }
-        Assert.assertTrue(bookService.removeFieldReaderFromBook(1, 1));
-        book = bookService.findBookById(1);
-        Assert.assertNull(book.getReader());
+        Assert.assertTrue(bookService.removeFieldReaderFromBook(bookId, 1));
     }
 
     @Test

@@ -12,10 +12,9 @@ public interface BookDao {
     List<Book> findAll();
     Optional<Book> findBookById(Integer id);
     Book save(Book book);
-    Integer update(Book book);
+    Integer update(BookSample bookSample);
     Integer delete(Integer bookId);
     boolean exist(Book book);
-    boolean existReader(Integer readerId);
     Integer addReaderForBook(Integer bookId, Integer readerId);
     Integer removeReaderFromBooks(Integer readerId);
     List<Book> searchBooks(BookSample bookSample);

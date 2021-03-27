@@ -13,7 +13,7 @@
     <div class="container-sm">
         <div class="container-fluid py-1 d-none d-sm-block">
             <div class="d-flex">
-                <div class="flex-grow-1"><span class="text-light h1">Library</span></div>
+                <div class="flex-grow-1"><span class="text-light h1" th:text="#{catalog.logo.text}">Library</span></div>
                 <div class="btn-group btn-group-sm my-auto">
                     <a th:href="@{/profile?lan=ru}" class="btn btn-outline-dark">ru</a>
                     <a th:href="@{/profile?lan=en}" class="btn btn-outline-dark">en</a>
@@ -60,6 +60,12 @@
         <div class="container py-3">
             <h1 th:text="#{profile.title}">Profile</h1>
         </div>
+        <th:block th:if="${resultMessage != null}">
+            <div class="container py-3">
+                <h6 th:text="${resultMessage}"></h6>
+                <h6 th:text="${card != null} ? #{result.registry.card}+':'+ ${card} : _ "></h6>
+            </div>
+        </th:block>
     </div>
 </header>
 <section>
@@ -67,7 +73,7 @@
         <div class="d-flex mb-1 border-bottom border-dark">
             <div class="flex-grow-1 px-1 mx-4">
                 <table class="table table-borderless">
-                    <tbody th:object="${readerDto}">
+                    <tbody th:object="${readerSample}">
                         <tr>
                             <td class="col-4 fw-bold" th:text="#{profile.card}"></td>
                             <td class="col-8" th:text="*{readerId}"></td>
@@ -112,11 +118,11 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <h6 th:text="#{profile.modal.delete.body} + ${readerDto.firstName} + ${readerDto.lastName} + '?'">
+                        <h6 th:text="#{profile.modal.delete.body} + ${readerSample.firstName} + ${readerSample.lastName} + '?'">
                             Are you sure delete user?
                         </h6>
                         <h6 class="text text-bold" th:text="#{profile.card} ">Library card</h6>
-                        <h6 th:text="${readerDto.readerId}"></h6>
+                        <h6 th:text="${readerSample.readerId}"></h6>
                     </div>
                     <div class="modal-footer">
                         <form th:action="@{/profile/delete}" method="post">
@@ -138,7 +144,7 @@
                 <th scope="col"><span th:text="#{catalog.table.delete}">Delete</span></th>
                 </thead>
                 <tbody id="myTable" class="table-warning">
-                <tr th:each="book : ${readerDto.books}">
+                <tr th:each="book : ${readerSample.books}">
                     <td th:text="${book.authors}"></td>
                     <td th:text="${book.title}"></td>
                     <td th:text="${book.genre}"></td>
@@ -149,7 +155,7 @@
                                 th:data-bs-authors="${book.authors}"
                                 th:data-bs-title="${book.title}"
                                 th:data-bs-id="${book.id}">
-                            <span th:text="#{catalog.table.btn.delete}">delete</span>
+                            <span th:text="#{btn.delete}">delete</span>
                         </button>
                     </td>
                 </tr>

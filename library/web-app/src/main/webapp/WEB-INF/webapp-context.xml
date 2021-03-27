@@ -49,7 +49,7 @@
 
     <mvc:interceptors>
         <mvc:interceptor>
-            <mvc:mapping path="/*" />
+            <mvc:mapping path="/**" />
             <bean id="localeChangeInterceptor"
                   class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
                 <property name="paramName" value="lan" />
@@ -83,6 +83,8 @@
 
     <bean id="bookController" class="com.epam.brest.webapp.BookController">
         <constructor-arg name="bookService" ref="bookService"/>
+        <constructor-arg name="localeResolver" ref="localeResolver"/>
+        <constructor-arg name="messageSource" ref="messageSource"/>
     </bean>
 
     <bean id="catalogController" class="com.epam.brest.webapp.CatalogController">
@@ -94,6 +96,8 @@
     <bean id="profileController" class="com.epam.brest.webapp.ProfileController">
         <constructor-arg name="readerService" ref="readerService"/>
         <constructor-arg name="bookService" ref="bookService"/>
+        <constructor-arg name="localeResolver" ref="localeResolver"/>
+        <constructor-arg name="messageSource" ref="messageSource"/>
     </bean>
 
     <bean id="loginController" class="com.epam.brest.webapp.LoginController">

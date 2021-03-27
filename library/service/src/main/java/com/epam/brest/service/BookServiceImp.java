@@ -62,31 +62,18 @@ public class BookServiceImp implements IBookService {
         return checkResult(bookId, result);
     }
 
-    private boolean checkResult(Integer bookId, int result) {
-        if(result == 1){
-            LOGGER.info("The book(bookId={}) - all done correctly", bookId);
-            return true;
-        } else if(result > 1){
-            LOGGER.warn("result={} > 1", result);
-            return true;
-        } else {
-            LOGGER.info("The book(bookId={}) - some done wrong", bookId);
-            return false;
-        }
-    }
-
     /**
      * Create a new book
      * @param bookSample model of a Book
      * @return book created book
      */
-    public Book createBook(BookSample bookSample) throws BookCreationException {
+    public boolean createBook(BookSample bookSample){
         Book book = BookMapper.getBook(bookSample);
         book = bookDao.save(book);
         if(book.getId() == null){
-            throw new BookCreationException("book id must be not null");
+            return false;
         }
-        return book;
+        return true;
     }
 
     @Transactional(readOnly = true)
@@ -103,12 +90,34 @@ public class BookServiceImp implements IBookService {
         return checkResult(bookId, result);
     }
 
+    @Override
+    public boolean editBook(BookSample bookSample) {
+        LOGGER.info("editBook(bookSample={})", bookSample);
+        int result = bookDao.update(bookSample);
+        return checkResult(bookSample.getId(), result);
+    }
+
     @Transactional(readOnly = true)
-    public Book findBookById(Integer id){
+    @Override
+    public BookSample findBookById(Integer id){
         Optional<Book> opt = bookDao.findBookById(id);
-        if(opt.isPresent()){
-            return opt.get();
+        Book book = opt.orElse(null);
+        if(book != null){
+            return BookMapper.getBookSample(book);
         }
         return null;
+    }
+
+    private boolean checkResult(Integer bookId, int result) {
+        if(result == 1){
+            LOGGER.info("The book(bookId={}) - all done correctly", bookId);
+            return true;
+        } else if(result > 1){
+            LOGGER.warn("result={} > 1", result);
+            return true;
+        } else {
+            LOGGER.info("The book(bookId={}) - some done wrong", bookId);
+            return false;
+        }
     }
 }

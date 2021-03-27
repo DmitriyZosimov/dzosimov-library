@@ -13,12 +13,11 @@
     <div class="container-sm">
         <div class="container-fluid py-1 d-none d-sm-block">
             <div class="d-flex">
-                <div class="flex-grow-1"><span class="text-light h1">Library</span></div>
+                <div class="flex-grow-1"><span class="text-light h1" th:text="#{catalog.logo.text}">Library</span></div>
                 <div class="btn-group btn-group-sm my-auto">
                     <a th:href="@{${#httpServletRequest.servletPath}(lan=ru)}" class="btn btn-outline-dark">ru</a>
                     <a th:href="@{${#httpServletRequest.servletPath}(lan=en)}" class="btn btn-outline-dark">en</a>
                 </div>
-
             </div>
         </div>
         <nav class="navbar navbar-expand-sm d-flex justify-content-between bg-dark">
@@ -68,7 +67,7 @@
             <div class="flex-grow-1 px-1 mx-4">
                 <form th:action="@{${#httpServletRequest.servletPath}}"
                       method="post"
-                      th:object="${readerDto}">
+                      th:object="${readerSample}">
                     <input id="card" type="hidden" th:value="*{readerId}" th:field="*{readerId}"/>
                     <div class="col-auto">
                         <label for="firstName" class="mb-1 fw-bold" th:text="#{profile.name.first}">First name</label>
@@ -87,7 +86,12 @@
                     </div>
                     <input type="hidden" th:value="*{dateOfRegistry}" th:field="*{dateOfRegistry}"/>
                     <div class="col-auto">
-                        <button type="submit" class="btn btn-sm btn-primary mt-4" th:text="#{btn.save}">save changes</button>
+                        <button type="submit" class="btn btn-sm btn-primary mt-4" th:text="#{btn.save}">
+                            save changes
+                        </button>
+                        <a th:href="@{/profile}"
+                           class="btn btn-sm btn-primary mt-4"
+                           th:text="#{btn.cancel}">Cancel</a>
                     </div>
                 </form>
             </div>

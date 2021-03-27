@@ -6,7 +6,7 @@ public class Book {
     private String authors;
     private String title;
     private Genre genre;
-    private IReader reader;
+    private Integer readerId;
 
     public Book() {
     }
@@ -47,12 +47,12 @@ public class Book {
         this.genre = genre;
     }
 
-    public IReader getReader() {
-        return reader;
+    public Integer getReaderId() {
+        return readerId;
     }
 
-    public void setReader(IReader reader) {
-        this.reader = reader;
+    public void setReaderId(Integer readerId) {
+        this.readerId = readerId;
     }
 
     @Override
@@ -84,7 +84,7 @@ public class Book {
                 ", authors='" + authors + '\'' +
                 ", title='" + title + '\'' +
                 ", genre=" + genre +
-                ", reader=" + reader +
+                ", readerId=" + readerId +
                 '}';
     }
 }

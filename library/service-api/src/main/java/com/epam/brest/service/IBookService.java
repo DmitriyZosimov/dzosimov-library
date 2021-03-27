@@ -13,7 +13,9 @@ public interface IBookService {
     List<Book> findAll();
     boolean addReaderForBook(Integer readerId, Integer bookId);
     boolean delete(Integer bookId);
-    Book createBook(BookSample bookSample) throws BookCreationException;
+    boolean createBook(BookSample bookSample);
     List<Book> searchBooks(BookSample bookSample);
     boolean removeFieldReaderFromBook(Integer bookId, Integer readerId);
+    boolean editBook(BookSample bookSample);
+    BookSample findBookById(Integer bookId);
 }

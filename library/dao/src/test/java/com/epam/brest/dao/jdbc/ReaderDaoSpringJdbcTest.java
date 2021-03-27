@@ -1,6 +1,5 @@
 package com.epam.brest.dao.jdbc;
 
-import com.epam.brest.model.IReader;
 import com.epam.brest.model.Reader;
 import org.junit.Assert;
 import org.junit.Test;
@@ -22,14 +21,14 @@ public class ReaderDaoSpringJdbcTest {
 
     @Test
     public void testFindAll(){
-        List<IReader> readers = dao.findAll();
+        List<Reader> readers = dao.findAll();
         Assert.assertNotNull(readers);
         Assert.assertTrue(readers.size() > 0);
     }
 
     @Test
     public void testFindAllActive() {
-        List<IReader> readers = dao.findAllActive();
+        List<Reader> readers = dao.findAllActive();
         int size = readers.size();
         Assert.assertNotNull(readers);
         Assert.assertTrue(readers.size() > 0);
@@ -38,33 +37,33 @@ public class ReaderDaoSpringJdbcTest {
 
     @Test
     public void testFindReaderById() {
-        List<IReader> readers = dao.findAll();
+        List<Reader> readers = dao.findAll();
         Assert.assertNotNull(readers);
         Assert.assertTrue(readers.size() > 0);
 
-        IReader reader = dao.findReaderById(readers.get(0).getReaderId()).get();
+        Reader reader = dao.findReaderById(readers.get(0).getReaderId()).get();
         Assert.assertNotNull(reader);
         Assert.assertEquals(reader, readers.get(0));
     }
 
     @Test
     public void testFindReaderByIdWithBooks() {
-        List<IReader> readers = dao.findAll();
+        List<Reader> readers = dao.findAll();
         Assert.assertNotNull(readers);
         Assert.assertTrue(readers.size() > 0);
 
-        IReader reader = dao.findReaderByIdWithBooks(readers.get(0).getReaderId()).get();
+        Reader reader = dao.findReaderByIdWithBooks(readers.get(0).getReaderId()).get();
         Assert.assertNotNull(reader);
         Assert.assertTrue(reader.getReaderId() == readers.get(0).getReaderId());
         Assert.assertNotNull(reader.getBooks());
         reader.getBooks().stream().forEach(b -> {
             Assert.assertNotNull(b);
-            Assert.assertEquals(reader.getReaderId(), b.getReader().getReaderId());});
+            Assert.assertEquals(reader.getReaderId(), b.getReaderId());});
     }
 
     @Test
     public void testSave() {
-        IReader reader = new Reader("Zosimov", "Dima", "Alex", LocalDate.now());
+        Reader reader = new Reader("Zosimov", "Dima", "Alex", LocalDate.now());
         reader = dao.save(reader);
         Assert.assertNotNull(reader.getReaderId());
         Assert.assertTrue(reader.getReaderId() > 0);
@@ -72,11 +71,11 @@ public class ReaderDaoSpringJdbcTest {
 
     @Test
     public void testUpdate() {
-        List<IReader> readers = dao.findAll();
+        List<Reader> readers = dao.findAll();
         Assert.assertNotNull(readers);
         Assert.assertTrue(readers.size() > 0);
 
-        IReader reader = readers.get(0);
+        Reader reader = readers.get(0);
         reader.setFirstName("NewFirstName");
         reader.setLastName("NewLastName");
         reader.setPatronymic("NewPatronymic");
@@ -88,11 +87,11 @@ public class ReaderDaoSpringJdbcTest {
 
     @Test
     public void testDelete() {
-        List<IReader> readers = dao.findAll();
+        List<Reader> readers = dao.findAll();
         Assert.assertNotNull(readers);
         Assert.assertTrue(readers.size() > 0);
 
-        IReader reader = readers.get(0);
+        Reader reader = readers.get(0);
 
         int res = dao.delete(reader);
         Assert.assertTrue(res == 1);
@@ -101,10 +100,10 @@ public class ReaderDaoSpringJdbcTest {
 
     @Test
     public void testRestore(){
-        List<IReader> readers = dao.findAll();
+        List<Reader> readers = dao.findAll();
         Assert.assertNotNull(readers);
         Assert.assertTrue(readers.size() > 0);
-        IReader reader = readers.get(0);
+        Reader reader = readers.get(0);
         int res = dao.delete(reader);
         Assert.assertTrue(res == 1);
 
@@ -115,7 +114,7 @@ public class ReaderDaoSpringJdbcTest {
 
     @Test
     public void testExist() {
-        List<IReader> readers = dao.findAll();
+        List<Reader> readers = dao.findAll();
         Assert.assertNotNull(readers);
         Assert.assertTrue(readers.size() > 0);
 

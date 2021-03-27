@@ -1,6 +1,5 @@
 package com.epam.brest.dao.jdbc.tools;
 
-import com.epam.brest.model.IReader;
 import com.epam.brest.model.Reader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,7 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-public class FindReaderById extends MappingSqlQuery<IReader>{
+public class FindReaderById extends MappingSqlQuery<Reader>{
     private static final Logger LOGGER = LoggerFactory.getLogger(FindReaderById.class);
 
     public FindReaderById(DataSource ds, String sql) {
@@ -24,9 +23,9 @@ public class FindReaderById extends MappingSqlQuery<IReader>{
     }
 
     @Override
-    protected IReader mapRow(ResultSet resultSet, int i) throws SQLException {
+    protected Reader mapRow(ResultSet resultSet, int i) throws SQLException {
         LOGGER.info("mapRow(...) was started");
-        IReader reader = new Reader();
+        Reader reader = new Reader();
         reader.setReaderId(resultSet.getInt("reader_id"));
         reader.setFirstName(resultSet.getString("first_name"));
         reader.setLastName(resultSet.getString("last_name"));

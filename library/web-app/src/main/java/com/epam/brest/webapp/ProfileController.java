@@ -1,6 +1,7 @@
 package com.epam.brest.webapp;
 
 import com.epam.brest.model.dto.ReaderDto;
+import com.epam.brest.model.sample.ReaderSample;
 import com.epam.brest.service.IBookService;
 import com.epam.brest.service.IReaderService;
 import com.epam.brest.service.exception.ReaderCreationException;
@@ -8,11 +9,14 @@ import com.epam.brest.service.exception.ReaderNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 @Controller
@@ -22,11 +26,15 @@ public class ProfileController {
 
     private final IReaderService readerService;
     private final IBookService bookService;
+    private SessionLocaleResolver localeResolver;
+    private final MessageSource messageSource;
 
     @Autowired
-    public ProfileController(IReaderService readerService, IBookService bookService) {
+    public ProfileController(IReaderService readerService, IBookService bookService, SessionLocaleResolver localeResolver, MessageSource messageSource) {
         this.readerService = readerService;
         this.bookService = bookService;
+        this.localeResolver = localeResolver;
+        this.messageSource = messageSource;
     }
 
     /**
@@ -37,20 +45,19 @@ public class ProfileController {
      * @return view profile
      */
     @GetMapping(value = "/profile")
-    public String getProfile(Model model, HttpSession session){
+    public String getProfile(Model model, HttpSession session, HttpServletRequest request){
         LOGGER.info("GET /profile");
         Integer card = (Integer) session.getAttribute("libraryCard");
         LOGGER.debug("card={}", card);
-        ReaderDto readerDto = null;
-        try {
-            readerDto = readerService.getProfile(card);
-        } catch (ReaderNotFoundException e) {
-            LOGGER.warn("ReaderNotFoundException: {}", e.getMessage());
-            model.addAttribute("message", e.getMessage());
+        ReaderSample readerSample = readerService.getProfile(card);
+        if(readerSample == null){
+            String message = messageSource.getMessage("error.not.found",
+                    new String[]{"reader"}, localeResolver.resolveLocale(request));
+            model.addAttribute("message", message);
             return "error";
         }
-        model.addAttribute("readerDto", readerDto);
-        LOGGER.debug("READER: {}", readerDto);
+        model.addAttribute("readerSample", readerSample);
+        LOGGER.debug("READER: {}", readerSample);
         return "profile";
     }
 
@@ -62,18 +69,18 @@ public class ProfileController {
      * @return view edit_profile
      */
     @GetMapping(value = "/profile/edit")
-    public String editProfile(Model model, HttpSession session){
+    public String editProfile(Model model, HttpSession session, HttpServletRequest request){
         LOGGER.info("GET /profile/edit");
         Integer card = (Integer) session.getAttribute("libraryCard");
-        ReaderDto readerDto = null;
-        try {
-            readerDto = readerService.getProfileWithoutBooks(card);
-        } catch (ReaderNotFoundException e) {
-            LOGGER.warn("ReaderNotFoundException: {}", e.getMessage());
-            model.addAttribute("message", e.getMessage());
+        ReaderSample readerSample = readerService.getProfileWithoutBooks(card);
+        if(readerSample == null){
+            String message = messageSource.getMessage("error.not.found",
+                    new String[]{"reader"}, localeResolver.resolveLocale(request));
+            model.addAttribute("message", message);
             return "error";
         }
-        model.addAttribute("readerDto", readerDto);
+        model.addAttribute("readerSample", readerSample);
+        LOGGER.debug("READER: {}", readerSample);
         model.addAttribute("isNew", false);
         return "reader";
     }
@@ -81,49 +88,56 @@ public class ProfileController {
     /**
      * Edit profile and go to profile list page.
      *
-     * @param readerDto with field data
+     * @param readerSample with field data
      * @return view profile
      */
     @PostMapping(value = "/profile/edit")
-    public String editProfile(@ModelAttribute("readerDto") ReaderDto readerDto, HttpSession session,
-                              Model model, BindingResult bindingResult){
+    public String editProfile(@ModelAttribute("readerSample") ReaderSample readerSample, HttpSession session,
+                              Model model, BindingResult bindingResult, HttpServletRequest request){
         LOGGER.info("POST /profile/edit");
         if(bindingResult.hasErrors()){
             LOGGER.info("bindingResult has errors");
             return "error";
         }
-        if(readerService.editProfile(readerDto)){
-            model.addAttribute("result", true);
+        String messageCode;
+        if(readerService.editProfile(readerSample)){
+            messageCode = "message.reader.edit.good";
         } else {
-            model.addAttribute("result", false);
+            messageCode = "message.reader.edit.bad";
         }
-        return getProfile(model, session);
+        String message = messageSource.getMessage(messageCode, null, localeResolver.resolveLocale(request));
+        LOGGER.info(message);
+        model.addAttribute("resultMessage", message);
+        return getProfile(model, session, request);
     }
 
     @GetMapping(value = "/registry")
     public String createReader(Model model){
         LOGGER.info("GET /registry");
-        model.addAttribute("readerDto", new ReaderDto());
+        model.addAttribute("readerSample", new ReaderSample());
         model.addAttribute("isNew", true);
         return "reader";
     }
 
     @PostMapping(value = "/registry")
-    public String createReader(@ModelAttribute("readerDto") ReaderDto readerDto,
-                               Model model, BindingResult bindingResult) throws ReaderCreationException {
+    public String createReader(@ModelAttribute("readerSample") ReaderSample readerSample,
+                               Model model, BindingResult bindingResult, HttpServletRequest request) {
         LOGGER.info("POST /registry");
         if(bindingResult.hasErrors()){
             LOGGER.info("bindingResult has errors");
             return "error";
         }
-        try{
-            ReaderDto reader = readerService.createReader(readerDto);
-            model.addAttribute("result", true);
+        String messageCode;
+        ReaderSample reader = readerService.createReader(readerSample);
+        if(reader != null) {
+            messageCode = "message.reader.create.good";
             model.addAttribute("card", reader.getReaderId());
-        } catch (ReaderCreationException e){
-            model.addAttribute("message", e.getMessage());
-            return "error";
+        } else {
+            messageCode = "message.reader.create.bad";
         }
+        String message = messageSource.getMessage(messageCode, null, localeResolver.resolveLocale(request));
+        LOGGER.info(message);
+        model.addAttribute("resultMessage", message);
         return "redirect:/result/card";
     }
 
@@ -133,39 +147,44 @@ public class ProfileController {
      * @return view result
      */
     @PostMapping(value = "/profile/delete")
-    public String removeProfile(Model model, HttpSession session){
+    public String removeProfile(Model model, HttpSession session, HttpServletRequest request){
         LOGGER.info("POST /profile/delete");
         Integer card = (Integer) session.getAttribute("libraryCard");
+        String messageCode;
         if(readerService.removeProfile(card)){
             LOGGER.info("a reader(id={}) was removed", card);
             session.invalidate();
-            model.addAttribute("result", true);
-            return "redirect:/catalog";
+            messageCode = "message.reader.delete.good";
         } else {
-            LOGGER.info("a reader(id={}) was not removed", card);
-            model.addAttribute("result", false);
-            return "redirect:/profile";
+            messageCode = "message.reader.delete.bad";
         }
+        String message = messageSource.getMessage(messageCode, null, localeResolver.resolveLocale(request));
+        LOGGER.info(message);
+        model.addAttribute("resultMessage", message);
+        return "redirect:/result";
     }
 
     /**
      * Restore profile
      *
      * @param card profile
-     * @return view result
+     * @return view catalog
      */
     @GetMapping(value = "/restore/{card}")
-    public String restoreProfile(@PathVariable("card") Integer card, Model model){
+    public String restoreProfile(@PathVariable("card") Integer card, Model model, HttpServletRequest request){
         LOGGER.info("GET /profile/restore/card={}", card);
 
+        String messageCode;
         if(readerService.restoreProfile(card)){
-            model.addAttribute("result", true);
+            messageCode = "message.reader.restore.good";
             model.addAttribute("card", card);
-            return "redirect:/result/card";
         } else {
-            model.addAttribute("result", false);
-            return "redirect:/catalog";
+            messageCode = "message.reader.restore.bad";
         }
+        String message = messageSource.getMessage(messageCode, null, localeResolver.resolveLocale(request));
+        LOGGER.info(message);
+        model.addAttribute("resultMessage", message);
+        return "redirect:/result/card";
     }
 
     //TODO Mock test

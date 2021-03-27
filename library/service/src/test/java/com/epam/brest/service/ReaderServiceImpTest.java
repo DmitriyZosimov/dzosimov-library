@@ -1,11 +1,8 @@
 package com.epam.brest.service;
 
 import com.epam.brest.dao.ReaderDao;
-import com.epam.brest.model.IReader;
-import com.epam.brest.model.dto.ReaderDto;
-import com.epam.brest.model.dto.ReaderDtoWithBooks;
-import com.epam.brest.service.exception.ReaderCreationException;
-import com.epam.brest.service.exception.ReaderNotFoundException;
+import com.epam.brest.model.Reader;
+import com.epam.brest.model.sample.ReaderSample;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,37 +25,20 @@ public class ReaderServiceImpTest {
      * getProfile with books
      */
     @Test
-    public void getProfileTest() throws ReaderNotFoundException {
-        ReaderDto readerDto = readerService.getProfile(1);
-        Assert.assertNotNull(readerDto);
-        Assert.assertEquals(Integer.valueOf(1), readerDto.getReaderId());
-        Assert.assertTrue(ReaderDtoWithBooks.class.isInstance(readerDto));
-    }
-    /**
-     * getProfile with books
-     * execute ReaderNotFoundException
-     */
-    @Test(expected = ReaderNotFoundException.class)
-    public void getProfileReaderNotFoundExceptionTest() throws ReaderNotFoundException {
-        ReaderDto readerDto = readerService.getProfile(99);
+    public void getProfileTest() {
+        ReaderSample readerSample = readerService.getProfile(1);
+        Assert.assertNotNull(readerSample);
+        Assert.assertEquals(Integer.valueOf(1), readerSample.getReaderId());
     }
 
     /**
      * getProfileWithoutBooks
      */
     @Test
-    public void getProfileWithoutBooksTest() throws ReaderNotFoundException {
-        ReaderDto readerDto = readerService.getProfileWithoutBooks(1);
-        Assert.assertNotNull(readerDto);
-        Assert.assertEquals(Integer.valueOf(1), readerDto.getReaderId());
-    }
-    /**
-     * getProfileWithoutBooks
-     * execute ReaderNotFoundException
-     */
-    @Test(expected = ReaderNotFoundException.class)
-    public void getProfileWithoutBooksReaderNotFoundExceptionTest() throws ReaderNotFoundException {
-        ReaderDto readerDto = readerService.getProfileWithoutBooks(99);
+    public void getProfileWithoutBooksTest(){
+        ReaderSample readerSample = readerService.getProfileWithoutBooks(1);
+        Assert.assertNotNull(readerSample);
+        Assert.assertEquals(Integer.valueOf(1), readerSample.getReaderId());
     }
 
     /**
@@ -66,28 +46,18 @@ public class ReaderServiceImpTest {
      * all done correctly
      */
     @Test
-    public void createReaderTest() throws ReaderCreationException {
-        ReaderDto readerDto = new ReaderDto();
-        readerDto.setLastName("last");
-        readerDto.setFirstName("first");
-        readerDto.setPatronymic("patr");
+    public void createReaderTest() {
+        ReaderSample readerSample = new ReaderSample();
+        readerSample.setLastName("last");
+        readerSample.setFirstName("first");
+        readerSample.setPatronymic("patr");
 
-        ReaderDto result = readerService.createReader(readerDto);
+        ReaderSample result = readerService.createReader(readerSample);
         Assert.assertNotNull(result);
         Assert.assertNotNull(result.getReaderId());
-        Assert.assertEquals(readerDto.getFirstName(), result.getFirstName());
-        Assert.assertEquals(readerDto.getLastName(), result.getLastName());
-        Assert.assertEquals(readerDto.getPatronymic(), result.getPatronymic());
-    }
-
-    /**
-     * createReader
-     * ReaderDto is null
-     * execute ReaderCreationException
-     */
-    @Test(expected = ReaderCreationException.class)
-    public void createReaderWithExceptionTest() throws ReaderCreationException {
-        ReaderDto result = readerService.createReader(null);
+        Assert.assertEquals(readerSample.getFirstName(), result.getFirstName());
+        Assert.assertEquals(readerSample.getLastName(), result.getLastName());
+        Assert.assertEquals(readerSample.getPatronymic(), result.getPatronymic());
     }
 
     /**
@@ -95,20 +65,20 @@ public class ReaderServiceImpTest {
      * All done correctly
      */
     @Test
-    public void editProfileTest() throws ReaderNotFoundException {
-        ReaderDto readerDto = readerService.getProfile(1);
-        Assert.assertNotNull(readerDto);
-        Assert.assertEquals(Integer.valueOf(1), readerDto.getReaderId());
+    public void editProfileTest() {
+        ReaderSample readerSample = readerService.getProfile(1);
+        Assert.assertNotNull(readerSample);
+        Assert.assertEquals(Integer.valueOf(1), readerSample.getReaderId());
 
-        readerDto.setFirstName("first");
-        readerDto.setPatronymic("patron");
-        boolean result = readerService.editProfile(readerDto);
+        readerSample.setFirstName("first");
+        readerSample.setPatronymic("patron");
+        boolean result = readerService.editProfile(readerSample);
         Assert.assertTrue(result);
 
-        ReaderDto updatedReader = readerService.getProfile(1);
+        ReaderSample updatedReader = readerService.getProfile(1);
         Assert.assertNotNull(updatedReader);
         Assert.assertEquals(Integer.valueOf(1), updatedReader.getReaderId());
-        Assert.assertEquals(readerDto, updatedReader);
+        Assert.assertEquals(readerSample, updatedReader);
     }
 
     /**
@@ -117,8 +87,8 @@ public class ReaderServiceImpTest {
      */
     @Test
     public void editProfileWithReaderDtoNullTest(){
-        ReaderDto readerDto = null;
-        boolean result = readerService.editProfile(readerDto);
+        ReaderSample readerSample = null;
+        boolean result = readerService.editProfile(readerSample);
         Assert.assertFalse(result);
     }
     /**
@@ -127,9 +97,9 @@ public class ReaderServiceImpTest {
      */
     @Test
     public void editProfileWhenReaderNotExistTest(){
-        ReaderDto readerDto = new ReaderDto();
-        readerDto.setReaderId(99);
-        boolean result = readerService.editProfile(readerDto);
+        ReaderSample readerSample = new ReaderSample();
+        readerSample.setReaderId(99);
+        boolean result = readerService.editProfile(readerSample);
         Assert.assertFalse(result);
     }
 
@@ -137,13 +107,13 @@ public class ReaderServiceImpTest {
      * remove profile
      */
     @Test
-    public void removeProfileTest() throws ReaderNotFoundException {
+    public void removeProfileTest() {
         //all done correctly
         boolean result = readerService.removeProfile(1);
         Assert.assertTrue(result);
-        Optional<IReader> readerOptional = readerDao.findReaderByIdWithBooks(1);
+        Optional<Reader> readerOptional = readerDao.findReaderByIdWithBooks(1);
         if(readerOptional.isPresent()){
-            IReader reader = readerOptional.get();
+            Reader reader = readerOptional.get();
             Assert.assertEquals(1, (int) reader.getReaderId());
             Assert.assertFalse(reader.getActive());
             Assert.assertTrue(reader.getBooks().isEmpty());
@@ -166,9 +136,9 @@ public class ReaderServiceImpTest {
     @Test
     public void restoreProfileTest(){
         boolean result;
-        Optional<IReader> readerOptional = readerDao.findReaderByIdWithBooks(1);
+        Optional<Reader> readerOptional = readerDao.findReaderByIdWithBooks(1);
         if(readerOptional.isPresent()) {
-            IReader reader = readerOptional.get();
+            Reader reader = readerOptional.get();
             if(reader.getActive()){
                 result = readerService.removeProfile(1);
                 Assert.assertTrue(result);
@@ -180,7 +150,7 @@ public class ReaderServiceImpTest {
         Assert.assertTrue(result);
         readerOptional = readerDao.findReaderByIdWithBooks(1);
         if(readerOptional.isPresent()){
-            IReader reader = readerOptional.get();
+            Reader reader = readerOptional.get();
             Assert.assertNotNull(reader);
             Assert.assertEquals(1, (int) reader.getReaderId());
             Assert.assertTrue(reader.getActive());
