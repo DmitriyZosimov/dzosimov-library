@@ -27,6 +27,7 @@
         <logback.version>1.2.3</logback.version>
         <mockito.version>3.8.0</mockito.version>
         <thymeleaf.version>3.0.12.RELEASE</thymeleaf.version>
+        <hibernate.validator.version>6.1.5.Final</hibernate.validator.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -70,18 +71,6 @@
                 <groupId>com.epam.brest</groupId>
                 <artifactId>test-db</artifactId>
                 <version>${project.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-core</artifactId>
-                <version>5.4.28.Final</version>
-            </dependency>
-
-            <dependency>
-                <groupId>javax.persistence</groupId>
-                <artifactId>javax.persistence-api</artifactId>
-                <version>2.2</version>
             </dependency>
 
             <dependency>
@@ -136,14 +125,12 @@
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
                 <version>4.0.0</version>
-                <scope>provided</scope>
             </dependency>
 
             <dependency>
-                <groupId>javax</groupId>
-                <artifactId>javaee-api</artifactId>
-                <version>7.0</version>
-                <scope>provided</scope>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>${hibernate.validator.version}</version>
             </dependency>
 
             <dependency>

@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import com.epam.brest.model.Genre;
 import com.epam.brest.model.sample.BookSample;
+import com.epam.brest.model.sample.SearchBookSample;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanCreationException;
@@ -148,9 +149,9 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
     }
 
     @Override
-    public List<Book> searchBooks(BookSample bookSample) {
+    public List<Book> searchBooks(SearchBookSample bookSample) {
         LOGGER.info("searchBooks(bookSample) was started");
-        LOGGER.debug("bookSample={}", bookSample);
+        LOGGER.debug("searchBookSample={}", bookSample);
         String sql = searchBooksSql;
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
         sqlParameterSource.addValue("authors", "%" + bookSample.getAuthors() + "%");

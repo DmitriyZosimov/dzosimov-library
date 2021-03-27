@@ -1,11 +1,8 @@
 package com.epam.brest.webapp;
 
-import com.epam.brest.model.dto.ReaderDto;
 import com.epam.brest.model.sample.ReaderSample;
 import com.epam.brest.service.IBookService;
 import com.epam.brest.service.IReaderService;
-import com.epam.brest.service.exception.ReaderCreationException;
-import com.epam.brest.service.exception.ReaderNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +15,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
 @Controller
 public class ProfileController {
@@ -92,8 +90,8 @@ public class ProfileController {
      * @return view profile
      */
     @PostMapping(value = "/profile/edit")
-    public String editProfile(@ModelAttribute("readerSample") ReaderSample readerSample, HttpSession session,
-                              Model model, BindingResult bindingResult, HttpServletRequest request){
+    public String editProfile(@Valid @ModelAttribute("readerSample") ReaderSample readerSample,
+                              BindingResult bindingResult, Model model,  HttpSession session, HttpServletRequest request){
         LOGGER.info("POST /profile/edit");
         if(bindingResult.hasErrors()){
             LOGGER.info("bindingResult has errors");
@@ -120,12 +118,12 @@ public class ProfileController {
     }
 
     @PostMapping(value = "/registry")
-    public String createReader(@ModelAttribute("readerSample") ReaderSample readerSample,
-                               Model model, BindingResult bindingResult, HttpServletRequest request) {
+    public String createReader(@Valid @ModelAttribute("readerSample") ReaderSample readerSample,
+                               BindingResult bindingResult, Model model, HttpServletRequest request) {
         LOGGER.info("POST /registry");
         if(bindingResult.hasErrors()){
             LOGGER.info("bindingResult has errors");
-            return "error";
+            return "reader";
         }
         String messageCode;
         ReaderSample reader = readerService.createReader(readerSample);

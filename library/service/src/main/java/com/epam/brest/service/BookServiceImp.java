@@ -4,6 +4,7 @@ import com.epam.brest.dao.BookDao;
 import com.epam.brest.model.Book;
 import com.epam.brest.model.dto.BookDto;
 import com.epam.brest.model.sample.BookSample;
+import com.epam.brest.model.sample.SearchBookSample;
 import com.epam.brest.model.tools.BookMapper;
 import com.epam.brest.service.exception.BookCreationException;
 import org.slf4j.Logger;
@@ -26,16 +27,6 @@ public class BookServiceImp implements IBookService {
     @Autowired
     public BookServiceImp(BookDao bookDao) {
         this.bookDao = bookDao;
-    }
-
-    /**
-     * Create BookDto
-     * @return BookDto
-     */
-    @Override
-    public BookSample getBookSample() {
-        LOGGER.info("Create bookSample");
-        return new BookSample();
     }
 
     /**
@@ -78,7 +69,7 @@ public class BookServiceImp implements IBookService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Book> searchBooks(BookSample bookSample) {
+    public List<Book> searchBooks(SearchBookSample bookSample) {
         List<Book> books = bookDao.searchBooks(bookSample);
         return books;
     }

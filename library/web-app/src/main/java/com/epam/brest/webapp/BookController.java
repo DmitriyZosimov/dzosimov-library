@@ -1,9 +1,8 @@
 package com.epam.brest.webapp;
 
-import com.epam.brest.model.Book;
+
 import com.epam.brest.model.sample.BookSample;
 import com.epam.brest.service.IBookService;
-import com.epam.brest.service.exception.BookCreationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 @SessionAttributes({"bookSample"})
 @Controller
@@ -53,8 +53,8 @@ public class BookController {
      * @return view catalog
      */
     @PostMapping(value = "/add")
-    public String addBook(@ModelAttribute("bookSample") BookSample bookSample, Model model,
-                          BindingResult bindingResult, HttpServletRequest request){
+    public String addBook(@Valid @ModelAttribute("bookSample") BookSample bookSample,
+                          BindingResult bindingResult, Model model, HttpServletRequest request){
         LOGGER.info("POST /add, create a book");
         LOGGER.debug("bookSample={}", bookSample);
         if(bindingResult.hasErrors()){
@@ -91,8 +91,8 @@ public class BookController {
 
     //TODO:mock test
     @PostMapping(value = "/edit/{bookId}")
-    public String editBook(@ModelAttribute("bookSample") BookSample bookSample,
-                           Model model, BindingResult bindingResult, HttpServletRequest request){
+    public String editBook(@Valid @ModelAttribute("bookSample") BookSample bookSample,
+                           BindingResult bindingResult, Model model, HttpServletRequest request){
         LOGGER.info("POST /book/edit, edit a book");
         LOGGER.debug("bookSample={}", bookSample);
         if(bindingResult.hasErrors()){

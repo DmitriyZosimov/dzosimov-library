@@ -1,8 +1,8 @@
 package com.epam.brest.webapp;
 
 import com.epam.brest.model.Book;
-import com.epam.brest.model.dto.BookDto;
 import com.epam.brest.model.sample.BookSample;
+import com.epam.brest.model.sample.SearchBookSample;
 import com.epam.brest.service.IBookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +16,10 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 import java.util.List;
 
-@SessionAttributes({"bookSample"})
+@SessionAttributes({"bookSample", "searchBookSample"})
 @Controller
 public class CatalogController {
 
@@ -39,7 +40,13 @@ public class CatalogController {
     @ModelAttribute("bookSample")
     public BookSample getBookSample(){
         LOGGER.info("Create a ModelAttribute \"bookSample\"");
-        return bookService.getBookSample();
+        return new BookSample();
+    }
+
+    @ModelAttribute("searchBookSample")
+    public SearchBookSample getSearhBookSample(){
+        LOGGER.info("Create a ModelAttribute \"searchBookSample\"");
+        return new SearchBookSample();
     }
 
     /**
@@ -113,7 +120,7 @@ public class CatalogController {
      * @return view catalog page
      */
     @GetMapping(value = "/search")
-    public String searchBooks(@ModelAttribute("bookSample") BookSample bookSample,
+    public String searchBooks(@Valid @ModelAttribute("searchBookSample") SearchBookSample bookSample,
                              Model model, BindingResult bindingResult){
         LOGGER.info("POST search a book");
         if(bindingResult.hasErrors()){

@@ -73,16 +73,31 @@
                         <label for="firstName" class="mb-1 fw-bold" th:text="#{profile.name.first}">First name</label>
                         <input id="firstName" type="text" class="form-control form-control-sm"
                                th:value="*{firstName}" th:field="*{firstName}"/>
+                        <div th:if="${#fields.hasErrors('firstName')}"
+                                  th:errors="*{firstName}"
+                                  class="text text-danger">
+                            first name error
+                        </div>
                     </div>
                     <div class="col-auto" >
                         <label for="lastName" class="mb-1 fw-bold" th:text="#{profile.name.last}">Last name</label>
                         <input id="lastName" type="text" class="form-control form-control-sm"
                                th:value="*{lastName}" th:field="*{lastName}"/>
+                        <div th:if="${#fields.hasErrors('lastName')}"
+                                  th:errors="*{lastName}"
+                                  class="text text-danger">
+                            last name error
+                        </div>
                     </div>
                     <div class="col-auto">
                         <label for="patronymic" class="mb-1 fw-bold" th:text="#{profile.name.middle}">Patronymic</label>
                         <input id="patronymic" type="text" class="form-control form-control-sm"
                                th:value="*{patronymic}" th:field="*{patronymic}"/>
+                        <div th:if="${#fields.hasErrors('patronymic')}"
+                                  th:errors="*{patronymic}"
+                                  class="text text-danger">
+                            patronymic error
+                        </div>
                     </div>
                     <input type="hidden" th:value="*{dateOfRegistry}" th:field="*{dateOfRegistry}"/>
                     <div class="col-auto">

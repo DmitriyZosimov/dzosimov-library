@@ -13,7 +13,7 @@
     <mvc:default-servlet-handler/>
 
     <!-- Use @MVC annotations -->
-    <mvc:annotation-driven/>
+    <mvc:annotation-driven validator="validator"/>
 
     <mvc:resources mapping="/resources/**" location="/resources/"/>
 
@@ -73,8 +73,12 @@
     <bean id="messageSource"
           class="org.springframework.context.support.ResourceBundleMessageSource">
         <property name="basenames"
-                  value="messages" />
+                  value="messages, validation" />
         <property name="defaultEncoding" value="UTF-8" />
+    </bean>
+
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="validationMessageSource" ref="messageSource"/>
     </bean>
 
     <import resource="classpath*:test-db-h2.xml"/>

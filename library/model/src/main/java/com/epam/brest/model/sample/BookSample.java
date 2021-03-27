@@ -1,12 +1,29 @@
 package com.epam.brest.model.sample;
 
 import com.epam.brest.model.Genre;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 public class BookSample {
-    //TODO: validator
+
+    /*  позволяет:
+        фамилии и инициалы ("Зосимов Д.А.")
+        двойные фамилии ("Бут-гусаим Влад А.")
+        несколько авторов через запятую ("Зосимов Д.А., Бут-гусаим Влад А.")
+     */
+    private final static String AUTHORS = "(([a-zA-Zа-яА-Я]+[\\.\\-]?(\\,)?)+(\\ )?)+";
+
     private Integer id;
+    @NotBlank(message = "{not.blank}")
+    @Pattern(regexp = AUTHORS, message = "{pattern.book.authors}")
+    @Size(min= 3, max = 60, message = "{size.book.authors}")
     private String authors;
+    @NotBlank(message = "{not.blank}")
+    @Size(min= 3, max = 60, message = "{size.book.title}")
     private String title;
+    @NotBlank(message = "{not.blank}")
     private Genre genre;
 
     public BookSample() {
