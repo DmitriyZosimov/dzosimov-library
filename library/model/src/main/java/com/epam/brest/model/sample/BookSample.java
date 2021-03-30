@@ -25,6 +25,7 @@ public class BookSample {
     private String title;
     @NotBlank(message = "{not.blank}")
     private Genre genre;
+    private Integer quantity;
 
     public BookSample() {
     }
@@ -74,6 +75,14 @@ public class BookSample {
         this.genre = genre;
     }
 
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -103,6 +112,7 @@ public class BookSample {
                 ", authors='" + authors + '\'' +
                 ", title='" + title + '\'' +
                 ", genre=" + genre +
+                ", quantity=" + quantity +
                 '}';
     }
 }

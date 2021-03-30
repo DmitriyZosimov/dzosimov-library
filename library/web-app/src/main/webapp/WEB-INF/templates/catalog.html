@@ -200,6 +200,7 @@
             <th scope="col"><span th:text="#{catalog.table.authors}">Authors</span></th>
             <th scope="col"><span th:text="#{catalog.table.title}">Title</span></th>
             <th scope="col"><span th:text="#{catalog.table.genre}">Genre</span></th>
+            <th scope="col"><span th:text="#{catalog.table.quantity}">Quantity</span></th>
             <th scope="col"><span th:text="#{catalog.table.select}">Select</span></th>
             <th scope="col"><span th:text="#{catalog.table.edit}">Edit</span></th>
             <th scope="col"><span th:text="#{catalog.table.delete}">Delete</span></th>
@@ -209,6 +210,7 @@
                 <td th:text="${book.authors}"></td>
                 <td th:text="${book.title}"></td>
                 <td th:text="${book.genre}"></td>
+                <td th:text="${book.quantity}"></td>
                 <td>
                     <form th:action="@{/catalog/select/{bookId}(bookId=${book.id})}" method="post">
                         <button type="submit"

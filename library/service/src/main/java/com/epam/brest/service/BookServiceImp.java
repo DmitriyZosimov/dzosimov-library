@@ -35,7 +35,7 @@ public class BookServiceImp implements IBookService {
      */
     @Transactional(readOnly = true)
     @Override
-    public List<Book> findAll() {
+    public List<BookSample> findAll() {
         return bookDao.findAll();
     }
 
@@ -69,8 +69,8 @@ public class BookServiceImp implements IBookService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<Book> searchBooks(SearchBookSample bookSample) {
-        List<Book> books = bookDao.searchBooks(bookSample);
+    public List<BookSample> searchBooks(SearchBookSample bookSample) {
+        List<BookSample> books = bookDao.searchBooks(bookSample);
         return books;
     }
 

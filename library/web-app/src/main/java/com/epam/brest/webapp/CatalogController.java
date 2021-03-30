@@ -57,7 +57,7 @@ public class CatalogController {
     @GetMapping(value = {"/", "/catalog"})
     public String getMainPage(Model model){
         LOGGER.info("GET /catalog");
-        List<Book> books = bookService.findAll();
+        List<BookSample> books = bookService.findAll();
         model.addAttribute("books", books);
         return "catalog";
     }
@@ -128,7 +128,7 @@ public class CatalogController {
             return "error";
         }
 
-        List<Book> resultBook = bookService.searchBooks(bookSample);
+        List<BookSample> resultBook = bookService.searchBooks(bookSample);
         model.addAttribute("books", resultBook);
         return "catalog";
     }

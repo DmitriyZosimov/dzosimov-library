@@ -1,6 +1,8 @@
 package com.epam.brest.dao.jdbc;
 
 import com.epam.brest.dao.BookDao;
+import com.epam.brest.dao.jdbc.tools.BookMapper;
+import com.epam.brest.dao.jdbc.tools.CatalogOfBooksMapper;
 import com.epam.brest.model.Book;
 
 import java.sql.ResultSet;
@@ -50,16 +52,20 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
 
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private BookMapper bookMapper;
+    private CatalogOfBooksMapper catalogOfBooksMapper;
 
-    public void setNamedParameterJdbcTemplate(NamedParameterJdbcTemplate namedParameterJdbcTemplate){
+    public BookDaoSpringJdbc(NamedParameterJdbcTemplate namedParameterJdbcTemplate,
+                             BookMapper bookMapper, CatalogOfBooksMapper catalogOfBooksMapper) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
-        LOGGER.debug("namedParameterJdbcTemplate was initialized by {}", namedParameterJdbcTemplate);
+        this.bookMapper = bookMapper;
+        this.catalogOfBooksMapper = catalogOfBooksMapper;
     }
 
     @Override
-    public List<Book> findAll() {
+    public List<BookSample> findAll() {
         LOGGER.info("findAll() was started");
-        return namedParameterJdbcTemplate.query(findAllSql, new BookMapper());
+        return namedParameterJdbcTemplate.query(findAllSql, catalogOfBooksMapper);
     }
 
     @Override
@@ -68,7 +74,7 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
         LOGGER.debug("id={}", id);
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource("bookId", id);
         Book book = namedParameterJdbcTemplate.
-                queryForObject(findBookByIdSql, sqlParameterSource, new BookMapper());
+                queryForObject(findBookByIdSql, sqlParameterSource, bookMapper);
         return Optional.ofNullable(book);
     }
 
@@ -149,7 +155,7 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
     }
 
     @Override
-    public List<Book> searchBooks(SearchBookSample bookSample) {
+    public List<BookSample> searchBooks(SearchBookSample bookSample) {
         LOGGER.info("searchBooks(bookSample) was started");
         LOGGER.debug("searchBookSample={}", bookSample);
         String sql = searchBooksSql;
@@ -160,7 +166,7 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
             sqlParameterSource.addValue("genre", bookSample.getGenre().ordinal());
             sql = searchBooksWithGenreSql;
         }
-        return namedParameterJdbcTemplate.query(sql, sqlParameterSource, new BookMapper());
+        return namedParameterJdbcTemplate.query(sql, sqlParameterSource, catalogOfBooksMapper);
     }
 
     @Override
@@ -179,22 +185,15 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
             LOGGER.error("namedParametrJdbcTemplate is null");
             throw new BeanCreationException("Null JdbcTemplate on BookDaoSpringJdbc");
         }
-    }
 
-    private static final class BookMapper implements RowMapper<Book> {
+        if(bookMapper == null){
+            LOGGER.error("bookMapper is null");
+            throw new BeanCreationException("Null bookMapper on BookDaoSpringJdbc");
+        }
 
-        @Override
-        public Book mapRow(ResultSet resultSet, int i) throws SQLException {
-            Book book = new Book();
-            book.setId(resultSet.getInt("book_id"));
-            book.setAuthors(resultSet.getString("authors"));
-            book.setTitle(resultSet.getString("title"));
-            Genre genre = Genre.values()[resultSet.getInt("genre")];
-            book.setGenre(genre);
-            book.setReaderId(resultSet.getInt("reader_id"));
-            LOGGER.info("BookMapper.class mapRow(resultSet, i) was started");
-            LOGGER.debug("Book={}", book);
-            return book;
+        if(catalogOfBooksMapper == null){
+            LOGGER.error("catalogOfBooksMapper is null");
+            throw new BeanCreationException("Null catalogOfBooksMapper on BookDaoSpringJdbc");
         }
     }
 }

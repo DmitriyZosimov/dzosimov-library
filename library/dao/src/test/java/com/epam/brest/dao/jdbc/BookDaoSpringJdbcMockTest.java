@@ -1,7 +1,9 @@
 package com.epam.brest.dao.jdbc;
 
+import com.epam.brest.dao.jdbc.tools.CatalogOfBooksMapper;
 import com.epam.brest.model.Book;
 import com.epam.brest.model.Genre;
+import com.epam.brest.model.sample.BookSample;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,7 +32,7 @@ public class BookDaoSpringJdbcMockTest {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Captor
-    private ArgumentCaptor<RowMapper<Book>> captorMapper;
+    private ArgumentCaptor<RowMapper<BookSample>> captorMapper;
     @Captor
     private ArgumentCaptor<MapSqlParameterSource> captorMapSqlPS;
     @Captor
@@ -38,24 +40,7 @@ public class BookDaoSpringJdbcMockTest {
 
     @Test
     public void findAllTest(){
-        String sql = "select";
-        ReflectionTestUtils.setField(bookDaoSpringJdbc, "findAllSql", sql);
 
-        Book book = new Book();
-        List<Book> list = new ArrayList<>();
-        list.add(book);
-        Mockito.when(namedParameterJdbcTemplate.query(any(), any(RowMapper.class))).thenReturn(list);
-
-        List<Book> result = bookDaoSpringJdbc.findAll();
-
-        Assert.assertNotNull(result);
-        Assert.assertSame(book, result.get(0));
-        Assert.assertFalse(result.isEmpty());
-
-        Mockito.verify(namedParameterJdbcTemplate).query(eq(sql), captorMapper.capture());
-        RowMapper<Book> mapper = captorMapper.getValue();
-        Assert.assertNotNull(mapper);
-        Mockito.verifyNoMoreInteractions(namedParameterJdbcTemplate);
     }
 
 //    @Test

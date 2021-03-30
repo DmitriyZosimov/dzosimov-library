@@ -1,8 +1,6 @@
 package com.epam.brest.service;
 
-import com.epam.brest.model.Book;
 import com.epam.brest.model.Genre;
-import com.epam.brest.model.dto.BookDto;
 import com.epam.brest.model.sample.BookSample;
 import com.epam.brest.model.sample.SearchBookSample;
 import org.junit.Assert;
@@ -25,7 +23,7 @@ public class BookServiceImpTest {
 
     @Test
     public void findAllTest(){
-        List<Book> books = bookService.findAll();
+        List<BookSample> books = bookService.findAll();
         Assert.assertNotNull(books);
         Assert.assertFalse(books.isEmpty());
     }
@@ -33,8 +31,13 @@ public class BookServiceImpTest {
     @Test
     public void findSearchBooksTest(){
         SearchBookSample bookSample = new SearchBookSample("о", "о", Genre.DEFAULT);
-        List<Book> bigBooks = bookService.findAll();
-        List<Book> books = bookService.searchBooks(bookSample);
+        List<BookSample> bigBooks = bookService.findAll();
+        List<BookSample> books = bookService.searchBooks(bookSample);
+        Assert.assertFalse(books.isEmpty());
+
+        bookSample = new SearchBookSample("о", "о", Genre.ART);
+        bigBooks = bookService.findAll();
+        books = bookService.searchBooks(bookSample);
         Assert.assertFalse(books.isEmpty());
     }
 

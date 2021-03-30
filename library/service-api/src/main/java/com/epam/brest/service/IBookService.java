@@ -10,11 +10,11 @@ import java.util.List;
 
 public interface IBookService {
 
-    List<Book> findAll();
+    List<BookSample> findAll();
     boolean addReaderForBook(Integer readerId, Integer bookId);
     boolean delete(Integer bookId);
     boolean createBook(BookSample bookSample);
-    List<Book> searchBooks(SearchBookSample bookSample);
+    List<BookSample> searchBooks(SearchBookSample bookSample);
     boolean removeFieldReaderFromBook(Integer bookId, Integer readerId);
     boolean editBook(BookSample bookSample);
     BookSample findBookById(Integer bookId);

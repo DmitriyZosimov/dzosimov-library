@@ -12,8 +12,13 @@
         <constructor-arg ref="dataSource"/>
     </bean>
 
+    <bean id="bookMapper" class="com.epam.brest.dao.jdbc.tools.BookMapper"/>
+    <bean id="catalogOfBooksMapper" class="com.epam.brest.dao.jdbc.tools.CatalogOfBooksMapper"/>
+
     <bean id="bookDaoSpringJdbc" class="com.epam.brest.dao.jdbc.BookDaoSpringJdbc">
-        <property name="namedParameterJdbcTemplate" ref="namedParameterJdbcTemplate"/>
+        <constructor-arg name="namedParameterJdbcTemplate" ref="namedParameterJdbcTemplate"/>
+        <constructor-arg name="bookMapper" ref="bookMapper"/>
+        <constructor-arg name="catalogOfBooksMapper" ref="catalogOfBooksMapper"/>
     </bean>
 
     <bean id="readerDaoSpringJdbc" class="com.epam.brest.dao.jdbc.ReaderDaoSpringJdbc">

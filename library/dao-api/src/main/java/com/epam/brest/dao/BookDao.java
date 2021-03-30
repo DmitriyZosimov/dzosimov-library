@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface BookDao {
 
-    List<Book> findAll();
+    List<BookSample> findAll();
     Optional<Book> findBookById(Integer id);
     Book save(Book book);
     Integer update(BookSample bookSample);
@@ -18,6 +18,6 @@ public interface BookDao {
     boolean exist(Book book);
     Integer addReaderForBook(Integer bookId, Integer readerId);
     Integer removeReaderFromBooks(Integer readerId);
-    List<Book> searchBooks(SearchBookSample bookSample);
+    List<BookSample> searchBooks(SearchBookSample bookSample);
     Integer removeFieldReaderFromBook(Integer bookId, Integer readerId);
 }
