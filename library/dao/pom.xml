@@ -8,7 +8,7 @@
     <parent>
         <artifactId>library</artifactId>
         <groupId>com.epam.brest</groupId>
-        <version>1.0</version>
+        <version>1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>dao</artifactId>
@@ -27,11 +27,6 @@
         <dependency>
             <groupId>com.epam.brest</groupId>
             <artifactId>test-db</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jpa</artifactId>
         </dependency>
 
         <dependency>
@@ -88,7 +83,6 @@
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
         </dependency>
-
     </dependencies>
 
 </project>

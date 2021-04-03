@@ -17,6 +17,14 @@ public class Book {
         this.genre = genre;
     }
 
+    public Book(Integer id, String authors, String title, Genre genre, Integer readerId) {
+        this.id = id;
+        this.authors = authors;
+        this.title = title;
+        this.genre = genre;
+        this.readerId = readerId;
+    }
+
     public Integer getId() {
         return id;
     }

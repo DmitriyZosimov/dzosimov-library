@@ -33,6 +33,12 @@ public class ReaderSample {
     public ReaderSample() {
     }
 
+    public ReaderSample(@NotBlank(message = "{not.blank}") @Pattern(regexp = FIRST_NAME, message = "{pattern.reader}") @Size(min = 3, max = 20, message = "{size.reader.firstName}") String firstName, @NotBlank @Pattern(regexp = LAST_NAME, message = "{pattern.reader}") @Size(min = 3, max = 30, message = "{size.reader.lastName}") String lastName, @Pattern(regexp = FIRST_NAME, message = "{pattern.reader}") @Size(max = 25, message = "{size.reader.patronymic}") String patronymic) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.patronymic = patronymic;
+    }
+
     public Integer getReaderId() {
         return readerId;
     }

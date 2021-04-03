@@ -1,104 +1,202 @@
 package com.epam.brest.webapp;
 
-import com.epam.brest.model.Book;
-import com.epam.brest.model.dto.BookDto;
+import com.epam.brest.model.Genre;
 import com.epam.brest.model.sample.BookSample;
 import com.epam.brest.service.IBookService;
-import com.epam.brest.service.exception.BookCreationException;
-import org.junit.Assert;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.*;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.context.MessageSource;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.ExtendedModelMap;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import java.util.Locale;
 
+import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@WebMvcTest
 public class BookControllerMockTest {
 
-    @InjectMocks
-    private BookController bookController;
+    @Autowired
+    private MockMvc mockMvc;
 
-    @Mock
+    @MockBean
     private IBookService bookService;
-    @Spy
-    private final Model model = new ExtendedModelMap();
-    @Mock
-    private BindingResult bindingResult;
-    @Mock
-    private HttpServletRequest request;
 
     @Test
-    public void addBookGetRequest(){
-        String resultPage = bookController.addBook(model);
-        Assert.assertNotNull(resultPage);
-        Assert.assertEquals("book", resultPage);
-        Assert.assertTrue((Boolean) model.getAttribute("isNew"));
-
-        Mockito.verify(model).addAttribute(eq("isNew"), anyBoolean());
+    public void shouldReturnBookPage() throws Exception {
+        BookSample bookSample = new BookSample();
+        bookSample.setId(1);
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/book/new")
+                        .sessionAttr("bookSample", bookSample)
+        ).andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(content().contentType("text/html;charset=UTF-8"))
+                .andExpect(view().name("book"))
+                .andExpect(model().attribute("isNew", is(true)));
     }
 
-//    @Test
-//    public void addBookPostRequest() throws BookCreationException {
-//        BookSample bookSample = new BookSample();
-//
-//        //all done correctly
-//        Mockito.when(bindingResult.hasErrors()).thenReturn(false);
-//        String resultPage = bookController.addBook(bookSample, model, bindingResult,request);
-//        Assert.assertNotNull(resultPage);
-//        Assert.assertEquals("redirect:/catalog", resultPage);
-//        Assert.assertNotNull(model.getAttribute("result"));
-//        Assert.assertTrue((Boolean) model.getAttribute("result"));
-//
-//        //has any errors in BindingResult
-//        Mockito.when(bindingResult.hasErrors()).thenReturn(true);
-//        resultPage = bookController.addBook(bookSample, model, bindingResult,request);
-//        Assert.assertNotNull(resultPage);
-//        Assert.assertEquals("error", resultPage);
-//
-//        // 2 times because 2 times used bookService during this test
-//        Mockito.verify(bookService, Mockito.times(1)).createBook(any(BookSample.class));
-//        Mockito.verify(model, Mockito.times(1)).addAttribute(any(String.class), anyBoolean());
-//        Mockito.verify(bindingResult, Mockito.times(2)).hasErrors();
-//    }
+    @Test
+    public void shouldAddBookAndForwardCatalogPageWithGoodMessage() throws Exception {
+        BookSample bs = new BookSample("author", "title", Genre.MYSTERY);
+        String message = "The book was added";
+        when(bookService.createBook(any(BookSample.class))).thenReturn(true);
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/book/new")
+                .sessionAttr("bookSample", bs)
+        ).andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.forwardedUrl("/catalog"))
+                .andExpect(view().name("forward:/catalog"))
+                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
+    }
 
-    //TODO: edit
-//    @Test
-//    public void deleteBook(){
-//
-//        /**
-//         * when all done correctly
-//         */
-//        Mockito.when(bookService.delete(anyInt())).thenReturn(true);
-//        String result = bookController.deleteBook(1, model, request);
-//        Assert.assertNotNull(result);
-//        Assert.assertEquals("redirect:/result", result);
-//        Assert.assertNotNull(model.getAttribute("result"));
-//        Assert.assertTrue((Boolean) model.getAttribute("result"));
-//
-//        /**
-//         * when addReaderForBook give badResult
-//         */
-//        Mockito.when(bookService.delete(anyInt())).thenReturn(false);
-//        result = bookController.deleteBook(1, model, request);
-//        Assert.assertNotNull(result);
-//        Assert.assertEquals("redirect:/result", result);
-//        Assert.assertNotNull(model.getAttribute("result"));
-//        Assert.assertFalse((Boolean) model.getAttribute("result"));
-//
-//        //first is when all done correctly, second is when had badResult
-//        Mockito.verify(model, Mockito.times(2)).
-//                addAttribute(any(String.class), any(Boolean.class));
-//        Mockito.verify(bookService, Mockito.times(2)).
-//                delete(anyInt());
-//    }
+    @Test
+    public void shouldNotAddBookAndForwardCatalogPageWithBadMessage() throws Exception {
+        BookSample bs = new BookSample("author", "title", Genre.MYSTERY);
+        String message = "The book was not added";
+        when(bookService.createBook(any(BookSample.class))).thenReturn(false);
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/book/new")
+                        .sessionAttr("bookSample", bs)
+        ).andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.forwardedUrl("/catalog"))
+                .andExpect(view().name("forward:/catalog"))
+                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
+    }
 
+    //TODO:refactor
+    @Disabled
+    @Test
+    public void shouldReturnBookPageWithErrorsWhenBindingResultHasErrors() throws Exception {
+        BookSample bs = new BookSample("1", "", Genre.MYSTERY);
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/book/new")
+                        .sessionAttr("bookSample", bs)
+        ).andDo(MockMvcResultHandlers.print())
+                .andExpect(model().attributeHasFieldErrors("bookSample", "authors", "title"))
+                .andExpect(view().name("book"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldGetBookPageWithFoundBookById() throws Exception {
+        BookSample bs = new BookSample(1,"author", "title", Genre.MYSTERY, 3);
+        when(bookService.findBookById(anyInt())).thenReturn(bs);
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/book/" + bs.getId())
+        ).andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("book"))
+                .andExpect(model().attribute("isNew", is(false)))
+                .andExpect(model().attribute("bookSample",
+                        hasProperty("id", is(bs.getId()))))
+                .andExpect(model().attribute("bookSample",
+                        hasProperty("authors", is(bs.getAuthors()))))
+                .andExpect(model().attribute("bookSample",
+                        hasProperty("title", is(bs.getTitle()))))
+                .andExpect(model().attribute("bookSample",
+                        hasProperty("genre", is(bs.getGenre()))));
+
+    }
+
+    @Test
+    public void shouldForwardCatalogPageWhenBookNotFoundById() throws Exception {
+        String message = "the book by id 1 not found";
+        when(bookService.findBookById(anyInt())).thenReturn(null);
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/book/1")
+        ).andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("forward:/catalog"))
+                .andExpect(forwardedUrl("/catalog"))
+                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
+
+    }
+
+    @Test
+    public void shouldForwardToCatalogPageAfterEditBookWithGoodMessage() throws Exception {
+        BookSample bs = new BookSample(1,"author", "title", Genre.MYSTERY, 3);
+        String message = "The book was edited";
+        when(bookService.editBook(any(BookSample.class))).thenReturn(true);
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/book/" + bs.getId())
+                        .sessionAttr("bookSample", bs)
+        ).andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.forwardedUrl("/catalog"))
+                .andExpect(view().name("forward:/catalog"))
+                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
+    }
+
+    @Test
+    public void shouldForwardToCatalogPageAfterEditBookWithBadMessage() throws Exception {
+        BookSample bs = new BookSample(1,"author", "title", Genre.MYSTERY, 3);
+        String message = "The book was not edited";
+        when(bookService.editBook(any(BookSample.class))).thenReturn(false);
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/book/" + bs.getId())
+                        .sessionAttr("bookSample", bs)
+        ).andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.forwardedUrl("/catalog"))
+                .andExpect(view().name("forward:/catalog"))
+                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
+    }
+
+    //TODO:refactor
+    @Disabled
+    @Test
+    public void shouldReturnBookPageAfterEditWithErrorsWhenBindingResultHasErrors() throws Exception {
+        BookSample bs = new BookSample(1,"1", "", Genre.MYSTERY, 3);
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/book/" + bs.getId())
+                        .sessionAttr("bookSample", bs)
+        ).andDo(MockMvcResultHandlers.print())
+                .andExpect(model().attributeHasFieldErrors("bookSample", "authors", "title"))
+                .andExpect(view().name("book"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void shouldForwardToCatalogPageAfterDeleteBookWithGoodMessage() throws Exception {
+        String message = "The book was removed";
+        when(bookService.delete(anyInt())).thenReturn(true);
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/book/delete/1")
+        ).andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.forwardedUrl("/catalog"))
+                .andExpect(view().name("forward:/catalog"))
+                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
+    }
+
+    @Test
+    public void shouldForwardToCatalogPageAfterDeleteBookWithBadMessage() throws Exception {
+        String message = "The book was not removed";
+        when(bookService.delete(anyInt())).thenReturn(false);
+        mockMvc.perform(
+                MockMvcRequestBuilders.post("/book/delete/1")
+        ).andDo(MockMvcResultHandlers.print())
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.forwardedUrl("/catalog"))
+                .andExpect(view().name("forward:/catalog"))
+                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
+    }
 }

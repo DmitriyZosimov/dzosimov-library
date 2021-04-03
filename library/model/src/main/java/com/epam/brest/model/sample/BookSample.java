@@ -1,7 +1,6 @@
 package com.epam.brest.model.sample;
 
 import com.epam.brest.model.Genre;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -41,6 +40,14 @@ public class BookSample {
         this.authors = authors;
         this.title = title;
         this.genre = genre;
+    }
+
+    public BookSample(Integer id, String authors, String title, Genre genre, Integer quantity) {
+        this.id = id;
+        this.authors = authors;
+        this.title = title;
+        this.genre = genre;
+        this.quantity = quantity;
     }
 
     public Integer getId() {

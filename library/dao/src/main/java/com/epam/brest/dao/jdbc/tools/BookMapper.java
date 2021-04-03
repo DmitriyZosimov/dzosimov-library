@@ -21,7 +21,6 @@ public class BookMapper implements RowMapper<Book> {
         book.setTitle(resultSet.getString("title"));
         Genre genre = Genre.values()[resultSet.getInt("genre")];
         book.setGenre(genre);
-        book.setReaderId(resultSet.getInt("reader_id"));
         LOGGER.info("BookMapper.class mapRow(resultSet, i) was started");
         LOGGER.debug("Book={}", book);
         return book;

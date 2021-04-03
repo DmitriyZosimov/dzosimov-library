@@ -2,13 +2,13 @@ package com.epam.brest.webapp.interceptor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-public class LibraryCardInterceptor extends HandlerInterceptorAdapter {
+public class LibraryCardInterceptor implements HandlerInterceptor {
     private static final Logger LOGGER = LoggerFactory.getLogger(LibraryCardInterceptor.class);
 
     @Override

@@ -2,11 +2,9 @@ package com.epam.brest.dao.jdbc;
 
 import com.epam.brest.dao.BookDao;
 import com.epam.brest.dao.jdbc.tools.BookMapper;
-import com.epam.brest.dao.jdbc.tools.CatalogOfBooksMapper;
+import com.epam.brest.dao.jdbc.tools.BookSampleMapper;
 import com.epam.brest.model.Book;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -53,19 +50,19 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
 
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private BookMapper bookMapper;
-    private CatalogOfBooksMapper catalogOfBooksMapper;
+    private BookSampleMapper bookSampleMapper;
 
     public BookDaoSpringJdbc(NamedParameterJdbcTemplate namedParameterJdbcTemplate,
-                             BookMapper bookMapper, CatalogOfBooksMapper catalogOfBooksMapper) {
+                             BookMapper bookMapper, BookSampleMapper bookSampleMapper) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.bookMapper = bookMapper;
-        this.catalogOfBooksMapper = catalogOfBooksMapper;
+        this.bookSampleMapper = bookSampleMapper;
     }
 
     @Override
     public List<BookSample> findAll() {
         LOGGER.info("findAll() was started");
-        return namedParameterJdbcTemplate.query(findAllSql, catalogOfBooksMapper);
+        return namedParameterJdbcTemplate.query(findAllSql, bookSampleMapper);
     }
 
     @Override
@@ -166,7 +163,7 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
             sqlParameterSource.addValue("genre", bookSample.getGenre().ordinal());
             sql = searchBooksWithGenreSql;
         }
-        return namedParameterJdbcTemplate.query(sql, sqlParameterSource, catalogOfBooksMapper);
+        return namedParameterJdbcTemplate.query(sql, sqlParameterSource, bookSampleMapper);
     }
 
     @Override
@@ -191,9 +188,9 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
             throw new BeanCreationException("Null bookMapper on BookDaoSpringJdbc");
         }
 
-        if(catalogOfBooksMapper == null){
-            LOGGER.error("catalogOfBooksMapper is null");
-            throw new BeanCreationException("Null catalogOfBooksMapper on BookDaoSpringJdbc");
+        if(bookSampleMapper == null){
+            LOGGER.error("bookSampleMapper is null");
+            throw new BeanCreationException("Null bookSampleMapper on BookDaoSpringJdbc");
         }
     }
 }

@@ -22,18 +22,30 @@ public class LoginController {
         this.loginService = loginService;
     }
 
+    /**
+     * Goto login page
+     * @return view login
+     */
     @GetMapping("/login")
     public String login(){
         LOGGER.info("GET /login");
         return "login";
     }
 
+    /**
+     * Added to session library card (reader id)
+     * @param card reader id that is to be added
+     * @param session HttpSession is necessary to add reader id
+     * @param model used for rendering views
+     * @return redirect to catalog or goto view login if the reader was removed
+     */
     @PostMapping("/login")
-    public String login(@RequestParam("card") Integer card, HttpSession session, Model model){
+    public String login(@RequestParam("card") Integer card,
+                        HttpSession session, Model model){
         LOGGER.info("POST /login");
         LOGGER.debug("card={}", card);
         if(loginService.isExistCard(card)){
-            LOGGER.info("card is exist and added to session");
+            LOGGER.info("card is exist and add to session");
             session.setAttribute("libraryCard", card);
         } else if (loginService.isRemovedCard(card)){
             LOGGER.info("card is removed");
@@ -44,6 +56,11 @@ public class LoginController {
         return "redirect:/catalog";
     }
 
+    /**
+     * A current session invalidate
+     * @param session HttpSession is necessary to invalidate
+     * @return redirect to catalog
+     */
     @GetMapping("/logout")
     public String logout(HttpSession session){
         LOGGER.info("GET /logout");

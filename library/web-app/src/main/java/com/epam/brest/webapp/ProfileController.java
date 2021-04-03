@@ -36,11 +36,12 @@ public class ProfileController {
     }
 
     /**
-     * Goto profile list page.
-     *
-     * @param model
-     * @param session keep a library card of a reader
-     * @return view profile
+     * Goto profile list page. If the profile is not found, forward to catalog
+     * with message that reader is not found by id
+     * @param model used for rendering views
+     * @param session HttpSession is necessary to get reader id
+     * @param request HttpServletRequest is necessary for getting a current locale
+     * @return view profile or forward to catalog
      */
     @GetMapping(value = "/profile")
     public String getProfile(Model model, HttpSession session, HttpServletRequest request){
@@ -50,9 +51,9 @@ public class ProfileController {
         ReaderSample readerSample = readerService.getProfile(card);
         if(readerSample == null){
             String message = messageSource.getMessage("error.not.found",
-                    new String[]{"reader"}, localeResolver.resolveLocale(request));
-            model.addAttribute("message", message);
-            return "error";
+                    new String[]{"reader", card.toString()}, localeResolver.resolveLocale(request));
+            model.addAttribute("resultMessage", message);
+            return "forward:/catalog";
         }
         model.addAttribute("readerSample", readerSample);
         LOGGER.debug("READER: {}", readerSample);
@@ -60,11 +61,12 @@ public class ProfileController {
     }
 
     /**
-     * Go to edit_profile list page
-     *
-     * @param model
-     * @param session keep a library card of a reader
-     * @return view edit_profile
+     * Goto a reader page with model attribute "isNew" is false
+     * and with found reader by id. If the reader is not found, forward to catalog.
+     * @param model used for rendering views
+     * @param session HttpSession is necessary to get reader id
+     * @param request HttpServletRequest is necessary for getting a current locale
+     * @return book page or forward to catalog when the book was not found
      */
     @GetMapping(value = "/profile/edit")
     public String editProfile(Model model, HttpSession session, HttpServletRequest request){
@@ -73,9 +75,9 @@ public class ProfileController {
         ReaderSample readerSample = readerService.getProfileWithoutBooks(card);
         if(readerSample == null){
             String message = messageSource.getMessage("error.not.found",
-                    new String[]{"reader"}, localeResolver.resolveLocale(request));
-            model.addAttribute("message", message);
-            return "error";
+                    new String[]{"reader", card.toString()}, localeResolver.resolveLocale(request));
+            model.addAttribute("resultMessage", message);
+            return "forward:/catalog";
         }
         model.addAttribute("readerSample", readerSample);
         LOGGER.debug("READER: {}", readerSample);
@@ -84,18 +86,18 @@ public class ProfileController {
     }
 
     /**
-     * Edit profile and go to profile list page.
-     *
-     * @param readerSample with field data
-     * @return view profile
+     * Edit a reader and return a message by the result of editing.
+     * @param model used for rendering views
+     * @param request HttpServletRequest is necessary for getting a current locale
+     * @return forward to profile or return reader page when a binding result has errors
      */
     @PostMapping(value = "/profile/edit")
     public String editProfile(@Valid @ModelAttribute("readerSample") ReaderSample readerSample,
-                              BindingResult bindingResult, Model model,  HttpSession session, HttpServletRequest request){
+                              BindingResult bindingResult, Model model, HttpServletRequest request){
         LOGGER.info("POST /profile/edit");
         if(bindingResult.hasErrors()){
             LOGGER.info("bindingResult has errors");
-            return "error";
+            return "reader";
         }
         String messageCode;
         if(readerService.editProfile(readerSample)){
@@ -106,9 +108,14 @@ public class ProfileController {
         String message = messageSource.getMessage(messageCode, null, localeResolver.resolveLocale(request));
         LOGGER.info(message);
         model.addAttribute("resultMessage", message);
-        return getProfile(model, session, request);
+        return "forward:/profile";
     }
 
+    /**
+     * Goto a reader page with model attribute "isNew" is true
+     * @param model used for rendering views
+     * @return view reader
+     */
     @GetMapping(value = "/registry")
     public String createReader(Model model){
         LOGGER.info("GET /registry");
@@ -117,6 +124,14 @@ public class ProfileController {
         return "reader";
     }
 
+    /**
+     * Add a new reader and return a message by the result of adding.
+     * @param readerSample a model of the reader that is to be added
+     * @param bindingResult represents binding results of the readerSample
+     * @param model used for rendering views
+     * @param request HttpServletRequest is necessary for getting a current locale
+     * @return forward to catalog or return reader page when a binding result has errors
+     */
     @PostMapping(value = "/registry")
     public String createReader(@Valid @ModelAttribute("readerSample") ReaderSample readerSample,
                                BindingResult bindingResult, Model model, HttpServletRequest request) {
@@ -126,23 +141,27 @@ public class ProfileController {
             return "reader";
         }
         String messageCode;
+        Integer[] objsForMessage = null;
         ReaderSample reader = readerService.createReader(readerSample);
         if(reader != null) {
             messageCode = "message.reader.create.good";
-            model.addAttribute("card", reader.getReaderId());
+            objsForMessage = new Integer[]{reader.getReaderId()};
         } else {
             messageCode = "message.reader.create.bad";
         }
-        String message = messageSource.getMessage(messageCode, null, localeResolver.resolveLocale(request));
+        String message = messageSource.getMessage(messageCode,
+                objsForMessage, localeResolver.resolveLocale(request));
         LOGGER.info(message);
         model.addAttribute("resultMessage", message);
-        return "redirect:/result/card";
+        return "forward:/catalog";
     }
 
     /**
-     * Remove profile
-     *
-     * @return view result
+     * Delete a reader and return a message by the result of deleting.
+     * @param model used for rendering views
+     * @param session HttpSession is necessary to get reader id
+     * @param request HttpServletRequest is necessary for getting a current locale
+     * @return forward to catalog
      */
     @PostMapping(value = "/profile/delete")
     public String removeProfile(Model model, HttpSession session, HttpServletRequest request){
@@ -159,35 +178,44 @@ public class ProfileController {
         String message = messageSource.getMessage(messageCode, null, localeResolver.resolveLocale(request));
         LOGGER.info(message);
         model.addAttribute("resultMessage", message);
-        return "redirect:/result";
+        return "forward:/catalog";
     }
 
     /**
-     * Restore profile
-     *
-     * @param card profile
-     * @return view catalog
+     * Restore a reader and return a message by the result of deleting.
+     * @param card a reader id that is to be restored
+     * @param model used for rendering views
+     * @param request HttpServletRequest is necessary for getting a current locale
+     * @return forward to catalog
      */
     @GetMapping(value = "/restore/{card}")
-    public String restoreProfile(@PathVariable("card") Integer card, Model model, HttpServletRequest request){
-        LOGGER.info("GET /profile/restore/card={}", card);
-
+    public String restoreProfile(@PathVariable("card") Integer card,
+                                 Model model, HttpServletRequest request){
+        LOGGER.info("GET /restore/card={}", card);
         String messageCode;
+        Integer[] objsForMessage = null;
         if(readerService.restoreProfile(card)){
             messageCode = "message.reader.restore.good";
-            model.addAttribute("card", card);
+            objsForMessage = new Integer[]{card};
         } else {
             messageCode = "message.reader.restore.bad";
         }
-        String message = messageSource.getMessage(messageCode, null, localeResolver.resolveLocale(request));
+        String message = messageSource.getMessage(messageCode, objsForMessage,
+                localeResolver.resolveLocale(request));
         LOGGER.info(message);
         model.addAttribute("resultMessage", message);
-        return "redirect:/result/card";
+        return "forward:/catalog";
     }
-
-    //TODO Mock test
+    /**
+     * Delete a book by id from reader books list.
+     * @param bookId a book id that is to be deleted
+     * @param model used for rendering views
+     * @param session HttpSession is necessary to get reader id
+     * @return redirect to profile
+     */
     @PostMapping(value = "/profile/book/delete/{book}")
-    public String deleteBookFromProfile(@PathVariable("book") Integer bookId, Model model, HttpSession session){
+    public String deleteBookFromProfile(@PathVariable("book") Integer bookId,
+                                        Model model, HttpSession session){
         LOGGER.info("POST /profile/book/delete/bookId={}", bookId);
         Integer readerId = (Integer) session.getAttribute("libraryCard");
         bookService.removeFieldReaderFromBook(bookId, readerId);

@@ -1,5 +1,7 @@
-DROP TABLE IF EXISTS lib_reader;
+DROP TABLE IF EXISTS lib_entities_readers;
+DROP TABLE IF EXISTS lib_entity;
 DROP TABLE IF EXISTS lib_book;
+DROP TABLE IF EXISTS lib_reader;
 
 CREATE TABLE lib_reader (
     reader_id integer NOT NULL IDENTITY(1, 1),
@@ -16,10 +18,23 @@ CREATE TABLE lib_book (
     authors varchar(60) NOT NULL,
     title varchar(60) NOT NULL,
     genre integer NOT NULL,
-    reader_id integer,
-    PRIMARY KEY (book_id),
-    FOREIGN KEY (reader_id) REFERENCES lib_reader(reader_id)
-        ON DELETE NO ACTION
-        ON UPDATE NO ACTION
+    PRIMARY KEY (book_id)
 );
+
+CREATE TABLE lib_entity (
+    entity_id integer NOT NULL IDENTITY(1, 1),
+    book_id integer NOT NULL,
+    PRIMARY KEY(entity_id),
+    FOREIGN KEY(book_id) REFERENCES lib_book(book_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+CREATE TABLE lib_entities_readers (
+    entity_id integer,
+    reader_id integer,
+    FOREIGN KEY (reader_id) REFERENCES lib_reader(reader_id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    FOREIGN KEY (entity_id) REFERENCES lib_entity(entity_id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+);
+
 

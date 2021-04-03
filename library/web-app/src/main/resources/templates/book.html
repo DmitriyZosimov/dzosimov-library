@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <!--Bootstrap CSS-->
+    <link rel="stylesheet" th:href="@{../../resources/static/css/bootstrap.css}">
+
+    <title>Add a book</title>
+</head>
+<body class="bg-secondary">
+<header>
+    <div class="container-sm">
+        <div class="container-fluid py-1 d-none d-sm-block">
+            <div class="d-flex">
+                <div class="flex-grow-1"><span class="text-light h1" th:text="#{catalog.logo.text}">Library</span></div>
+                <div class="btn-group btn-group-sm my-auto">
+                    <a th:href="@{${#httpServletRequest.servletPath}(lan=ru)}" class="btn btn-outline-dark">ru</a>
+                    <a th:href="@{${#httpServletRequest.servletPath}(lan=en)}" class="btn btn-outline-dark">en</a>
+                </div>
+            </div>
+        </div>
+        <nav class="navbar navbar-expand-sm d-flex justify-content-between bg-dark">
+            <ul class="navbar-nav ms-2">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/catalog}"><span th:text="#{nav.catalog}">Catalog</span></a>
+                </li>
+                <li class="navbar-item">
+                    <a class="nav-link" th:href="@{/profile}"><span th:text="#{nav.profile}">Profile</span></a>
+                </li>
+            </ul>
+            <div class="d-flex mx-2">
+                <ul class="navbar-nav ms-2">
+                    <th:block th:if="${#session.getAttribute('libraryCard')} != null">
+                        <li class="nav-item px-1">
+                            <span class="text text-primary"
+                                  th:text="#{profile.card}+' : '+${#session.getAttribute('libraryCard')}"></span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-primary btn-sm d-none d-sm-block"
+                               th:href="@{/logout}">
+                                <span th:text="#{nav.logout}">Logout</span>
+                            </a>
+                        </li>
+                    </th:block>
+                    <th:block th:unless="${#session.getAttribute('libraryCard')} != null">
+                        <li class="nav-item">
+                            <a class="btn btn-outline-primary btn-sm d-none d-sm-block"
+                               th:href="@{/login}"><span th:text="#{nav.login}">Sing in</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-primary btn-sm d-none d-sm-block"
+                               th:href="@{/registry}"><span th:text="#{nav.registry}">Registry</span></a>
+                        </li>
+                    </th:block>
+                </ul>
+            </div>
+        </nav>
+        <div class="container py-3">
+            <h1 th:text="${isNew} ? #{book.title.create} :#{book.title.edit}">Add a book</h1>
+        </div>
+    </div>
+</header>
+<section>
+    <div class="container-sm">
+        <div class="d-flex mb-1">
+            <div class="flex-grow-1 px-1">
+                <form th:action="@{${#httpServletRequest.servletPath}}" method="post" th:object="${bookSample}">
+                    <div class="col-auto">
+                        <label for="authors" th:text="#{catalog.table.authors}">Authors</label>
+                        <input id="authors" type="text" th:field="*{authors}" class="form-control form-control-sm"/>
+                    </div>
+                    <div class="col-auto">
+                        <label for="title" th:text="#{catalog.table.title}">Title</label>
+                        <input id="title" type="text" th:field="*{title}" class="form-control form-control-sm"/>
+                    </div>
+                    <div class="col-auto">
+                        <label for="genre" th:text="#{catalog.table.genre}">Genre</label>
+                        <select class="form-select form-select-sm" id="genre" th:field="*{genre}">
+                            <option selected value="ADVENTURE">
+                                <span th:text="#{catalog.form.search.select.adventure}">
+                                    adventure
+                                </span>
+                            </option>
+                            <option value="ART">
+                                <span th:text="#{catalog.form.search.select.art}">
+                                      art
+                                </span>
+                            </option>
+                            <option value="CHILDREN">
+                                <span th:text="#{catalog.form.search.select.children}">
+                                    children
+                                </span>
+                            </option>
+                            <option value="CONTEMPORARY">
+                                <span th:text="#{catalog.form.search.select.contemporary}">
+                                    contemporary
+                                </span>
+                            </option>
+                            <option value="DYSTOPIAN">
+                                <span th:text="#{catalog.form.search.select.dystopian}">
+                                    dystopian
+                                </span>
+                            </option>
+                            <option value="FANTASTIC">
+                                <span th:text="#{catalog.form.search.select.fantastic}">
+                                    fantastic
+                                </span>
+                            </option>
+                            <option value="FANTASY">
+                                <span th:text="#{catalog.form.search.select.fantasy}">
+                                    fantasy
+                                </span>
+                            </option>
+                            <option value="HISTORY">
+                                <span th:text="#{catalog.form.search.select.history}">
+                                    history
+                                </span>
+                            </option>
+                            <option value="HORROR">
+                                <span th:text="#{catalog.form.search.select.horror}">
+                                    horror
+                                </span>
+                            </option>
+                            <option value="MEMOIR">
+                                <span th:text="#{catalog.form.search.select.memoir}">
+                                    memoir
+                                </span>
+                            </option>
+                            <option value="MYSTERY">
+                                <span th:text="#{catalog.form.search.select.mystery}">
+                                    mystery
+                                </span>
+                            </option>
+                            <option value="ROMANCE">
+                                <span th:text="#{catalog.form.search.select.romance}">
+                                    romance
+                                </span>
+                            </option>
+                            <option value="SCI-FI">
+                                <span th:text="#{catalog.form.search.select.sci-fi}">
+                                    sci-fi
+                                </span>
+                            </option>
+                            <option value="THRILLER">
+                                <span th:text="#{catalog.form.search.select.thriller}">
+                                    thriller
+                                </span>
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-sm btn-primary mt-4"
+                                th:text="#{btn.save}">Add the book</button>
+                        <a th:href="@{/catalog}"
+                           class="btn btn-sm btn-primary mt-4"
+                           th:text="#{btn.cancel}">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer>
+    <div class="container-sm">
+        <hr/>
+        <p class="text-center">Library &copy; 2021</p>
+    </div>
+</footer>
+<!--Bootstrap JS-->
+<script src="../../resources/static/js/bootstrap.bundle.js"></script>
+</body>
+</html>

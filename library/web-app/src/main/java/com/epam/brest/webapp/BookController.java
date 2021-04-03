@@ -1,6 +1,5 @@
 package com.epam.brest.webapp;
 
-
 import com.epam.brest.model.sample.BookSample;
 import com.epam.brest.service.IBookService;
 import org.slf4j.Logger;
@@ -36,30 +35,32 @@ public class BookController {
 
     /**
      * Goto book page
-     *
-     * @return view add_book
+     * @param model used for rendering views
+     * @return view book
      */
-    @GetMapping(value = {"/add"})
+    @GetMapping(value = {"/new"})
     public String addBook(Model model){
-        LOGGER.info("GET /book/add");
+        LOGGER.info("GET /book/new");
         model.addAttribute("isNew", true);
         return "book";
     }
 
     /**
-     * Add a book to DAO
-     *
-     * @param bookSample request model of a book
-     * @return view catalog
+     * Add a book and return message by the result of adding
+     * @param bookSample the model of book that is to be added
+     * @param bindingResult represents binding results of the bookSample
+     * @param model used for rendering views
+     * @param request HttpServletRequest is necessary for getting a current locale
+     * @return forward to catalog or return book page when binding result has errors
      */
-    @PostMapping(value = "/add")
+    @PostMapping(value = "/new")
     public String addBook(@Valid @ModelAttribute("bookSample") BookSample bookSample,
                           BindingResult bindingResult, Model model, HttpServletRequest request){
-        LOGGER.info("POST /add, create a book");
+        LOGGER.info("POST /book/new, create a book");
         LOGGER.debug("bookSample={}", bookSample);
         if(bindingResult.hasErrors()){
             LOGGER.error("BindingResult has errors");
-            return "error";
+            return "book";
         }
         String messageCode;
         if(bookService.createBook(bookSample)){
@@ -70,34 +71,50 @@ public class BookController {
         String message = messageSource.getMessage(messageCode, null, localeResolver.resolveLocale(request));
         LOGGER.info(message);
         model.addAttribute("resultMessage", message);
-        return "redirect:/result";
+        return "forward:/catalog";
     }
 
-    //TODO:test
-    @GetMapping(value = "/edit/{bookId}")
-    public String editBook(@PathVariable("bookId") Integer bookId, Model model, HttpServletRequest request){
-        LOGGER.info("GET /book/edit");
+    /**
+     * Goto a book page with model attribute "isNew" is false
+     * and with found book by id. If the book is not found, forward to catalog.
+     * @param bookId a book id which will edit
+     * @param model used for rendering views
+     * @param request HttpServletRequest is necessary for getting a current locale
+     * @return book page or forward to catalog when the book was not found
+     */
+    @GetMapping(value = "/{bookId}")
+    public String editBook(@PathVariable("bookId") Integer bookId, Model model,
+                           HttpServletRequest request){
+        LOGGER.info("GET /book/{}", bookId);
         BookSample bookSample = bookService.findBookById(bookId);
         if(bookSample == null){
             String message = messageSource.getMessage("error.not.found",
-                    new String[]{"book"}, localeResolver.resolveLocale(request));
-            model.addAttribute("message", message);
-            return "error";
+                    new String[]{"book", bookId.toString()},
+                    localeResolver.resolveLocale(request));
+            model.addAttribute("resultMessage", message);
+            return "forward:/catalog";
         }
         model.addAttribute("isNew", false);
         model.addAttribute("bookSample", bookSample);
         return "book";
     }
 
-    //TODO:mock test
-    @PostMapping(value = "/edit/{bookId}")
-    public String editBook(@Valid @ModelAttribute("bookSample") BookSample bookSample,
+    /**
+     * Edit a book and return a message by the result of editing
+     * @param bookSample the book that is to be changed
+     * @param bindingResult represents binding results of the bookSample
+     * @param model used for rendering views
+     * @param request HttpServletRequest is necessary for getting a current locale
+     * @return forward to catalog or return book page when binding result has errors
+     */
+    @PostMapping(value = "/{bookId}")
+    public String editBook(@Valid BookSample bookSample,
                            BindingResult bindingResult, Model model, HttpServletRequest request){
-        LOGGER.info("POST /book/edit, edit a book");
+        LOGGER.info("POST /book/{}, edit a book", bookSample.getId());
         LOGGER.debug("bookSample={}", bookSample);
         if(bindingResult.hasErrors()){
             LOGGER.error("BindingResult has errors");
-            return "error";
+            return "book";
         }
         String messageCode;
         if(bookService.editBook(bookSample)){
@@ -108,16 +125,16 @@ public class BookController {
         String message = messageSource.getMessage(messageCode, null, localeResolver.resolveLocale(request));
         LOGGER.info(message);
         model.addAttribute("resultMessage", message);
-        return "redirect:/result";
+        return "forward:/catalog";
     }
 
 
     /**
-     * Delete a book
-     * and goto catalog list page.
-     *
-     * @param bookId book id
-     * @return view catalog
+     * Delete a book by id and return message by the result of deleting
+     * @param bookId id of the book that is to be removed
+     * @param model used for rendering views
+     * @param request HttpServletRequest is necessary for getting a current locale
+     * @return forward to catalog
      */
     @PostMapping(value = "/delete/{id}")
     public String deleteBook(@PathVariable("id") Integer bookId, Model model, HttpServletRequest request){
@@ -131,6 +148,6 @@ public class BookController {
         String message = messageSource.getMessage(messageCode, null, localeResolver.resolveLocale(request));
         LOGGER.info(message);
         model.addAttribute("resultMessage", message);
-        return "redirect:/result";
+        return "forward:/catalog";
     }
 }
