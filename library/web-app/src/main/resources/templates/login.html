@@ -3,27 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <!--Bootstrap CSS-->
-    <link rel="stylesheet" href="../../resources/static/css/bootstrap.css"
-          th:href="@{../../resources/static/css/bootstrap.css}">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../static/css/bootstrap.css"
+          th:href="@{../static/css/bootstrap.css}">
     <title th:text="#{login.title}">Login</title>
 </head>
-<body>
-    <form method="post" action="/login">
-        <label for="card">Library card</label>
-        <input id="card" name="card" type="text"/>
-        <button type="submit">Enter</button>
-    </form>
-    <a th:href="@{/registry}"
-       class="btn btn-danger">Registry</a>
-    <th:block th:if="${isRemoved}">
-        <div>
-            <p>Reader is removed. Do restore?</p>
-            <a th:href="@{/restore/{card}(card=${removedCard})}"
-               class="btn btn-danger">
-                Restore
-            </a>
-        </div>
-    </th:block>
+<body class="bg-secondary">
+    <div class="container py-3">
+        <h1 th:text="#{login.title}">Login</h1>
+    </div>
+    <div class="container-sm">
+        <form method="post" th:action="@{/login}" class="form-inline">
+            <div class="form-group col-md-3">
+                <label for="card" th:text="#{login.library.card}">Library card</label>
+                <input id="card" name="card" type="text" class="form-control form-control-sm"/>
+            </div>
+            <div class="col-md-3 py-1">
+                <button type="submit" class="btn btn-primary" th:text="#{btn.enter}">Enter</button>
+            </div>
+        </form>
+        <a th:href="@{/registry}"
+           class="btn btn-primary"
+           th:text="#{btn.registry}">Registry</a>
+        <th:block th:if="${isRemoved}">
+            <div>
+                <p th:text="#{login.restore.text}">Reader is removed. Do restore?</p>
+                <a th:href="@{/restore/{card}(card=${removedCard})}"
+                   class="btn btn-danger"
+                   th:text="#{btn.restore}">
+                    Restore
+                </a>
+            </div>
+        </th:block>
+    </div>
 </body>
 </html>
