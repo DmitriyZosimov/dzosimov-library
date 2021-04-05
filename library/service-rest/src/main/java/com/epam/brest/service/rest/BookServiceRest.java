@@ -3,47 +3,115 @@ package com.epam.brest.service.rest;
 import com.epam.brest.model.sample.BookSample;
 import com.epam.brest.model.sample.SearchBookSample;
 import com.epam.brest.service.IBookService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.*;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.List;
 
+@Service
 public class BookServiceRest implements IBookService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BookServiceRest.class);
+
+    private String url;
+    private RestTemplate restTemplate;
+
+    public BookServiceRest(String url, RestTemplate restTemplate) {
+        this.url = url;
+        this.restTemplate = restTemplate;
+    }
+
+    /*
+    get /book
+     */
     @Override
     public List<BookSample> findAll() {
-        return null;
+        LOGGER.info("findAll()");
+        ResponseEntity responseEntity = restTemplate.getForEntity(url, List.class);
+        return (List<BookSample>) responseEntity.getBody();
     }
-
+    /*
+    post /book/{bookId}/reader/{readerId}
+     */
     @Override
-    public boolean addReaderForBook(Integer readerId, Integer bookId) {
-        return false;
+    public Boolean addReaderForBook(Integer readerId, Integer bookId) {
+        LOGGER.info("addReaderForBook(readerId={},bookId={})", readerId, bookId);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setAccept((List<MediaType>) MediaType.APPLICATION_JSON);
+        HttpEntity<BookSample> entity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<Boolean> responseEntity = restTemplate.exchange(url + "/" + bookId + "/reader/" + readerId,
+                HttpMethod.POST, entity, Boolean.class);
+        return responseEntity.getBody();
     }
 
+    /*
+    delete /book/{id}
+     */
     @Override
-    public boolean delete(Integer bookId) {
-        return false;
+    public Boolean delete(Integer bookId) {
+        LOGGER.info("delete(bookId={})", bookId);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setAccept((List<MediaType>) MediaType.APPLICATION_JSON);
+        HttpEntity<BookSample> entity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<Boolean> responseEntity = restTemplate.
+                exchange(url + "/" + bookId, HttpMethod.DELETE, entity, Boolean.class);
+        return responseEntity.getBody();
     }
 
+    /*
+    post /book
+     */
     @Override
-    public boolean createBook(BookSample bookSample) {
-        return false;
+    public Boolean createBook(BookSample bookSample) {
+        LOGGER.info("createBook(BookSample={})", bookSample);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        HttpEntity<BookSample> entity = new HttpEntity<>(bookSample, httpHeaders);
+        ResponseEntity<Boolean> responseEntity = restTemplate.exchange(url, HttpMethod.POST, entity, Boolean.class);
+        return responseEntity.getBody();
     }
 
+    /*
+    get /book/search
+     */
     @Override
     public List<BookSample> searchBooks(SearchBookSample bookSample) {
-        return null;
+        LOGGER.info("searchBooks(SearchBookSample={})", bookSample);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        HttpEntity<SearchBookSample> entity = new HttpEntity<>(bookSample, httpHeaders);
+        ResponseEntity responseEntity = restTemplate.exchange(url + "/search",
+                HttpMethod.GET, entity, List.class);
+        return (List<BookSample>) responseEntity.getBody();
+    }
+    /*
+    delete /book/{bookId}/reader/{readerId}
+    */
+    @Override
+    public Boolean removeFieldReaderFromBook(Integer bookId, Integer readerId) {
+        LOGGER.info("removeFieldReaderFromBook(readerId={},bookId={})", readerId, bookId);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setAccept((List<MediaType>) MediaType.APPLICATION_JSON);
+        HttpEntity<BookSample> entity = new HttpEntity<>(httpHeaders);
+        ResponseEntity<Boolean> responseEntity = restTemplate.exchange(url + "/" + bookId + "/reader/" + readerId,
+                HttpMethod.DELETE, entity, Boolean.class);
+        return responseEntity.getBody();
     }
 
+    /*
+    put /book
+     */
     @Override
-    public boolean removeFieldReaderFromBook(Integer bookId, Integer readerId) {
-        return false;
-    }
-
-    @Override
-    public boolean editBook(BookSample bookSample) {
-        return false;
-    }
-
-    @Override
-    public BookSample findBookById(Integer bookId) {
-        return null;
+    public Boolean editBook(BookSample bookSample) {
+        LOGGER.info("editBook(BookSample={})", bookSample);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        HttpEntity<BookSample> entity = new HttpEntity<>(bookSample, httpHeaders);
+        ResponseEntity<Boolean> responseEntity = restTemplate.exchange(url, HttpMethod.PUT, entity, Boolean.class);
+        return responseEntity.getBody();
     }
 }

@@ -89,7 +89,7 @@ public class ReaderServiceImp implements IReaderService {
      * @return true if the profile is edited, false if reader is null or reader is not exist or not active
      */
     @Override
-    public boolean editProfile(ReaderSample readerSample) {
+    public Boolean editProfile(ReaderSample readerSample) {
         LOGGER.info("editProfile");
         LOGGER.debug("readerSample={}", readerSample);
         if(readerSample == null || !readerDao.exist(readerSample.getReaderId())){
@@ -107,7 +107,7 @@ public class ReaderServiceImp implements IReaderService {
      * @return true if the reader has active false, false if id is null or the reader don`t edit active to false
      */
     @Override
-    public boolean removeProfile(Integer id) {
+    public Boolean removeProfile(Integer id) {
         LOGGER.info("removeProfile");
         LOGGER.debug("readerId={}", id);
         if(id == null){
@@ -139,7 +139,7 @@ public class ReaderServiceImp implements IReaderService {
      * @return true if the reader has active true, false if id is null or the reader don`t edit active to true
      */
     @Override
-    public boolean restoreProfile(Integer id) {
+    public Boolean restoreProfile(Integer id) {
         LOGGER.info("restoreProfile");
         LOGGER.debug("readerId={}", id);
         if(id == null){
@@ -165,7 +165,7 @@ public class ReaderServiceImp implements IReaderService {
     }
 
     //TODO:maybe not needed
-    private boolean checkResult(Integer readerId, int result) {
+    private Boolean checkResult(Integer readerId, int result) {
         if (result == 1) {
             LOGGER.info("The reader(readerId={}) - all done correctly", readerId);
             return true;

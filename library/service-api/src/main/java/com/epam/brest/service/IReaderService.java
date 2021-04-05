@@ -7,10 +7,10 @@ public interface IReaderService {
 
     ReaderSample getProfile(Integer id);
     ReaderSample getProfileWithoutBooks(Integer id);
-    ReaderSample createReader(ReaderSample readerDto);
-    boolean editProfile(ReaderSample readerDto);
-    boolean removeProfile(Integer id);
-    boolean restoreProfile(Integer id);
+    ReaderSample createReader(ReaderSample readerSample);
+    Boolean editProfile(ReaderSample readerSample);
+    Boolean removeProfile(Integer id);
+    Boolean restoreProfile(Integer id);
 
 
 }

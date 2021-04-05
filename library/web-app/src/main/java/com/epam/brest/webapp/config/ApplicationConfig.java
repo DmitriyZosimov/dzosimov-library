@@ -33,23 +33,26 @@ public class ApplicationConfig implements WebMvcConfigurer {
     private String port;
 
     @Bean
-    RestTemplate getRestTemplate(){
+    RestTemplate restTemplate(){
         return new RestTemplate(new SimpleClientHttpRequestFactory());
     }
 
     @Bean
-    IBookService getBookService(){
-        return new BookServiceRest();
+    IBookService bookService(){
+        String url = String.format("%s://%s:%d/book", protocol, host, port);
+        return new BookServiceRest(url, restTemplate());
     }
 
     @Bean
-    IReaderService getReaderService(){
-        return new ReaderServiceRest();
+    IReaderService readerService(){
+        String url = String.format("%s://%s:%d/reader", protocol, host, port);
+        return new ReaderServiceRest(url, restTemplate());
     }
 
     @Bean
-    ILoginService getLoginService(){
-        return new LoginServiceRest();
+    ILoginService loginService(){
+        String url = String.format("%s://%s:%d/login", protocol, host, port);
+        return new LoginServiceRest(url, restTemplate());
     }
 
     @Bean

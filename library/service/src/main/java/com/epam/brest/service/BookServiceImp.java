@@ -40,14 +40,14 @@ public class BookServiceImp implements IBookService {
     }
 
     @Override
-    public boolean addReaderForBook(Integer readerId, Integer bookId) {
+    public Boolean addReaderForBook(Integer readerId, Integer bookId) {
         LOGGER.info("addReaderForBook(readerId={}, bookId={})", readerId, bookId);
         int result = bookDao.addReaderForBook(bookId, readerId);
         return checkResult(bookId, result);
     }
 
     @Override
-    public boolean delete(Integer bookId) {
+    public Boolean delete(Integer bookId) {
         LOGGER.info("delete(bookId={})", bookId);
         int result = bookDao.delete(bookId);
         return checkResult(bookId, result);
@@ -58,7 +58,7 @@ public class BookServiceImp implements IBookService {
      * @param bookSample model of a Book
      * @return book created book
      */
-    public boolean createBook(BookSample bookSample){
+    public Boolean createBook(BookSample bookSample){
         Book book = BookMapper.getBook(bookSample);
         book = bookDao.save(book);
         if(book.getId() == null){
@@ -75,31 +75,20 @@ public class BookServiceImp implements IBookService {
     }
 
     @Override
-    public boolean removeFieldReaderFromBook(Integer bookId, Integer readerId) {
+    public Boolean removeFieldReaderFromBook(Integer bookId, Integer readerId) {
         LOGGER.info("removeFieldReaderFromBook(bookId={}, readerId={})", bookId, readerId);
         int result = bookDao.removeFieldReaderFromBook(bookId, readerId);
         return checkResult(bookId, result);
     }
 
     @Override
-    public boolean editBook(BookSample bookSample) {
+    public Boolean editBook(BookSample bookSample) {
         LOGGER.info("editBook(bookSample={})", bookSample);
         int result = bookDao.update(bookSample);
         return checkResult(bookSample.getId(), result);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public BookSample findBookById(Integer id){
-        Optional<Book> opt = bookDao.findBookById(id);
-        Book book = opt.orElse(null);
-        if(book != null){
-            return BookMapper.getBookSample(book);
-        }
-        return null;
-    }
-
-    private boolean checkResult(Integer bookId, int result) {
+    private Boolean checkResult(Integer bookId, int result) {
         if(result == 1){
             LOGGER.info("The book(bookId={}) - all done correctly", bookId);
             return true;

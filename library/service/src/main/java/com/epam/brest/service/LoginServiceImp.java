@@ -22,7 +22,7 @@ public class LoginServiceImp implements ILoginService{
      * @return true is exist, false if not exist
      */
     @Override
-    public boolean isExistCard(Integer card) {
+    public Boolean isExistCard(Integer card) {
         return readerDao.exist(card);
     }
 
@@ -32,7 +32,7 @@ public class LoginServiceImp implements ILoginService{
      * @return true is exist, false if not exist
      */
     @Override
-    public boolean isRemovedCard(Integer card) {
+    public Boolean isRemovedCard(Integer card) {
         return readerDao.exist(card, false);
     }
 }
