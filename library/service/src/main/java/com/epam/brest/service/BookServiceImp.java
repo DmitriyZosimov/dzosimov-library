@@ -88,6 +88,13 @@ public class BookServiceImp implements IBookService {
         return checkResult(bookSample.getId(), result);
     }
 
+    @Override
+    public BookSample findBookById(Integer id) {
+        LOGGER.info("findBookById(id={})", id);
+        Optional<Book> optBook = bookDao.findBookById(id);
+        return optBook.map(BookMapper::getBookSample).orElse(null);
+    }
+
     private Boolean checkResult(Integer bookId, int result) {
         if(result == 1){
             LOGGER.info("The book(bookId={}) - all done correctly", bookId);

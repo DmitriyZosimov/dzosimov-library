@@ -39,19 +39,19 @@ public class ApplicationConfig implements WebMvcConfigurer {
 
     @Bean
     IBookService bookService(){
-        String url = String.format("%s://%s:%d/book", protocol, host, port);
+        String url = String.format("%s://%s:%s/book", protocol, host, port);
         return new BookServiceRest(url, restTemplate());
     }
 
     @Bean
     IReaderService readerService(){
-        String url = String.format("%s://%s:%d/reader", protocol, host, port);
+        String url = String.format("%s://%s:%s/reader", protocol, host, port);
         return new ReaderServiceRest(url, restTemplate());
     }
 
     @Bean
     ILoginService loginService(){
-        String url = String.format("%s://%s:%d/login", protocol, host, port);
+        String url = String.format("%s://%s:%s/login", protocol, host, port);
         return new LoginServiceRest(url, restTemplate());
     }
 

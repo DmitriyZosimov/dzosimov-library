@@ -61,39 +61,6 @@ public class CatalogController {
     }
 
     /**
-     * Goto catalog list page with param.
-     * @param result result message
-     * @param model used for rendering views
-     * @return load method getMainPage
-     */
-    @GetMapping(value = {"/result"})
-    public String getMainPage(@RequestParam("resultMessage") String result,
-                              Model model){
-        LOGGER.info("GET /catalog?resultMessage={}", result);
-        LOGGER.debug("getMainPage({}, {})", result, model);
-        model.addAttribute("resultMessage", result);
-        return getMainPage(model);
-    }
-
-    //TODO:refactor method or remove
-    /**
-     * Goto catalog list page with param.
-     * @param result String resultMessage
-     * @param card library card
-     * @param model used for rendering views
-     * @return view catalog
-     */
-    @GetMapping(value = {"/result/card"})
-    public String getMainPage(@RequestParam("resultMessage") String result,
-                              @RequestParam("card") Integer card,
-                              Model model){
-        LOGGER.info("GET /catalog?result={}&card={}", result, card);
-        model.addAttribute("resultMessage", result);
-        model.addAttribute("card", card);
-        return getMainPage(model);
-    }
-
-    /**
      * Add a book to the reader
      * and goto catalog list page.
      *

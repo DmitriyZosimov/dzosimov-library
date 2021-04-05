@@ -1,6 +1,8 @@
 package com.epam.brest.model.sample;
 
 import com.epam.brest.model.Book;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -27,6 +29,7 @@ public class ReaderSample {
     @Pattern(regexp = FIRST_NAME, message = "{pattern.reader}")
     @Size(max = 25, message = "{size.reader.patronymic}")
     private String patronymic;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateOfRegistry;
     private List<Book> books;
 
