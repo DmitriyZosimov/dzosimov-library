@@ -18,52 +18,52 @@ public interface IBookService {
 
     /**
      * Connects a reader with book.
-     * @param readerId id of the reader.
-     * @param bookId id of the book.
-     * @return true if it`s completed, and false if it`s not completed.
+     * @param readerId identification of the reader.
+     * @param bookId identification of the book.
+     * @return true if executed and false if not executed.
      */
     Boolean addReaderForBook(Integer readerId, Integer bookId);
 
     /**
      * Delete a book by id.
-     * @param bookId id of the book.
-     * @return true if it`s completed, and false if it`s not completed.
+     * @param bookId identification of the book.
+     * @return true if executed and false if not executed.
      */
     Boolean delete(Integer bookId);
 
     /**
      * Create and save a new book by a request model
-     * @param bookSample the request model of a book.
-     * @return true if it`s completed, and false if it`s not completed.
+     * @param bookSample sample of a book.
+     * @return true if executed and false if not executed.
      */
     Boolean createBook(BookSample bookSample);
 
     /**
      * Search a book.
-     * @param bookSample a model with parameters of book which is to be find.
+     * @param bookSample sample with parameters of a book which is to be find.
      * @return List of found books.
      */
     List<BookSample> searchBooks(SearchBookSample bookSample);
 
     /**
-     * Disconnect a reader and a book.
-     * @param bookId id of the book.
-     * @param readerId id of the reader.
-     * @return true if it`s completed, and false if it`s not completed.
+     * Delete a tie of reader and book
+     * @param bookId identification of a book
+     * @param readerId identification of a reader
+     * @return true if executed and false if not executed
      */
     Boolean removeFieldReaderFromBook(Integer bookId, Integer readerId);
 
     /**
      * Update a book in data base.
-     * @param bookSample model of the book which is to be updated.
-     * @return true if it`s completed, and false if it`s not completed.
+     * @param bookSample sample of the book which is to be updated.
+     * @return true if executed and false if not executed.
      */
     Boolean editBook(BookSample bookSample);
 
     /**
-     * Find a book by id.
-     * @param id book id.
-     * @return book or null if the book not found.
+     * Find a book by identification.
+     * @param id identification of a book.
+     * @return book or null if the book is not found.
      */
     BookSample findBookById(Integer id);
 }

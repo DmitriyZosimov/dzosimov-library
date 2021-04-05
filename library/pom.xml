@@ -15,6 +15,7 @@
         <module>dao-api</module>
         <module>service-api</module>
         <module>service</module>
+        <module>rest-app</module>
         <module>web-app</module>
         <module>service-rest</module>
     </modules>
@@ -68,6 +69,12 @@
             <dependency>
                 <groupId>com.epam.brest</groupId>
                 <artifactId>service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.epam.brest</groupId>
+                <artifactId>rest-app</artifactId>
                 <version>${project.version}</version>
             </dependency>
 

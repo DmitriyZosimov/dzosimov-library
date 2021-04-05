@@ -47,7 +47,7 @@ public class BookController {
 
     /**
      * Add a book and return message by the result of adding
-     * @param bookSample the model of book that is to be added
+     * @param bookSample sample of the book that is to be added
      * @param bindingResult represents binding results of the bookSample
      * @param model used for rendering views
      * @param request HttpServletRequest is necessary for getting a current locale
@@ -77,7 +77,7 @@ public class BookController {
     /**
      * Goto a book page with model attribute "isNew" is false
      * and with found book by id. If the book is not found, forward to catalog.
-     * @param bookId a book id which will edit
+     * @param bookId a book identification which will edit
      * @param model used for rendering views
      * @param request HttpServletRequest is necessary for getting a current locale
      * @return book page or forward to catalog when the book was not found
@@ -101,7 +101,7 @@ public class BookController {
 
     /**
      * Edit a book and return a message by the result of editing
-     * @param bookSample the book that is to be changed
+     * @param bookSample sample of the book that is to be changed
      * @param bindingResult represents binding results of the bookSample
      * @param model used for rendering views
      * @param request HttpServletRequest is necessary for getting a current locale
@@ -131,7 +131,7 @@ public class BookController {
 
     /**
      * Delete a book by id and return message by the result of deleting
-     * @param bookId id of the book that is to be removed
+     * @param bookId identification of the book that is to be removed
      * @param model used for rendering views
      * @param request HttpServletRequest is necessary for getting a current locale
      * @return forward to catalog

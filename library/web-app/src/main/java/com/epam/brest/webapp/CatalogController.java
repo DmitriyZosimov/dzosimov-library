@@ -64,7 +64,7 @@ public class CatalogController {
      * Add a book to the reader
      * and goto catalog list page.
      *
-     * @param bookId book id
+     * @param bookId identification of the book
      * @param model used for rendering views
      * @param session used for getting readerId ("library card") of a reader
      * @return view catalog
@@ -81,7 +81,7 @@ public class CatalogController {
     /**
      * Search books
      *
-     * @param bookSample book request for searching
+     * @param bookSample sample of the book request for searching
      * @param model used for rendering views
      * @param bindingResult represents binding results of the bookSample
      * @return view catalog page

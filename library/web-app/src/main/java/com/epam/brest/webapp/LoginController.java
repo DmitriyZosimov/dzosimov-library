@@ -34,7 +34,7 @@ public class LoginController {
 
     /**
      * Added to session library card (reader id)
-     * @param card reader id that is to be added
+     * @param card reader identification that is to be added
      * @param session HttpSession is necessary to add reader id
      * @param model used for rendering views
      * @return redirect to catalog or goto view login if the reader was removed

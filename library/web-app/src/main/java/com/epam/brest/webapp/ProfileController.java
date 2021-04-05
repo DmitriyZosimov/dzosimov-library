@@ -37,7 +37,7 @@ public class ProfileController {
 
     /**
      * Goto profile list page. If the profile is not found, forward to catalog
-     * with message that reader is not found by id
+     * with message that reader is not found by identification
      * @param model used for rendering views
      * @param session HttpSession is necessary to get reader id
      * @param request HttpServletRequest is necessary for getting a current locale
@@ -126,7 +126,7 @@ public class ProfileController {
 
     /**
      * Add a new reader and return a message by the result of adding.
-     * @param readerSample a model of the reader that is to be added
+     * @param readerSample sample of the reader that is to be added
      * @param bindingResult represents binding results of the readerSample
      * @param model used for rendering views
      * @param request HttpServletRequest is necessary for getting a current locale
@@ -183,7 +183,7 @@ public class ProfileController {
 
     /**
      * Restore a reader and return a message by the result of deleting.
-     * @param card a reader id that is to be restored
+     * @param card reader identification that is to be restored
      * @param model used for rendering views
      * @param request HttpServletRequest is necessary for getting a current locale
      * @return forward to catalog
@@ -207,8 +207,8 @@ public class ProfileController {
         return "forward:/catalog";
     }
     /**
-     * Delete a book by id from reader books list.
-     * @param bookId a book id that is to be deleted
+     * Delete a book by identification from reader books list.
+     * @param bookId book identification that is to be deleted
      * @param model used for rendering views
      * @param session HttpSession is necessary to get reader id
      * @return redirect to profile
