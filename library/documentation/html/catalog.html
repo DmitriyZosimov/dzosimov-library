@@ -4,24 +4,179 @@
     <meta charset="UTF-8">
     <title>Catalog</title>
     <style>
-        p.solid{border-style:solid;}
+        .container{
+            margin-left: 20px;
+            width: 80%;
+        }
+        .nav ul{
+            list-style: none;
+            margin: 0;
+            padding-left: 0;
+            background: #E4EFD1;
+            height: 50px;
+        }
+        .nav li{
+            display: inline-block;
+        }
+        .nav a {
+            text-decoration: none;
+            padding: 1em;
+            display: block;
+            color: #74924C;
+            border-right: 1px solid #BAD78B;
+        }
+        table, th {
+            border: 1px solid #BAD78B;
+        }
+        th {
+            background-color: #E4EFD1;
+            height: 25px;
+            color: #74924C;
+        }
+        td {
+            background-color: #F4FFE0;
+            border: 1px solid #D9FF96;
+        }
+        table {
+            margin-top: 1em;
+            width: 100%;
+            border-collapse: collapse;
+        }
     </style>
 </head>
-<body>
-    <div>
-        <h1>Library</h1>
-        <button>ru</button>
-        <button>en</button>
+<body class="container">
+    <div style="overflow: hidden;">
+        <div style="width: 100%;">
+            <div style="float: left; width: 100px; height: 75px;">
+                <h1>Library</h1>
+            </div>
+            <div style="float: right; width: 100px; height: 75px; padding-top: 10px;">
+                <button>ru</button>
+                <button>en</button>
+            </div>
+        </div>
     </div>
-    <div class="solid">
-        <a href="/#">Catalog</a>
-        <a href="/#">Profile</a>
-    </div>
+    <nav class="nav">
+        <div>
+            <ul>
+                <li>
+                    <a href="/#">Catalog</a>
+                </li>
+                <li>
+                    <a href="/#">Profile</a>
+                </li>
+                <li style="float: right">
+                    <a href="/#">Registry</a>
+                </li>
+                <li style="float: right">
+                    <a href="/#">Sign in</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
     <div>
         <h2>Catalog</h2>
     </div>
-    <div>
-        <p class="solid">Test</p>
+    <div style="overflow: hidden;">
+        <div style="float:left;">
+            <input type="text" placeholder="Filter"/>
+        </div>
+        <div style="float:right;">
+            <button type="button">Add a book</button>
+        </div>
     </div>
+    <div>
+        <button id="open">Advanced search</button>
+        <div id="search">
+            <form style="overflow: hidden;">
+                <div style="float:left; padding-right: 10px;">
+                    <label for="authors">Authors</label><br>
+                    <input id="authors" type="text"/>
+                </div>
+                <div style="float:left; padding-right: 10px;">
+                    <label for="title">Title</label><br>
+                    <input id="title" type="text"/>
+                </div>
+                <div style="float:left; padding-right: 10px;">
+                    <label for="genre">Genre</label><br>
+                    <select id="genre">
+                        <option>select genre</option>
+                    </select>
+                </div>
+                <div style="float:left; padding-top: 15px;">
+                    <button>Search</button>
+                </div>
+            </form>
+        </div>
+
+        <div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Authors</th>
+                        <th>Title</th>
+                        <th>Genre</th>
+                        <th>Quantity</th>
+                        <th>Select</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Джордж Оруэлл</td>
+                        <td>1984</td>
+                        <td>Художественный</td>
+                        <td>3</td>
+                        <td><button>Select</button></td>
+                        <td><button>Edit</button></td>
+                        <td><button>Delete</button></td>
+                    </tr>
+                    <tr>
+                        <td>Фредрик Бакман</td>
+                        <td>Тревожные люди</td>
+                        <td>Приключение</td>
+                        <td>2</td>
+                        <td><button>Select</button></td>
+                        <td><button>Edit</button></td>
+                        <td><button>Delete</button></td>
+                    </tr>
+                    <tr>
+                        <td>Айан Рэнд</td>
+                        <td>Атлант расправил плечи</td>
+                        <td>Фантастика</td>
+                        <td>5</td>
+                        <td><button>Select</button></td>
+                        <td><button>Edit</button></td>
+                        <td><button>Delete</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div style="border: 1px solid black; width: 300px; height: 175px; padding-left: 1em; margin-top: 3em;">
+        <div>
+            <h2>Delete the book</h2>
+        </div>
+        <div>
+            <p>Are you sure to delete the book:</p>
+            <p>Айан Рэнд - Атлант расправил плечи?</p>
+        </div>
+        <div>
+            <button>delete</button>
+            <button>cancel</button>
+        </div>
+    </div>
+<script>
+    $(document).ready(function(){
+        var searchBlock = $('#search');
+        $(document).on('click', '#open', function(){
+         searchBlock.slideToggle();
+         return false;
+        });
+       });
+</script>
+    <!--JQuery-->
+    <script src="/js/jquery.min.js"></script>
 </body>
 </html>

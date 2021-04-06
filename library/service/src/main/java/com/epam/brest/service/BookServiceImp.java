@@ -2,11 +2,9 @@ package com.epam.brest.service;
 
 import com.epam.brest.dao.BookDao;
 import com.epam.brest.model.Book;
-import com.epam.brest.model.dto.BookDto;
 import com.epam.brest.model.sample.BookSample;
 import com.epam.brest.model.sample.SearchBookSample;
 import com.epam.brest.model.tools.BookMapper;
-import com.epam.brest.service.exception.BookCreationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +27,6 @@ public class BookServiceImp implements IBookService {
         this.bookDao = bookDao;
     }
 
-    /**
-     * Find all books
-     * @return list of books
-     */
     @Transactional(readOnly = true)
     @Override
     public List<BookSample> findAll() {
@@ -53,11 +47,6 @@ public class BookServiceImp implements IBookService {
         return checkResult(bookId, result);
     }
 
-    /**
-     * Create a new book
-     * @param bookSample model of a Book
-     * @return book created book
-     */
     public Boolean createBook(BookSample bookSample){
         Book book = BookMapper.getBook(bookSample);
         book = bookDao.save(book);

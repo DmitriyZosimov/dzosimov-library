@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit</title>
+    <style>
+        .container{
+            margin-left: 20px;
+            width: 80%;
+        }
+        .nav ul{
+            list-style: none;
+            margin: 0;
+            padding-left: 0;
+            background: #E4EFD1;
+            height: 50px;
+        }
+        .nav li{
+            display: inline-block;
+        }
+        .nav a {
+            text-decoration: none;
+            padding: 1em;
+            display: block;
+            color: #74924C;
+            border-right: 1px solid #BAD78B;
+        }
+    </style>
+</head>
+<body class="container">
+    <div style="overflow: hidden;">
+        <div style="width: 100%;">
+            <div style="float: left; width: 100px; height: 75px;">
+                <h1>Library</h1>
+            </div>
+            <div style="float: right; width: 100px; height: 75px; padding-top: 10px;">
+                <button>ru</button>
+                <button>en</button>
+            </div>
+        </div>
+    </div>
+    <nav class="nav">
+        <div>
+            <ul>
+                <li>
+                    <a href="/#">Catalog</a>
+                </li>
+                <li>
+                    <a href="/#">Profile</a>
+                </li>
+                <li style="float: right">
+                    <a href="/#">Registry</a>
+                </li>
+                <li style="float: right">
+                    <a href="/#">Sign in</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div>
+        <h2>Registry</h2>
+    </div>
+    <div>
+        <form>
+            <div>
+                <label>First name</label><br>
+                <input type="text" value=""/>
+            </div>
+            <div>
+                <label>Patronymic</label><br>
+                <input type="text" value=""/>
+            </div>
+            <div>
+                <label>Last name</label><br>
+                <input type="text" value=""/>
+            </div>
+            <div>
+                <button>Save</button>
+                <button>Cancel</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

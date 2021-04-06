@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <style>
+        .container{
+            margin-left: 20px;
+            width: 80%;
+        }
+        .nav ul{
+            list-style: none;
+            margin: 0;
+            padding-left: 0;
+            background: #E4EFD1;
+            height: 50px;
+        }
+        .nav li{
+            display: inline-block;
+        }
+        .nav a {
+            text-decoration: none;
+            padding: 1em;
+            display: block;
+            color: #74924C;
+            border-right: 1px solid #BAD78B;
+        }
+                table, th {
+            border: 1px solid #BAD78B;
+        }
+        th {
+            background-color: #E4EFD1;
+            height: 25px;
+            color: #74924C;
+        }
+        td {
+            background-color: #F4FFE0;
+            border: 1px solid #D9FF96;
+        }
+        table {
+            margin-top: 1em;
+            width: 70%;
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+<body class="container">
+    <div style="overflow: hidden;">
+        <div style="width: 100%;">
+            <div style="float: left; width: 100px; height: 75px;">
+                <h1>Library</h1>
+            </div>
+            <div style="float: right; width: 100px; height: 75px; padding-top: 10px;">
+                <button>ru</button>
+                <button>en</button>
+            </div>
+        </div>
+    </div>
+    <nav class="nav">
+        <div>
+            <ul>
+                <li>
+                    <a href="/#">Catalog</a>
+                </li>
+                <li>
+                    <a href="/#">Profile</a>
+                </li>
+                <li style="float: right">
+                    <a href="/#">Logout</a>
+                </li>
+                <li style="float: right">
+                    <p>Library card: 1</p>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div>
+        <h2>Profile</h2>
+    </div>
+    <div style="overflow: hidden;">
+        <div style="float:left; width: 90%">
+            <table>
+                <tr>
+                    <td>Library card</td>
+                    <td>1</td>
+                </tr>
+                <tr>
+                    <td>First name</td>
+                    <td>Dmitriy</td>
+                </tr>
+                <tr>
+                    <td>Patronymic</td>
+                    <td>Aleksandrovich</td>
+                </tr>
+                <tr>
+                    <td>Last name</td>
+                    <td>Zosimov</td>
+                </tr>
+                <tr>
+                    <td>Date of registry</td>
+                    <td>2021-03-03</td>
+                </tr>
+            </table>
+        </div>
+        <div style="float:right;">
+            <button>Edit</button>
+            <button>Delete</button>
+        </div>
+    </div>
+    <div>
+        <h2>Books</h2>
+    </div>
+    <div>
+        <table>
+            <thead>
+            <tr>
+                <th>Authors</th>
+                <th>Title</th>
+                <th>Genre</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>Джордж Оруэлл</td>
+                <td>1984</td>
+                <td>Художественный</td>
+                <td><button>Delete</button></td>
+            </tr>
+            <tr>
+                <td>Фредрик Бакман</td>
+                <td>Тревожные люди</td>
+                <td>Приключение</td>
+                <td><button>Delete</button></td>
+            </tr>
+            <tr>
+                <td>Айан Рэнд</td>
+                <td>Атлант расправил плечи</td>
+                <td>Фантастика</td>
+                <td><button>Delete</button></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div style="border: 1px solid black; width: 300px; height: 175px; padding-left: 1em; margin-top: 3em;">
+        <div>
+            <h2>Delete the reader</h2>
+        </div>
+        <div>
+            <p>Are you sure to delete the reader:</p>
+            <p>Library card - 1?</p>
+        </div>
+        <div>
+            <button>delete</button>
+            <button>cancel</button>
+        </div>
+    </div>
+</body>
+</html>
