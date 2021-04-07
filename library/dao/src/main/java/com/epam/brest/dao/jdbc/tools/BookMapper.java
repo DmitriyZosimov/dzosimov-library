@@ -5,10 +5,12 @@ import com.epam.brest.model.Genre;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Component
 public class BookMapper implements RowMapper<Book> {
 
     private final Logger LOGGER = LoggerFactory.getLogger(BookMapper.class);

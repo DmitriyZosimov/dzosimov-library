@@ -53,6 +53,10 @@ public class BookServiceImp implements IBookService {
         if(book.getId() == null){
             return false;
         }
+        Integer result = bookDao.saveEntity(book.getId());
+        if(result < 1){
+            return false;
+        }
         return true;
     }
 

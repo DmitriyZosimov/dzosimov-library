@@ -14,12 +14,65 @@
     <dependencies>
         <dependency>
             <groupId>com.epam.brest</groupId>
+            <artifactId>model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.epam.brest</groupId>
+            <artifactId>dao-api</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.epam.brest</groupId>
+            <artifactId>dao</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.epam.brest</groupId>
             <artifactId>service-api</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-web</artifactId>
+            <groupId>com.epam.brest</groupId>
+            <artifactId>service</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.epam.brest</groupId>
+            <artifactId>test-db</artifactId>
+        </dependency>
+
+        <!--spring boot-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.4.2</version>
+                <executions>
+                    <execution>
+                        <id>repackage</id>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <mainClass>${start-class}</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

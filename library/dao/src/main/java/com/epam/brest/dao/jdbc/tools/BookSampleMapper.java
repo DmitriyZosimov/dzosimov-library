@@ -1,15 +1,16 @@
 package com.epam.brest.dao.jdbc.tools;
 
-import com.epam.brest.model.Book;
 import com.epam.brest.model.Genre;
 import com.epam.brest.model.sample.BookSample;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Component;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+@Component
 public class BookSampleMapper implements RowMapper<BookSample> {
 
     private final Logger LOGGER = LoggerFactory.getLogger(BookSampleMapper.class);

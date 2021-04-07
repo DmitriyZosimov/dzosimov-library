@@ -1,10 +1,7 @@
 package com.epam.brest.service;
 
-import com.epam.brest.model.Book;
-import com.epam.brest.model.dto.BookDto;
 import com.epam.brest.model.sample.BookSample;
 import com.epam.brest.model.sample.SearchBookSample;
-import com.epam.brest.service.exception.BookCreationException;
 
 import java.util.List;
 

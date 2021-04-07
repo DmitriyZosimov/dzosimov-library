@@ -28,11 +28,6 @@ public class ReaderServiceImp implements IReaderService {
         this.bookDao = bookDao;
     }
 
-    /**
-     * Find a profile of a reader by id
-     * @param id - reader id
-     * @return reader if exist or null;
-     */
     @Override
     public ReaderSample getProfile(Integer id) {
         LOGGER.info("getProfile");
@@ -43,11 +38,6 @@ public class ReaderServiceImp implements IReaderService {
         return ReaderMapper.getReaderSample(readerOpt.get());
     }
 
-    /**
-     * Find a profile of a reader by id
-     * @param id - reader id
-     * @return reader if exist or null
-     */
     @Override
     public ReaderSample getProfileWithoutBooks(Integer id) {
         LOGGER.info("getProfileWithoutBooks");
@@ -58,11 +48,6 @@ public class ReaderServiceImp implements IReaderService {
         return ReaderMapper.getReaderSample(readerOpt.get());
     }
 
-    /**
-     * Add a new reader
-     * @param readerSample reader
-     * @return saved ReaderSample or null
-     */
     @Override
     public ReaderSample createReader(ReaderSample readerSample) {
         LOGGER.info("createReader");
@@ -83,11 +68,6 @@ public class ReaderServiceImp implements IReaderService {
         }
     }
 
-    /**
-     * Edit a profile of reader
-     * @param readerSample - the reader who edits a profile
-     * @return true if the profile is edited, false if reader is null or reader is not exist or not active
-     */
     @Override
     public Boolean editProfile(ReaderSample readerSample) {
         LOGGER.info("editProfile");
@@ -101,11 +81,6 @@ public class ReaderServiceImp implements IReaderService {
         return checkResult(reader.getReaderId(), result);
     }
 
-    /**
-     * remove a reader (edit active to false)
-     * @param id reader id
-     * @return true if the reader has active false, false if id is null or the reader don`t edit active to false
-     */
     @Override
     public Boolean removeProfile(Integer id) {
         LOGGER.info("removeProfile");
@@ -133,11 +108,6 @@ public class ReaderServiceImp implements IReaderService {
         return false;
     }
 
-    /**
-     * restore a reader (edit active to true)
-     * @param id reader id
-     * @return true if the reader has active true, false if id is null or the reader don`t edit active to true
-     */
     @Override
     public Boolean restoreProfile(Integer id) {
         LOGGER.info("restoreProfile");

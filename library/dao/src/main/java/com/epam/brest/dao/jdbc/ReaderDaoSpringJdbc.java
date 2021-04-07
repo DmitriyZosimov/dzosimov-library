@@ -5,6 +5,8 @@ import com.epam.brest.dao.jdbc.tools.*;
 import com.epam.brest.model.Reader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.BeanCreationException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -17,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository("readerDaoSpringJdbc")
-public class ReaderDaoSpringJdbc implements ReaderDao{
+public class ReaderDaoSpringJdbc implements ReaderDao, InitializingBean {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReaderDaoSpringJdbc.class);
 
@@ -38,38 +40,22 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
 
     private DataSource dataSource;
 
-    public void setDataSource(DataSource dataSource){
-        LOGGER.debug("setDataSource: {}", dataSource);
+    public ReaderDaoSpringJdbc(DataSource dataSource){
         this.dataSource = dataSource;
     }
 
-    /**
-     * Find all readers without books in DB
-     *
-     * @return List readers
-     */
     @Override
     public List<Reader> findAll() {
         LOGGER.info("findAll() was started");
         return new FindAllReader(dataSource, findAllReaderSql).execute();
     }
 
-    /**
-     * Find all active readers without books in DB
-     *
-     * @return List readers
-     */
     @Override
     public List<Reader> findAllActive() {
         LOGGER.info("findAllActive() was started");
         return new FindAllReader(dataSource, findAllActiveReaderSql).execute();
     }
 
-    /**
-     * Find a reader without books by reader id
-     * @param id - reader id
-     * @return Optional of a reader if exist or null
-     */
     @Override
     public Optional<Reader> findReaderById(Integer id) {
         LOGGER.info("findReaderById(id)  was started");
@@ -79,12 +65,6 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
                 findObjectByNamedParam(sqlParameterSource.getValues()));
     }
 
-    /**
-     * Find a reader with books by id
-     *
-     * @param id - reader id
-     * @return Optional of a reader if exist or null
-     */
     @Override
     public Optional<Reader> findReaderByIdWithBooks(Integer id) {
         LOGGER.info("findReaderByIdWithBooks(id) was started");
@@ -97,11 +77,6 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
                         findReaderByIdWithBooks));
     }
 
-    /**
-     * Save a new reader
-     * @param reader - a reader, who saves
-     * @return saved reader with unique readerId
-     */
     @Override
     public Reader save(Reader reader) {
         LOGGER.info("save(reader)  was started");
@@ -117,11 +92,6 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
         return reader;
     }
 
-    /**
-     * Update a reader
-     * @param reader - reader, who updates
-     * @return count updated rows(readers)
-     */
     @Override
     public Integer update(Reader reader) {
         LOGGER.info("update(reader) was started");
@@ -136,11 +106,6 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
         return new UpdateReader(dataSource, updateSql).updateByNamedParam(sqlParameterSource.getValues());
     }
 
-    /**
-     * Remove the reader (update active field to false)
-     * @param reader - reader, who deletes
-     * @return count updated rows (readers)
-     */
     @Override
     public Integer delete(Reader reader) {
         LOGGER.info("delete(reader) was started");
@@ -149,11 +114,6 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
         return update(reader);
     }
 
-    /**
-     * Remove the reader (update active field to true)
-     * @param reader - reader, who restores
-     * @return count updated rows (readers)
-     */
     @Override
     public Integer restore(Reader reader) {
         LOGGER.info("restore(reader) was started");
@@ -162,12 +122,6 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
         return update(reader);
     }
 
-    /**
-     * Check to exist an only active=true reader in DB
-     *
-     * @param readerId - reader id
-     * @return true if reader is exist in DB, and false if reader not exist in DB
-     */
     @Override
     public Boolean exist(Integer readerId) {
         LOGGER.info("exist(reader) was started");
@@ -175,12 +129,6 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
         return exist(readerId, true);
     }
 
-    /**
-     * Check to exist a reader in DB
-     *
-     * @param readerId - reader id
-     * @return true if reader is exist in DB, and false if reader not exist in DB
-     */
     @Override
     public Boolean exist(Integer readerId, boolean active) {
         LOGGER.info("exist(reader, active) was started");
@@ -190,5 +138,12 @@ public class ReaderDaoSpringJdbc implements ReaderDao{
         sqlParameterSource.addValue("active", active);
         return (Boolean) new ExistReader(dataSource, existReaderSql).
                 findObjectByNamedParam(sqlParameterSource.getValues());
+    }
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        if(dataSource == null){
+            throw new BeanCreationException("DataSource must not be null in ReaderDaoSpringJdbc.class");
+        }
     }
 }

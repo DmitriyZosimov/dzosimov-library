@@ -11,4 +11,4 @@ INSERT INTO lib_entity (book_id)
 VALUES (1), (1), (1), (1), (1), (2), (2), (2), (2), (2), (2), (2), (3), (3), (4), (4), (4), (5), (5), (6), (6);
 
 INSERT INTO lib_entities_readers (entity_id, reader_id)
-VALUES (1, 1), (1, 2), (1, 4), (2, 1), (2, 3), (6, 1);
+VALUES (1, 1), (2, 2), (3, 4), (6, 1), (7, 3), (20, 1);

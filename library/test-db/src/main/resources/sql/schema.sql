@@ -33,8 +33,8 @@ CREATE TABLE lib_entity (
 CREATE TABLE lib_entities_readers (
     entity_id integer,
     reader_id integer,
-    FOREIGN KEY (reader_id) REFERENCES lib_reader(reader_id) ON DELETE NO ACTION ON UPDATE NO ACTION,
-    FOREIGN KEY (entity_id) REFERENCES lib_entity(entity_id) ON DELETE NO ACTION ON UPDATE NO ACTION,
+    FOREIGN KEY (reader_id) REFERENCES lib_reader(reader_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (entity_id) REFERENCES lib_entity(entity_id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 
