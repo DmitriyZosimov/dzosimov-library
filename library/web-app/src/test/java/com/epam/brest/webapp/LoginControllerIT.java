@@ -10,6 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
@@ -48,6 +49,7 @@ public class LoginControllerIT {
     public void shouldGetLoginPage() throws Exception {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/login")
+                .session(new MockHttpSession())
         ).andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("login"))

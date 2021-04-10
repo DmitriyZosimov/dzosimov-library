@@ -1,6 +1,7 @@
 package com.epam.brest.service;
 
 import com.epam.brest.dao.BookDao;
+import com.epam.brest.dao.ReaderDao;
 import com.epam.brest.model.Book;
 import com.epam.brest.model.sample.BookSample;
 import com.epam.brest.model.sample.SearchBookSample;
@@ -21,10 +22,12 @@ public class BookServiceImp implements IBookService {
     private static final Logger LOGGER = LoggerFactory.getLogger(BookServiceImp.class);
 
     private final BookDao bookDao;
+    private final ReaderDao readerDao;
 
     @Autowired
-    public BookServiceImp(BookDao bookDao) {
+    public BookServiceImp(BookDao bookDao, ReaderDao readerDao) {
         this.bookDao = bookDao;
+        this.readerDao = readerDao;
     }
 
     @Transactional(readOnly = true)
@@ -36,6 +39,10 @@ public class BookServiceImp implements IBookService {
     @Override
     public Boolean addReaderForBook(Integer readerId, Integer bookId) {
         LOGGER.info("addReaderForBook(readerId={}, bookId={})", readerId, bookId);
+        if(!readerDao.exist(readerId)){
+            LOGGER.info("reader not exist: readerId={}", readerId);
+            return false;
+        }
         int result = bookDao.addReaderForBook(bookId, readerId);
         return checkResult(bookId, result);
     }
@@ -96,7 +103,7 @@ public class BookServiceImp implements IBookService {
             LOGGER.warn("result={} > 1", result);
             return true;
         } else {
-            LOGGER.info("The book(bookId={}) - some done wrong", bookId);
+            LOGGER.info("The book(bookId={}) - some done wrong, maybe book is not found", bookId);
             return false;
         }
     }

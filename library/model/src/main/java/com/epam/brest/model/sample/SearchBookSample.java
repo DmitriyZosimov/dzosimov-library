@@ -1,23 +1,17 @@
 package com.epam.brest.model.sample;
 
 import com.epam.brest.model.Genre;
+import org.springframework.stereotype.Component;
+
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+@Component
 public class SearchBookSample {
 
-    /*  позволяет:
-        фамилии и инициалы ("Зосимов Д.А.")
-        двойные фамилии ("Бут-гусаим Влад А.")
-        несколько авторов через запятую ("Зосимов Д.А., Бут-гусаим Влад А.")
-     */
-    private final static String AUTHORS = "(([a-zA-Zа-яА-Я]+[\\.\\-]?(\\,)?)+(\\ )?)+";
-    @Pattern(regexp = AUTHORS, message = "{pattern.book.authors}")
-    @Size(min= 3, max = 60, message = "{size.book.authors}")
     private String authors;
-    @Size(min= 3, max = 60, message = "{size.book.title}")
     private String title;
     @NotNull
     private Genre genre;
@@ -25,7 +19,7 @@ public class SearchBookSample {
     public SearchBookSample() {
     }
 
-    public SearchBookSample(@Pattern(regexp = AUTHORS) @Max(60) String authors, @Max(60) String title, @NotNull Genre genre) {
+    public SearchBookSample(String authors, String title, @NotNull Genre genre) {
         this.authors = authors;
         this.title = title;
         this.genre = genre;

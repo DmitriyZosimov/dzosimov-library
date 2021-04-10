@@ -6,8 +6,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+@Validated
 @RestController
 public class ReaderController {
 
@@ -22,25 +27,27 @@ public class ReaderController {
     /**
      * Find a reader by identification and return it
      * @param id reader identification
-     * @return the found reader or null if the reader is not found
+     * @return the found reader or {@link HttpStatus} NOT FOUND
      */
-    @GetMapping(value = "/reader/{id}", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<ReaderSample> getProfile(@PathVariable("id") Integer id){
+    @GetMapping(value = "/reader/{id}", produces = "application/json")
+    public ResponseEntity<ReaderSample> getProfile(@PathVariable("id") @Min(1) Integer id){
         LOGGER.info("getProfile(id={})", id);
         ReaderSample readerSample = readerService.getProfile(id);
-        return new ResponseEntity<ReaderSample>(readerSample, HttpStatus.OK);
+        return readerSample != null ? new ResponseEntity<ReaderSample>(readerSample, HttpStatus.OK)
+                : new ResponseEntity("The reader was not found", HttpStatus.NOT_FOUND);
     }
 
     /**
      * Find a reader without books by identification and return it
      * @param id reader identification
-     * @return the found reader or null if the reader is not found
+     * @return the found reader or {@link HttpStatus} NOT FOUND
      */
-    @GetMapping(value = "/reader/{id}/without_books", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<ReaderSample> getProfileWithoutBooks(@PathVariable("id") Integer id){
+    @GetMapping(value = "/reader/{id}/without_books", produces = "application/json")
+    public ResponseEntity<ReaderSample> getProfileWithoutBooks(@PathVariable("id") @Min(1) Integer id){
         LOGGER.info("getProfileWithoutBooks(id={})", id);
         ReaderSample readerSample = readerService.getProfileWithoutBooks(id);
-        return new ResponseEntity<ReaderSample>(readerSample, HttpStatus.OK);
+        return readerSample != null ? new ResponseEntity<ReaderSample>(readerSample, HttpStatus.OK)
+                : new ResponseEntity("The reader was not found", HttpStatus.NOT_FOUND);
     }
 
     /**
@@ -49,7 +56,7 @@ public class ReaderController {
      * @return sample of the saved reader
      */
     @PostMapping(value = "/reader", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<ReaderSample> createReader(@RequestBody ReaderSample readerSample){
+    public ResponseEntity<ReaderSample> createReader(@Valid @RequestBody ReaderSample readerSample){
         LOGGER.info("createReader(readerSample={})", readerSample);
         ReaderSample savedReaderSample = readerService.createReader(readerSample);
         return new ResponseEntity<ReaderSample>(savedReaderSample, HttpStatus.OK);
@@ -61,7 +68,7 @@ public class ReaderController {
      * @return true if is executed, or false if is not executed
      */
     @PutMapping(value = "/reader", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Boolean> editProfile(@RequestBody ReaderSample readerSample){
+    public ResponseEntity<Boolean> editProfile(@Valid @RequestBody ReaderSample readerSample){
         LOGGER.info("editProfile(readerSample={})", readerSample);
         Boolean result = readerService.editProfile(readerSample);
         return new ResponseEntity<Boolean>(result, HttpStatus.OK);
@@ -70,27 +77,26 @@ public class ReaderController {
     /**
      * Update a reader from not active to active
      * @param id reader identification
-     * @return true if is executed, or false if is not executed
+     * @return true if is executed, , or {@link HttpStatus} BAD REQUEST
      */
-    @PutMapping(value = "/reader/{id}", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Boolean> restoreProfile(@PathVariable("id") Integer id){
+    @PutMapping(value = "/reader/{id}", produces = "application/json")
+    public ResponseEntity<Boolean> restoreProfile(@PathVariable("id") @Min(1) Integer id){
         LOGGER.info("restoreProfile(id={})", id);
         Boolean result = readerService.restoreProfile(id);
-        return new ResponseEntity<Boolean>(result, HttpStatus.OK);
+        return result ? new ResponseEntity<Boolean>(result, HttpStatus.OK)
+                : new ResponseEntity<Boolean>(result, HttpStatus.BAD_REQUEST);
     }
 
     /**
      * Update a reader from active to not active
      * @param id reader identification
-     * @return true if is executed, or false if is not executed
+     * @return true if is executed, or {@link HttpStatus} BAD REQUEST
      */
-    @DeleteMapping(value = "/reader/{id}", consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Boolean> deleteProfile(@PathVariable("id") Integer id){
+    @DeleteMapping(value = "/reader/{id}", produces = "application/json")
+    public ResponseEntity<Boolean> deleteProfile(@PathVariable("id") @Min(1) Integer id){
         LOGGER.info("deleteProfile(id={})", id);
         Boolean result = readerService.removeProfile(id);
-        return new ResponseEntity<Boolean>(result, HttpStatus.OK);
+        return result ? new ResponseEntity<Boolean>(result, HttpStatus.OK)
+                : new ResponseEntity<Boolean>(result, HttpStatus.BAD_REQUEST);
     }
-
-
-
 }

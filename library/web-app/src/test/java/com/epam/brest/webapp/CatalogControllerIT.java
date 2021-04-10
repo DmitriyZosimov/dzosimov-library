@@ -162,14 +162,14 @@ public class CatalogControllerIT {
         bookSample.setId(2);
 
         server.expect(ExpectedCount.once(), requestTo(TIE_BOOK_AND_READER_URL))
-                .andExpect(method(HttpMethod.POST))
+                .andExpect(method(HttpMethod.GET))
                 .andRespond(withStatus(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body("true"));
 
         mockMvc.perform(
                 MockMvcRequestBuilders
-                        .post("/catalog/select/" + bs1.getId())
+                        .get("/catalog/select/" + bs1.getId())
                         .sessionAttr("bookSample", bookSample)
                         .sessionAttr("searchBookSample", searchBookSample)
                         .sessionAttr("libraryCard", 1)
@@ -190,12 +190,12 @@ public class CatalogControllerIT {
         BookSample bookSample = new BookSample();
         bookSample.setId(1);
         server.expect(ExpectedCount.once(), requestTo(BOOK_URL + "/search"))
-                .andExpect(method(HttpMethod.GET))
+                .andExpect(method(HttpMethod.POST))
                 .andRespond(withStatus(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
                 .body(objectMapper.writeValueAsString(Arrays.asList(bs1))));
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/search")
+                MockMvcRequestBuilders.post("/search")
                         .param("authors",sbs.getAuthors())
                         .param("title",sbs.getTitle())
                         .param("genre",sbs.getGenre().toString())
@@ -222,7 +222,7 @@ public class CatalogControllerIT {
         bookSample.setId(1);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/search")
+                MockMvcRequestBuilders.post("/search")
                         .param("authors",sbs.getAuthors())
                         .param("title",sbs.getTitle())
                         .param("genre",sbs.getGenre().toString())

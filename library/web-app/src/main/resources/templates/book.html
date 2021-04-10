@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <!--Bootstrap CSS-->
-    <link rel="stylesheet" th:href="@{../static/css/bootstrap.css}">
+    <link rel="stylesheet" th:href="@{../css/bootstrap.css}">
 
     <title>Add a book</title>
 </head>
@@ -67,11 +67,25 @@
                 <form th:action="@{${#httpServletRequest.servletPath}}" method="post" th:object="${bookSample}">
                     <div class="col-auto">
                         <label for="authors" th:text="#{catalog.table.authors}">Authors</label>
-                        <input id="authors" type="text" th:field="*{authors}" class="form-control form-control-sm"/>
+                        <input id="authors" type="text" th:field="*{authors}"
+                               class="form-control form-control-sm"
+                               th:classappend="${#fields.hasErrors('authors')} ? ' is-invalid'"/>
+                        <div th:if="${#fields.hasErrors('authors')}"
+                             th:errors="*{authors}"
+                             class="invalid-feedback">
+                            authors name error
+                        </div>
                     </div>
                     <div class="col-auto">
                         <label for="title" th:text="#{catalog.table.title}">Title</label>
-                        <input id="title" type="text" th:field="*{title}" class="form-control form-control-sm"/>
+                        <input id="title" type="text" th:field="*{title}"
+                               class="form-control form-control-sm"
+                               th:classappend="${#fields.hasErrors('authors')} ? ' is-invalid'"/>
+                        <div th:if="${#fields.hasErrors('title')}"
+                             th:errors="*{title}"
+                             class="invalid-feedback">
+                            title name error
+                        </div>
                     </div>
                     <div class="col-auto">
                         <label for="genre" th:text="#{catalog.table.genre}">Genre</label>
@@ -168,6 +182,6 @@
     </div>
 </footer>
 <!--Bootstrap JS-->
-<script src="../static/js/bootstrap.bundle.js"></script>
+<script src="../js/bootstrap.bundle.js"></script>
 </body>
 </html>

@@ -3,37 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <!--Bootstrap CSS-->
-    <link rel="stylesheet" href="../static/css/bootstrap.css"
-          th:href="@{../static/css/bootstrap.css}">
+    <link rel="stylesheet" href="../css/bootstrap.css"
+          th:href="@{../css/bootstrap.css}">
     <title th:text="#{login.title}">Login</title>
 </head>
 <body class="bg-secondary">
-    <div class="container py-3">
-        <h1 th:text="#{login.title}">Login</h1>
-    </div>
+<header>
     <div class="container-sm">
-        <form method="post" th:action="@{/login}" class="form-inline">
-            <div class="form-group col-md-3">
-                <label for="card" th:text="#{login.library.card}">Library card</label>
-                <input id="card" name="card" type="text" class="form-control form-control-sm"/>
+        <div class="container-fluid py-1 d-none d-sm-block">
+            <div class="d-flex">
+                <div class="flex-grow-1"><span class="text-light h1" th:text="#{catalog.logo.text}">Library</span></div>
+                <div class="btn-group btn-group-sm my-auto">
+                    <a th:href="@{${#httpServletRequest.servletPath}(lan=ru)}" class="btn btn-outline-dark">ru</a>
+                    <a th:href="@{${#httpServletRequest.servletPath}(lan=en)}" class="btn btn-outline-dark">en</a>
+                </div>
             </div>
-            <div class="col-md-3 py-1">
-                <button type="submit" class="btn btn-primary" th:text="#{btn.enter}">Enter</button>
+        </div>
+        <nav class="navbar navbar-expand-sm d-flex justify-content-between bg-dark">
+            <ul class="navbar-nav ms-2">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/catalog}"><span th:text="#{nav.catalog}">Catalog</span></a>
+                </li>
+                <li class="navbar-item">
+                    <a class="nav-link" th:href="@{/profile}"><span th:text="#{nav.profile}">Profile</span></a>
+                </li>
+            </ul>
+            <div class="d-flex mx-2">
+                <ul class="navbar-nav ms-2">
+                    <th:block th:if="${#session.getAttribute('libraryCard')} != null">
+                        <li class="nav-item px-1">
+                            <span class="text text-primary"
+                                  th:text="#{profile.card}+' : '+${#session.getAttribute('libraryCard')}"></span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-primary btn-sm d-none d-sm-block"
+                               th:href="@{/logout}">
+                                <span th:text="#{nav.logout}">Logout</span>
+                            </a>
+                        </li>
+                    </th:block>
+                    <th:block th:unless="${#session.getAttribute('libraryCard')} != null">
+                        <li class="nav-item">
+                            <a class="btn btn-outline-primary btn-sm d-none d-sm-block"
+                               th:href="@{/login}"><span th:text="#{nav.login}">Sing in</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-primary btn-sm d-none d-sm-block"
+                               th:href="@{/registry}"><span th:text="#{nav.registry}">Registry</span></a>
+                        </li>
+                    </th:block>
+                </ul>
             </div>
-        </form>
-        <a th:href="@{/registry}"
-           class="btn btn-primary"
-           th:text="#{btn.registry}">Registry</a>
-        <th:block th:if="${isRemoved}">
-            <div>
-                <p th:text="#{login.restore.text}">Reader is removed. Do restore?</p>
-                <a th:href="@{/restore/{card}(card=${removedCard})}"
-                   class="btn btn-danger"
-                   th:text="#{btn.restore}">
-                    Restore
-                </a>
+        </nav>
+        <div class="container py-3">
+            <h1 th:text="#{login.title}">Login</h1>
+        </div>
+    </div>
+</header>
+    <div class="container-sm">
+        <div class="d-flex mb-1">
+            <div  class="flex-grow-1 px-1">
+                <form method="post" th:action="@{/login}" class="form-inline">
+                    <div class="form-group col-md-3">
+                        <label for="card" th:text="#{login.library.card}">Library card</label>
+                        <input id="card" name="card" type="text" class="form-control form-control-sm"/>
+                    </div>
+                    <div class="col-md-3 py-1">
+                        <button type="submit" class="btn btn-primary" th:text="#{btn.enter}">Enter</button>
+                    </div>
+                </form>
+                <a th:href="@{/registry}"
+                   class="btn btn-primary"
+                   th:text="#{btn.registry}">Registry</a>
             </div>
-        </th:block>
+            <th:block th:if="${isRemoved}">
+                <div>
+                    <p th:text="#{login.restore.text}">Reader is removed. Do restore?</p>
+                    <a th:href="@{/restore/{card}(card=${removedCard})}"
+                       class="btn btn-danger"
+                       th:text="#{btn.restore}">
+                        Restore
+                    </a>
+                </div>
+            </th:block>
+        </div>
     </div>
 </body>
 </html>

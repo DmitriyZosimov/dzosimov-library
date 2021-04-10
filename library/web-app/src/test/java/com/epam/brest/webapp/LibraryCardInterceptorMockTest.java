@@ -28,7 +28,7 @@ public class LibraryCardInterceptorMockTest {
     @Test
     public void shouldGoToLoginPageWhenOpenCatalogSelectBook() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/catalog/select/1")
+                MockMvcRequestBuilders.get("/catalog/select/1")
         ).andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/login"));
@@ -37,7 +37,7 @@ public class LibraryCardInterceptorMockTest {
     @Test
     public void shouldGoToLoginPageWhenOpenProfileDelete() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/profile/delete")
+                MockMvcRequestBuilders.get("/profile/delete")
         ).andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/login"));
@@ -46,7 +46,7 @@ public class LibraryCardInterceptorMockTest {
     @Test
     public void shouldGoToLoginPageWhenOpenProfileEditPost() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/profile/edit")
+                MockMvcRequestBuilders.get("/profile/edit")
         ).andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/login"));
@@ -64,7 +64,7 @@ public class LibraryCardInterceptorMockTest {
     @Test
     public void shouldGoToLoginPageWhenDeleteBookInProfile() throws Exception {
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/profile/book/delete/1")
+                MockMvcRequestBuilders.get("/profile/book/delete/1")
         ).andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isFound())
                 .andExpect(redirectedUrl("/login"));

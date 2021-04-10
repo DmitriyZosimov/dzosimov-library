@@ -52,30 +52,17 @@ public class ReaderServiceImp implements IReaderService {
     public ReaderSample createReader(ReaderSample readerSample) {
         LOGGER.info("createReader");
         LOGGER.debug("ReaderSample={}", readerSample);
-        if (readerSample == null){
-            LOGGER.info("reader is not added, because a request reader is null");
-            return null;
-        }
         Reader reader = ReaderMapper.getReader(readerSample);
         reader.setDateOfRegistry(LocalDate.now());
         reader = readerDao.save(reader);
-        if(reader.getReaderId() != null){
-            LOGGER.info("reader was added");
-            return ReaderMapper.getReaderSample(reader);
-        } else {
-            LOGGER.warn("happened some problem, a reader was not added");
-            return null;
-        }
+        return ReaderMapper.getReaderSample(reader);
+
     }
 
     @Override
     public Boolean editProfile(ReaderSample readerSample) {
         LOGGER.info("editProfile");
         LOGGER.debug("readerSample={}", readerSample);
-        if(readerSample == null || !readerDao.exist(readerSample.getReaderId())){
-            LOGGER.info("reader is not edited, because a request reader is null or not exist or not active");
-            return false;
-        }
         Reader reader = ReaderMapper.getReader(readerSample);
         int result = readerDao.update(reader);
         return checkResult(reader.getReaderId(), result);
@@ -85,10 +72,6 @@ public class ReaderServiceImp implements IReaderService {
     public Boolean removeProfile(Integer id) {
         LOGGER.info("removeProfile");
         LOGGER.debug("readerId={}", id);
-        if(id == null){
-            LOGGER.warn("reader id is null");
-            return false;
-        }
         Optional<Reader> readerOpt = readerDao.findReaderById(id);
         if(readerOpt.isEmpty()){
             LOGGER.info("reader is not found");
@@ -112,10 +95,6 @@ public class ReaderServiceImp implements IReaderService {
     public Boolean restoreProfile(Integer id) {
         LOGGER.info("restoreProfile");
         LOGGER.debug("readerId={}", id);
-        if(id == null){
-            LOGGER.warn("reader id is null");
-            return false;
-        }
         Optional<Reader> readerOpt = readerDao.findReaderById(id);
         if(readerOpt.isEmpty()){
             LOGGER.info("reader is not found");

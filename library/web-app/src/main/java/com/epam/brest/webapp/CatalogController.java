@@ -1,6 +1,5 @@
 package com.epam.brest.webapp;
 
-import com.epam.brest.model.sample.BookSample;
 import com.epam.brest.model.sample.SearchBookSample;
 import com.epam.brest.service.IBookService;
 import org.slf4j.Logger;
@@ -8,13 +7,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 
-@SessionAttributes({"bookSample", "searchBookSample"})
+@SessionAttributes({"searchBookSample"})
 @Controller
 public class CatalogController {
 
@@ -27,18 +26,8 @@ public class CatalogController {
         this.bookService = bookService;
     }
     /**
-     * Create ModelAttribute of a BookSample
-     * @return object of a BookSample.class
-     */
-    @ModelAttribute("bookSample")
-    public BookSample getBookSample(){
-        LOGGER.info("Create a ModelAttribute \"bookSample\"");
-        return new BookSample();
-    }
-
-    /**
      * Create ModelAttribute of a SearchBookSample
-     * @return object of a SearchBookSample.class
+     * @return object of a {@link SearchBookSample}
      */
     @ModelAttribute("searchBookSample")
     public SearchBookSample getSearhBookSample(){
@@ -51,7 +40,6 @@ public class CatalogController {
      * @param model used for rendering views
      * @return view catalog
      */
-
     @GetMapping(value = {"/", "/catalog"})
     public String getMainPage(Model model){
         LOGGER.info("GET /catalog");
@@ -61,16 +49,30 @@ public class CatalogController {
     }
 
     /**
-     * Add a book to the reader
+     * Goto catalog list page.
+     * @param message the message for further adding in view
+     * @param model used for rendering views
+     * @return view catalog
+     */
+    @GetMapping(value = {"/result"})
+    public String getMainPage(@RequestParam("resultMessage") String message, Model model){
+        LOGGER.info("GET /catalog with param result message");
+        LOGGER.debug("getMainPage({})", model);
+        model.addAttribute("resultMessage", message);
+        return getMainPage(model);
+    }
+
+    /**
+     * Add the book to the reader
      * and goto catalog list page.
      *
      * @param bookId identification of the book
      * @param model used for rendering views
      * @param session used for getting readerId ("library card") of a reader
-     * @return view catalog
+     * @return redirect to catalog
      */
-    @PostMapping(value = "/catalog/select/{book}")
-    public String selectBook(@PathVariable("book") int bookId, Model model,
+    @GetMapping(value = "/catalog/select/{book}")
+    public String selectBook(@PathVariable("book") @Min(1) Integer bookId, Model model,
                              HttpSession session){
         LOGGER.info("POST select a book /catalog/select/bookId={}", bookId);
         Integer readerId = (Integer) session.getAttribute("libraryCard");
@@ -83,19 +85,14 @@ public class CatalogController {
      *
      * @param bookSample sample of the book request for searching
      * @param model used for rendering views
-     * @param bindingResult represents binding results of the bookSample
      * @return view catalog page
      */
-    @GetMapping(value = "/search")
+    @PostMapping(value = "/search")
     public String searchBooks(
             @Valid @ModelAttribute("searchBookSample") SearchBookSample bookSample,
-                              BindingResult bindingResult, Model model){
+                               Model model){
         LOGGER.info("POST /search");
-        LOGGER.debug("searchBooks({}, {}, {})", bookSample, bindingResult, model);
-        if(bindingResult.hasErrors()){
-            LOGGER.error("BindingResult has errors");
-            return "catalog";
-        }
+        LOGGER.debug("searchBooks({}, {})", bookSample, model);
         model.addAttribute("books", bookService.searchBooks(bookSample));
         return "catalog";
     }

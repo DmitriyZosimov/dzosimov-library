@@ -5,9 +5,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import java.util.Arrays;
 
@@ -30,5 +33,20 @@ public class ApplicationRest extends SpringBootServletInitializer {
                 System.out.println(beanName);
             }
         };
+    }
+
+    @Bean
+    MessageSource resourceBundleMessageSource(){
+        ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
+        messageSource.addBasenames("validation");
+        messageSource.setDefaultEncoding("UTF-8");
+        return messageSource;
+    }
+
+    @Bean
+    LocalValidatorFactoryBean localValidatorFactoryBean(){
+        LocalValidatorFactoryBean bean = new LocalValidatorFactoryBean();
+        bean.setValidationMessageSource(resourceBundleMessageSource());
+        return bean;
     }
 }

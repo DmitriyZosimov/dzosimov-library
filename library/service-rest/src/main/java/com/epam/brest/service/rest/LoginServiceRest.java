@@ -4,8 +4,10 @@ import com.epam.brest.service.ILoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+@Service
 public class LoginServiceRest implements ILoginService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginServiceRest.class);

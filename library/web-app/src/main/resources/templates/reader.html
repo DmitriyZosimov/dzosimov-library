@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <!--Bootstrap CSS-->
-    <link rel="stylesheet" href="../static/css/bootstrap.css"
-          th:href="@{../static/css/bootstrap.css}">
+    <link rel="stylesheet" href="../css/bootstrap.css"
+          th:href="@{../css/bootstrap.css}">
 
     <title>Edit profile</title>
 </head>
@@ -72,26 +72,29 @@
                     <div class="col-auto">
                         <label for="firstName" class="mb-1 fw-bold" th:text="#{profile.name.first}">First name</label>
                         <input id="firstName" type="text" class="form-control form-control-sm"
+                               th:classappend="${#fields.hasErrors('firstName')} ? ' is-invalid'"
                                th:value="*{firstName}" th:field="*{firstName}"/>
                         <div th:if="${#fields.hasErrors('firstName')}"
                                   th:errors="*{firstName}"
-                                  class="text text-danger">
+                                  class="invalid-feedback">
                             first name error
                         </div>
                     </div>
                     <div class="col-auto" >
                         <label for="lastName" class="mb-1 fw-bold" th:text="#{profile.name.last}">Last name</label>
                         <input id="lastName" type="text" class="form-control form-control-sm"
+                               th:classappend="${#fields.hasErrors('lastName')} ? ' is-invalid'"
                                th:value="*{lastName}" th:field="*{lastName}"/>
                         <div th:if="${#fields.hasErrors('lastName')}"
                                   th:errors="*{lastName}"
-                                  class="text text-danger">
+                                  class="invalid-feedback">
                             last name error
                         </div>
                     </div>
                     <div class="col-auto">
                         <label for="patronymic" class="mb-1 fw-bold" th:text="#{profile.name.middle}">Patronymic</label>
                         <input id="patronymic" type="text" class="form-control form-control-sm"
+                               th:classappend="${#fields.hasErrors('patronymic')} ? ' is-invalid'"
                                th:value="*{patronymic}" th:field="*{patronymic}"/>
                         <div th:if="${#fields.hasErrors('patronymic')}"
                                   th:errors="*{patronymic}"
@@ -121,6 +124,6 @@
     </div>
 </footer>
 <!--Bootstrap JS-->
-<script src="../static/js/bootstrap.bundle.js"></script>
+<script src="../js/bootstrap.bundle.js"></script>
 </body>
 </html>

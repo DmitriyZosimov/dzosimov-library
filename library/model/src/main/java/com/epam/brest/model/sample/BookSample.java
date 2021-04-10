@@ -1,10 +1,14 @@
 package com.epam.brest.model.sample;
 
 import com.epam.brest.model.Genre;
+import org.springframework.stereotype.Component;
+
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+@Component
 public class BookSample {
 
     /*  позволяет:
@@ -22,7 +26,7 @@ public class BookSample {
     @NotBlank(message = "{not.blank}")
     @Size(min= 3, max = 60, message = "{size.book.title}")
     private String title;
-    @NotBlank(message = "{not.blank}")
+    @NotNull(message = "{not.null}")
     private Genre genre;
     private Integer quantity;
 

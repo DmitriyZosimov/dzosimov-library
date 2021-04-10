@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <!--Bootstrap CSS-->
-    <link rel="stylesheet" href="../static/css/bootstrap.css"
-          th:href="@{../static/css/bootstrap.css}">
+    <link rel="stylesheet" href="../css/bootstrap.css"
+          th:href="@{../css/bootstrap.css}">
     <title th:text="#{catalog.title}">Catalog</title>
 </head>
 <body class="bg-secondary">
@@ -85,7 +85,7 @@
                         <div id="flush-collapseOne" class="accordion-collapse collapse"
                              aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlush">
                             <div class="accordion-body">
-                                <form class="row" th:action="@{/search}" method="get" th:object="${searchBookSample}">
+                                <form class="row" th:action="@{/search}" method="post" th:object="${searchBookSample}">
                                     <div class="col-sm-3">
                                         <label for="authors" th:text="#{catalog.form.search.authors}">Authors</label>
                                         <input id="authors" type="text" th:field="*{authors}"
@@ -220,13 +220,11 @@
                 <td th:text="${book.genre}"></td>
                 <td th:text="${book.quantity}"></td>
                 <td>
-                    <form th:action="@{/catalog/select/{bookId}(bookId=${book.id})}" method="post">
-                        <button type="submit"
-                                class="btn btn-outline-dark btn-sm"
-                                th:text="#{btn.select}">
+                    <a th:href="@{/catalog/select/{bookId}(bookId=${book.id})}"
+                       class="btn btn-outline-dark btn-sm"
+                       th:text="#{btn.select}">
                             select
-                        </button>
-                    </form>
+                    </a>
                 </td>
                 <td>
                     <a th:href="@{/book/{bookId}(bookId=${book.id})}"
@@ -265,34 +263,16 @@
                         <span></span>
                     </div>
                     <div class="modal-footer">
-                        <form action="/book/delete/" method="post">
-                            <button type="submit" class="btn btn-danger btn-sm" th:text="#{btn.delete}">Delete</button>
-                        </form>
+                        <a th:href="@{/book/delete/}"
+                           class="btn btn-danger btn-sm" th:text="#{btn.delete}">
+                            Delete
+                        </a>
                         <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal"
                                 th:text="#{btn.cancel}">Cancel</button>
                     </div>
                 </div>
             </div>
         </div>
-        <!--TODO: remove-->
-        <!--Pagination-->
-        <nav aria-label="Page navigation">
-            <ul class="pagination pagination-sm">
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Previous">
-                        <span aria-hidden="true">&laquo;</span>
-                    </a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#" aria-label="Next">
-                        <span aria-hidden="true">&raquo;</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
     </div>
 </section>
 
@@ -303,9 +283,9 @@
     </div>
 </footer>
 <!--Bootstrap JS-->
-<script src="../static/js/bootstrap.bundle.js"></script>
+<script src="../js/bootstrap.bundle.js"></script>
 <!--JQuery-->
-<script src="../static/js/jquery.min.js"></script>
+<script src="../js/jquery.min.js"></script>
 <script>
     $(document).ready(function(){
       $("#myInput").on("keyup", function() {
@@ -327,7 +307,7 @@
       var id = button.getAttribute('data-bs-id')
       // Update the modal's content.
       deleteModal.querySelector('.modal-body span').textContent = authors + ' "' + title +'" ?'
-      deleteModal.querySelector('.modal-footer form').action = '/book/delete/' + id
+      deleteModal.querySelector('.modal-footer a').href = '/book/delete/' + id
     })
 </script>
 

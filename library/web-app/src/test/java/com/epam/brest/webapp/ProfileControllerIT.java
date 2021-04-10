@@ -15,6 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.test.web.servlet.MockMvc;
@@ -83,21 +84,19 @@ public class ProfileControllerIT {
     }
 
     @Test
-    public void shouldForwardCatalogPageWhenReaderNotFoundById() throws Exception {
+    public void shouldRedirectCatalogPageWhenReaderNotFoundById() throws Exception {
         String message = "the reader by id 9999999 not found";
         server.expect(ExpectedCount.once(), requestTo(READER_URL + "/9999999"))
                 .andExpect(method(HttpMethod.GET))
-                .andRespond(withStatus(HttpStatus.OK)
+                .andRespond(withStatus(HttpStatus.NOT_FOUND)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(objectMapper.writeValueAsString(null)));
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/profile")
                         .sessionAttr("libraryCard", 9999999)
         ).andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(view().name("forward:/catalog"))
-                .andExpect(forwardedUrl("/catalog"))
-                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
+                .andExpect(status().isNotFound())
+                .andExpect(view().name("error"));
     }
 
     @Test
@@ -130,25 +129,23 @@ public class ProfileControllerIT {
     }
 
     @Test
-    public void shouldForwardCatalogPageBeforeEditingWhenReaderNotFoundById() throws Exception {
+    public void shouldRedirectCatalogPageBeforeEditingWhenReaderNotFoundById() throws Exception {
         String message = "the reader by id 9999999 not found";
         server.expect(ExpectedCount.once(), requestTo(READER_URL + "/9999999/without_books"))
                 .andExpect(method(HttpMethod.GET))
-                .andRespond(withStatus(HttpStatus.OK)
+                .andRespond(withStatus(HttpStatus.NOT_FOUND)
                         .contentType(MediaType.APPLICATION_JSON)
                         .body(objectMapper.writeValueAsString(null)));
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/profile/edit")
                         .sessionAttr("libraryCard", 9999999)
         ).andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(view().name("forward:/catalog"))
-                .andExpect(forwardedUrl("/catalog"))
-                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
+                .andExpect(status().isNotFound())
+                .andExpect(view().name("error"));
     }
 
     @Test
-    public void shouldForwardToProfilePageAfterEditingReaderWithGoodMessage() throws Exception {
+    public void shouldRedirectToCatalogPageAfterEditingReaderWithGoodMessage() throws Exception {
         ReaderSample rs = createReaderSample();
         rs.setBooks(null);
         String message = "The reader was edited";
@@ -159,17 +156,19 @@ public class ProfileControllerIT {
                         .body("true"));
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/profile/edit")
-                        .sessionAttr("readerSample", rs)
                         .sessionAttr("libraryCard", rs.getReaderId())
+                        .param("firstName", rs.getFirstName())
+                        .param("lastName", rs.getLastName())
+                        .param("patronymic", rs.getPatronymic())
         ).andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.forwardedUrl("/profile"))
-                .andExpect(view().name("forward:/profile"))
-                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/result?resultMessage=" + message))
+                .andExpect(view().name("redirect:/result?resultMessage=" + message));
     }
 
+    //TODO: HttpStatus.UNPROCESSABLE_ENTITY
     @Test
-    public void shouldForwardToProfilePageAfterEditingReaderWithBadMessage() throws Exception {
+    public void shouldRedirectToCatalogPageAfterEditingReaderWithBadMessage() throws Exception {
         ReaderSample rs = createReaderSample();
         rs.setBooks(null);
         String message = "The reader was not edited";
@@ -180,17 +179,16 @@ public class ProfileControllerIT {
                         .body("false"));
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/profile/edit")
-                        .sessionAttr("readerSample", rs)
                         .sessionAttr("libraryCard", rs.getReaderId())
+                        .param("firstName", rs.getFirstName())
+                        .param("lastName", rs.getLastName())
+                        .param("patronymic", rs.getPatronymic())
         ).andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.forwardedUrl("/profile"))
-                .andExpect(view().name("forward:/profile"))
-                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/result?resultMessage=" + message))
+                .andExpect(view().name("redirect:/result?resultMessage=" + message));
     }
 
-    //TODO: refactor
-    @Disabled
     @Test
     public void shouldGetReaderPageBeforeEditingWhenBindingResultHasErrors() throws Exception {
         ReaderSample rs = createReaderSample();
@@ -198,8 +196,10 @@ public class ProfileControllerIT {
         rs.setBooks(null);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/profile/edit")
-                        .sessionAttr("readerSample", rs)
                         .sessionAttr("libraryCard", rs.getReaderId())
+                        .param("firstName", rs.getFirstName())
+                        .param("lastName", rs.getLastName())
+                        .param("patronymic", rs.getPatronymic())
         ).andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("reader"))
@@ -220,7 +220,7 @@ public class ProfileControllerIT {
     }
 
     @Test
-    public void shouldForwardToCatalogAfterAddingReaderWithGoodMessage() throws Exception {
+    public void shouldRedirectToCatalogAfterAddingReaderWithGoodMessage() throws Exception {
         ReaderSample rs = new ReaderSample("first", "last", "patronymic");
         ReaderSample savedRs = createReaderSample();
         String message = "The reader was added, library card is 1";
@@ -231,42 +231,44 @@ public class ProfileControllerIT {
                         .body(objectMapper.writeValueAsString(savedRs)));
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/registry")
-                        .sessionAttr("readerSample", rs)
+                        .param("firstName", rs.getFirstName())
+                        .param("lastName", rs.getLastName())
+                        .param("patronymic", rs.getPatronymic())
         ).andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.forwardedUrl("/catalog"))
-                .andExpect(view().name("forward:/catalog"))
-                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/result?resultMessage=" + message))
+                .andExpect(view().name("redirect:/result?resultMessage=" + message));
     }
 
     @Test
-    public void shouldForwardToCatalogAfterAddingReaderWithBadMessage() throws Exception {
+    public void shouldRedirectToCatalogAfterAddingReaderWithBadMessage() throws Exception {
         ReaderSample rs = new ReaderSample("first", "last", "patronymic");
-        ReaderSample savedRs = null;
         String message = "The reader was not added";
         server.expect(ExpectedCount.once(), requestTo(READER_URL))
                 .andExpect(method(HttpMethod.POST))
                 .andRespond(withStatus(HttpStatus.OK)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .body(objectMapper.writeValueAsString(savedRs)));
+                        .body(objectMapper.writeValueAsString(rs)));
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/registry")
-                        .sessionAttr("readerSample", rs)
+                        .param("firstName", rs.getFirstName())
+                        .param("lastName", rs.getLastName())
+                        .param("patronymic", rs.getPatronymic())
         ).andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.forwardedUrl("/catalog"))
-                .andExpect(view().name("forward:/catalog"))
-                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/result?resultMessage=" + message))
+                .andExpect(view().name("redirect:/result?resultMessage=" + message));
     }
 
-    //TODO:refactor
-    @Disabled
     @Test
     public void shouldGetReaderPageBeforeAddingWhenBindingResultHasErrors() throws Exception {
         ReaderSample rs = new ReaderSample("12", "", "patronymic");
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/registry")
-                        .sessionAttr("readerSample", rs)
+                        .session(new MockHttpSession())
+                        .param("firstName", rs.getFirstName())
+                        .param("lastName", rs.getLastName())
+                        .param("patronymic", rs.getPatronymic())
         ).andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("reader"))
@@ -275,7 +277,7 @@ public class ProfileControllerIT {
     }
 
     @Test
-    public void shouldForwardToCatalogAfterDeletingReaderWithGoodMessage() throws Exception {
+    public void shouldRedirectToCatalogAfterDeletingReaderWithGoodMessage() throws Exception {
         String message = "The reader was removed";
         server.expect(ExpectedCount.once(), requestTo(READER_ID_URL))
                 .andExpect(method(HttpMethod.DELETE))
@@ -283,18 +285,17 @@ public class ProfileControllerIT {
                         .contentType(MediaType.APPLICATION_JSON)
                         .body("true"));
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/profile/delete")
+                MockMvcRequestBuilders.get("/profile/delete")
                         .sessionAttr("libraryCard", 1)
         ).andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.forwardedUrl("/catalog"))
-                .andExpect(view().name("forward:/catalog"))
-                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/result?resultMessage=" + message))
+                .andExpect(view().name("redirect:/result?resultMessage=" + message))
                 .andExpect(MockMvcResultMatchers.request().sessionAttributeDoesNotExist("libraryCard"));
     }
 
     @Test
-    public void shouldForwardToCatalogAfterDeletingReaderWithBadMessage() throws Exception {
+    public void shouldRedirectToCatalogAfterDeletingReaderWithBadMessage() throws Exception {
         String message = "The reader was not removed";
         server.expect(ExpectedCount.once(), requestTo(READER_ID_URL))
                 .andExpect(method(HttpMethod.DELETE))
@@ -302,18 +303,17 @@ public class ProfileControllerIT {
                         .contentType(MediaType.APPLICATION_JSON)
                         .body("false"));
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/profile/delete")
+                MockMvcRequestBuilders.get("/profile/delete")
                         .sessionAttr("libraryCard", 1)
         ).andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.forwardedUrl("/catalog"))
-                .andExpect(view().name("forward:/catalog"))
-                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/result?resultMessage=" + message))
+                .andExpect(view().name("redirect:/result?resultMessage=" + message))
                 .andExpect(MockMvcResultMatchers.request().sessionAttribute("libraryCard", is(1)));
     }
 
     @Test
-    public void shouldForwardToCatalogAfterRestoringReaderWithGoodMessage() throws Exception {
+    public void shouldRedirectToCatalogAfterRestoringReaderWithGoodMessage() throws Exception {
         String message = "The reader was restored, library card is 1";
         server.expect(ExpectedCount.once(), requestTo(READER_ID_URL))
                 .andExpect(method(HttpMethod.PUT))
@@ -323,14 +323,13 @@ public class ProfileControllerIT {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/restore/1")
         ).andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.forwardedUrl("/catalog"))
-                .andExpect(view().name("forward:/catalog"))
-                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/result?resultMessage=" + message))
+                .andExpect(view().name("redirect:/result?resultMessage=" + message));
     }
-
+    //TODO: when response HttpStatus.Bad_Request
     @Test
-    public void shouldForwardToCatalogAfterRestoringReaderWithBadMessage() throws Exception {
+    public void shouldRedirectToCatalogAfterRestoringReaderWithBadMessage() throws Exception {
         String message = "The reader was not restored";
         server.expect(ExpectedCount.once(), requestTo(READER_ID_URL))
                 .andExpect(method(HttpMethod.PUT))
@@ -340,10 +339,9 @@ public class ProfileControllerIT {
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/restore/1")
         ).andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.forwardedUrl("/catalog"))
-                .andExpect(view().name("forward:/catalog"))
-                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/result?resultMessage=" + message))
+                .andExpect(view().name("redirect:/result?resultMessage=" + message));
     }
 
     @Test
@@ -354,7 +352,7 @@ public class ProfileControllerIT {
                         .contentType(MediaType.APPLICATION_JSON)
                         .body("true"));
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/profile/book/delete/1")
+                MockMvcRequestBuilders.get("/profile/book/delete/1")
                         .sessionAttr("libraryCard", 1)
         ).andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isFound())

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <!--Bootstrap CSS-->
-    <link rel="stylesheet" href="../static/css/bootstrap.css"
-          th:href="@{../static/css/bootstrap.css}">
+    <link rel="stylesheet" href="../css/bootstrap.css"
+          th:href="@{../css/bootstrap.css}">
 
     <title>Profile</title>
 </head>
@@ -124,9 +124,10 @@
                         <h6 th:text="${readerSample.readerId}"></h6>
                     </div>
                     <div class="modal-footer">
-                        <form th:action="@{/profile/delete}" method="post">
-                            <button type="submit" class="btn btn-danger btn-sm" th:text="#{btn.delete}">Delete</button>
-                        </form>
+                        <a th:href="@{/profile/delete}"
+                           class="btn btn-danger btn-sm" th:text="#{btn.delete}">
+                            Delete
+                        </a>
                         <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal"
                                 th:text="#{btn.cancel}">Cancel</button>
                     </div>
@@ -177,9 +178,10 @@
                             <span></span>
                         </div>
                         <div class="modal-footer">
-                            <form action="/profile/book/delete/" method="post">
-                                <button type="submit" class="btn btn-danger btn-sm" th:text="#{btn.delete}">Delete</button>
-                            </form>
+                            <a th:href="@{/profile/book/delete/}"
+                               class="btn btn-danger btn-sm" th:text="#{btn.delete}">
+                                Delete
+                            </a>
                             <button type="button" class="btn btn-primary btn-sm" data-bs-dismiss="modal"
                                     th:text="#{btn.cancel}">Cancel</button>
                         </div>
@@ -197,7 +199,7 @@
     </div>
 </footer>
 <!--Bootstrap JS-->
-<script src="../static/js/bootstrap.bundle.js"></script>
+<script src="../js/bootstrap.bundle.js"></script>
 <script>
     var deleteModal = document.getElementById('deleteBookFromProfile')
     deleteModal.addEventListener('show.bs.modal', function (event) {
@@ -209,7 +211,7 @@
       var id = button.getAttribute('data-bs-id')
       // Update the modal's content.
       deleteModal.querySelector('.modal-body span').textContent = authors + ' "' + title +'" ?'
-      deleteModal.querySelector('.modal-footer form').action = '/profile/book/delete/' + id
+      deleteModal.querySelector('.modal-footer a').href = '/profile/book/delete/' + id
     })
 </script>
 </body>

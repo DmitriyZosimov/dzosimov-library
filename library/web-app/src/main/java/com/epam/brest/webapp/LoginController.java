@@ -33,11 +33,11 @@ public class LoginController {
     }
 
     /**
-     * Added to session library card (reader id)
+     * Added to session the library card (reader id)
      * @param card reader identification that is to be added
-     * @param session HttpSession is necessary to add reader id
+     * @param session used for adding the reader identification
      * @param model used for rendering views
-     * @return redirect to catalog or goto view login if the reader was removed
+     * @return redirect to catalog or goto view login, if the reader was removed
      */
     @PostMapping("/login")
     public String login(@RequestParam("card") Integer card,
@@ -57,8 +57,8 @@ public class LoginController {
     }
 
     /**
-     * A current session invalidate
-     * @param session HttpSession is necessary to invalidate
+     * The current session invalidate
+     * @param session used to invalidate
      * @return redirect to catalog
      */
     @GetMapping("/logout")

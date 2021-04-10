@@ -90,13 +90,6 @@ public class ReaderServiceIT {
     }
 
     @Test
-    public void shoundReturnNullWhenRequestReaderSampleIsNullBeforeCreatingReader(){
-        ReaderSample readerSample = null;
-        readerSample = readerService.createReader(readerSample);
-        assertNull(readerSample);
-    }
-
-    @Test
     public void shouldReturnTrueAfterEditingReader(){
         Integer readerId = 1;
         ReaderSample reader = readerService.getProfileWithoutBooks(readerId);
@@ -108,11 +101,6 @@ public class ReaderServiceIT {
         reader = readerService.getProfileWithoutBooks(readerId);
         assertEquals("test", reader.getFirstName());
         assertEquals("test", reader.getLastName());
-    }
-
-    @Test
-    public void shouldReturnFalseWhenRequestReaderIsNullBeforeEditingReader(){
-        assertFalse(readerService.editProfile(null));
     }
 
     @Test

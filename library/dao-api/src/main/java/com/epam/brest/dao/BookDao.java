@@ -1,7 +1,6 @@
 package com.epam.brest.dao;
 
 import com.epam.brest.model.Book;
-import com.epam.brest.model.dto.BookDto;
 import com.epam.brest.model.sample.BookSample;
 import com.epam.brest.model.sample.SearchBookSample;
 

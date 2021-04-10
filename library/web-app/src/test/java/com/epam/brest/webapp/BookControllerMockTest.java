@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.context.MessageSource;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -52,43 +53,46 @@ public class BookControllerMockTest {
     }
 
     @Test
-    public void shouldAddBookAndForwardCatalogPageWithGoodMessage() throws Exception {
+    public void shouldAddBookAndRedirectCatalogPageWithGoodMessage() throws Exception {
         BookSample bs = new BookSample("author", "title", Genre.MYSTERY);
         String message = "The book was added";
         when(bookService.createBook(any(BookSample.class))).thenReturn(true);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/book/new")
-                .sessionAttr("bookSample", bs)
+                        .param("authors", bs.getAuthors())
+                        .param("title", bs.getTitle())
+                        .param("genre", bs.getGenre().name())
         ).andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.forwardedUrl("/catalog"))
-                .andExpect(view().name("forward:/catalog"))
-                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/result?resultMessage=" + message))
+                .andExpect(view().name("redirect:/result?resultMessage=" + message));
     }
 
     @Test
-    public void shouldNotAddBookAndForwardCatalogPageWithBadMessage() throws Exception {
+    public void shouldNotAddBookAndRedirectCatalogPageWithBadMessage() throws Exception {
         BookSample bs = new BookSample("author", "title", Genre.MYSTERY);
         String message = "The book was not added";
         when(bookService.createBook(any(BookSample.class))).thenReturn(false);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/book/new")
-                        .sessionAttr("bookSample", bs)
+                        .param("authors", bs.getAuthors())
+                        .param("title", bs.getTitle())
+                        .param("genre", bs.getGenre().name())
         ).andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.forwardedUrl("/catalog"))
-                .andExpect(view().name("forward:/catalog"))
-                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/result?resultMessage=" + message))
+                .andExpect(view().name("redirect:/result?resultMessage=" + message));
     }
 
-    //TODO:refactor
-    @Disabled
     @Test
     public void shouldReturnBookPageWithErrorsWhenBindingResultHasErrors() throws Exception {
         BookSample bs = new BookSample("1", "", Genre.MYSTERY);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/book/new")
-                        .sessionAttr("bookSample", bs)
+                        .param("authors", bs.getAuthors())
+                        .param("title", bs.getTitle())
+                        .param("genre", bs.getGenre().name())
+                        .session(new MockHttpSession())
         ).andDo(MockMvcResultHandlers.print())
                 .andExpect(model().attributeHasFieldErrors("bookSample", "authors", "title"))
                 .andExpect(view().name("book"))
@@ -101,6 +105,7 @@ public class BookControllerMockTest {
         when(bookService.findBookById(anyInt())).thenReturn(bs);
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/book/" + bs.getId())
+                .session(new MockHttpSession())
         ).andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(view().name("book"))
@@ -117,57 +122,46 @@ public class BookControllerMockTest {
     }
 
     @Test
-    public void shouldForwardCatalogPageWhenBookNotFoundById() throws Exception {
-        String message = "the book by id 1 not found";
-        when(bookService.findBookById(anyInt())).thenReturn(null);
-        mockMvc.perform(
-                MockMvcRequestBuilders.get("/book/1")
-        ).andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(view().name("forward:/catalog"))
-                .andExpect(forwardedUrl("/catalog"))
-                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
-
-    }
-
-    @Test
-    public void shouldForwardToCatalogPageAfterEditBookWithGoodMessage() throws Exception {
+    public void shouldRedirectToCatalogPageAfterEditBookWithGoodMessage() throws Exception {
         BookSample bs = new BookSample(1,"author", "title", Genre.MYSTERY, 3);
         String message = "The book was edited";
         when(bookService.editBook(any(BookSample.class))).thenReturn(true);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/book/" + bs.getId())
-                        .sessionAttr("bookSample", bs)
+                        .param("authors", bs.getAuthors())
+                        .param("title", bs.getTitle())
+                        .param("genre", bs.getGenre().name())
         ).andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.forwardedUrl("/catalog"))
-                .andExpect(view().name("forward:/catalog"))
-                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/result?resultMessage=" + message))
+                .andExpect(view().name("redirect:/result?resultMessage=" + message));
     }
 
     @Test
-    public void shouldForwardToCatalogPageAfterEditBookWithBadMessage() throws Exception {
+    public void shouldRedirectToCatalogPageAfterEditBookWithBadMessage() throws Exception {
         BookSample bs = new BookSample(1,"author", "title", Genre.MYSTERY, 3);
         String message = "The book was not edited";
         when(bookService.editBook(any(BookSample.class))).thenReturn(false);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/book/" + bs.getId())
-                        .sessionAttr("bookSample", bs)
+                        .param("authors", bs.getAuthors())
+                        .param("title", bs.getTitle())
+                        .param("genre", bs.getGenre().name())
         ).andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.forwardedUrl("/catalog"))
-                .andExpect(view().name("forward:/catalog"))
-                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/result?resultMessage=" + message))
+                .andExpect(view().name("redirect:/result?resultMessage=" + message));
     }
 
-    //TODO:refactor
-    @Disabled
     @Test
     public void shouldReturnBookPageAfterEditWithErrorsWhenBindingResultHasErrors() throws Exception {
         BookSample bs = new BookSample(1,"1", "", Genre.MYSTERY, 3);
         mockMvc.perform(
                 MockMvcRequestBuilders.post("/book/" + bs.getId())
-                        .sessionAttr("bookSample", bs)
+                        .param("authors", bs.getAuthors())
+                        .param("title", bs.getTitle())
+                        .param("genre", bs.getGenre().name())
+                        .session(new MockHttpSession())
         ).andDo(MockMvcResultHandlers.print())
                 .andExpect(model().attributeHasFieldErrors("bookSample", "authors", "title"))
                 .andExpect(view().name("book"))
@@ -175,28 +169,26 @@ public class BookControllerMockTest {
     }
 
     @Test
-    public void shouldForwardToCatalogPageAfterDeleteBookWithGoodMessage() throws Exception {
+    public void shouldRedirectToCatalogPageAfterDeleteBookWithGoodMessage() throws Exception {
         String message = "The book was removed";
         when(bookService.delete(anyInt())).thenReturn(true);
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/book/delete/1")
+                MockMvcRequestBuilders.get("/book/delete/1")
         ).andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.forwardedUrl("/catalog"))
-                .andExpect(view().name("forward:/catalog"))
-                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/result?resultMessage=" + message))
+                .andExpect(view().name("redirect:/result?resultMessage=" + message));
     }
 
     @Test
-    public void shouldForwardToCatalogPageAfterDeleteBookWithBadMessage() throws Exception {
+    public void shouldRedirectToCatalogPageAfterDeleteBookWithBadMessage() throws Exception {
         String message = "The book was not removed";
         when(bookService.delete(anyInt())).thenReturn(false);
         mockMvc.perform(
-                MockMvcRequestBuilders.post("/book/delete/1")
+                MockMvcRequestBuilders.get("/book/delete/1")
         ).andDo(MockMvcResultHandlers.print())
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.forwardedUrl("/catalog"))
-                .andExpect(view().name("forward:/catalog"))
-                .andExpect(model().attribute("resultMessage", Matchers.hasToString(message)));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(MockMvcResultMatchers.redirectedUrl("/result?resultMessage=" + message))
+                .andExpect(view().name("redirect:/result?resultMessage=" + message));
     }
 }

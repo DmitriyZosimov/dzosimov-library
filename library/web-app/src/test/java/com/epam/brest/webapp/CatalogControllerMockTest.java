@@ -147,7 +147,7 @@ public class CatalogControllerMockTest {
 
         mockMvc.perform(
                 MockMvcRequestBuilders
-                        .post("/catalog/select/" + bs1.getId())
+                        .get("/catalog/select/" + bs1.getId())
                         .sessionAttr("bookSample", bookSample)
                         .sessionAttr("searchBookSample", searchBookSample)
                         .sessionAttr("libraryCard", 1)
@@ -173,7 +173,7 @@ public class CatalogControllerMockTest {
 
         when(bookService.searchBooks(any())).thenReturn(Arrays.asList(bs1));
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/search")
+                MockMvcRequestBuilders.post("/search")
                         .param("authors",sbs.getAuthors())
                         .param("title",sbs.getTitle())
                         .param("genre",sbs.getGenre().toString())
@@ -203,7 +203,7 @@ public class CatalogControllerMockTest {
         bookSample.setId(1);
 
         mockMvc.perform(
-                MockMvcRequestBuilders.get("/search")
+                MockMvcRequestBuilders.post("/search")
                 .param("authors",sbs.getAuthors())
                 .param("title",sbs.getTitle())
                 .param("genre",sbs.getGenre().toString())

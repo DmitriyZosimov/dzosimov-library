@@ -9,13 +9,16 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.LocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 
-@SessionAttributes({"bookSample"})
 @Controller
 @RequestMapping("/book/**")
 public class BookController {
@@ -23,11 +26,11 @@ public class BookController {
     private static final Logger LOGGER = LoggerFactory.getLogger(BookController.class);
 
     private final IBookService bookService;
-    private SessionLocaleResolver localeResolver;
+    private final LocaleResolver localeResolver;
     private final MessageSource messageSource;
 
     @Autowired
-    public BookController(IBookService bookService, SessionLocaleResolver localeResolver, MessageSource messageSource) {
+    public BookController(IBookService bookService, LocaleResolver localeResolver, MessageSource messageSource) {
         this.bookService = bookService;
         this.localeResolver = localeResolver;
         this.messageSource = messageSource;
@@ -41,6 +44,7 @@ public class BookController {
     @GetMapping(value = {"/new"})
     public String addBook(Model model){
         LOGGER.info("GET /book/new");
+        model.addAttribute("bookSample", new BookSample());
         model.addAttribute("isNew", true);
         return "book";
     }
@@ -48,18 +52,20 @@ public class BookController {
     /**
      * Add a book and return message by the result of adding
      * @param bookSample sample of the book that is to be added
-     * @param bindingResult represents binding results of the bookSample
+     * @param bindingResult used for error registration capabilities, allowing for a {@link javax.validation.Validator}
+     *                      to be applied.
      * @param model used for rendering views
-     * @param request HttpServletRequest is necessary for getting a current locale
-     * @return forward to catalog or return book page when binding result has errors
+     * @param request used for getting a current locale
+     * @return redirect to result or return book page, if the binding result has errors
      */
     @PostMapping(value = "/new")
-    public String addBook(@Valid @ModelAttribute("bookSample") BookSample bookSample,
-                          BindingResult bindingResult, Model model, HttpServletRequest request){
+    public String addBook(@Valid BookSample bookSample, BindingResult bindingResult,
+                          Model model, HttpServletRequest request){
         LOGGER.info("POST /book/new, create a book");
         LOGGER.debug("bookSample={}", bookSample);
         if(bindingResult.hasErrors()){
-            LOGGER.error("BindingResult has errors");
+            LOGGER.info("validation errors");
+            model.addAttribute("isNew", true);
             return "book";
         }
         String messageCode;
@@ -70,50 +76,44 @@ public class BookController {
         }
         String message = messageSource.getMessage(messageCode, null, localeResolver.resolveLocale(request));
         LOGGER.info(message);
-        model.addAttribute("resultMessage", message);
-        return "forward:/catalog";
+        return "redirect:/result?resultMessage=" + message;
     }
 
     /**
      * Goto a book page with model attribute "isNew" is false
-     * and with found book by id. If the book is not found, forward to catalog.
-     * @param bookId a book identification which will edit
+     * and with found book by identification.
+     * @param bookId a book identification which will be editing
      * @param model used for rendering views
-     * @param request HttpServletRequest is necessary for getting a current locale
-     * @return book page or forward to catalog when the book was not found
+     * @param request used for getting a current locale
+     * @return book page.
      */
     @GetMapping(value = "/{bookId}")
-    public String editBook(@PathVariable("bookId") Integer bookId, Model model,
+    public String editBook(@PathVariable("bookId") @Min(1) Integer bookId, Model model,
                            HttpServletRequest request){
         LOGGER.info("GET /book/{}", bookId);
         BookSample bookSample = bookService.findBookById(bookId);
-        if(bookSample == null){
-            String message = messageSource.getMessage("error.not.found",
-                    new String[]{"book", bookId.toString()},
-                    localeResolver.resolveLocale(request));
-            model.addAttribute("resultMessage", message);
-            return "forward:/catalog";
-        }
         model.addAttribute("isNew", false);
         model.addAttribute("bookSample", bookSample);
         return "book";
     }
 
     /**
-     * Edit a book and return a message by the result of editing
+     * Edit the book and return a message by the result of editing
      * @param bookSample sample of the book that is to be changed
-     * @param bindingResult represents binding results of the bookSample
+     * @param bindingResult used for error registration capabilities, allowing for a
+     *                      {@link javax.validation.Validator} to be applied.
      * @param model used for rendering views
-     * @param request HttpServletRequest is necessary for getting a current locale
-     * @return forward to catalog or return book page when binding result has errors
+     * @param request used for getting a current locale
+     * @return redirect to result or return book page, if the binding result has errors
      */
     @PostMapping(value = "/{bookId}")
-    public String editBook(@Valid BookSample bookSample,
-                           BindingResult bindingResult, Model model, HttpServletRequest request){
+    public String editBook(@Valid BookSample bookSample, BindingResult bindingResult,
+                           Model model, HttpServletRequest request){
         LOGGER.info("POST /book/{}, edit a book", bookSample.getId());
         LOGGER.debug("bookSample={}", bookSample);
         if(bindingResult.hasErrors()){
-            LOGGER.error("BindingResult has errors");
+            LOGGER.info("validation errors");
+            model.addAttribute("isNew", false);
             return "book";
         }
         String messageCode;
@@ -124,20 +124,19 @@ public class BookController {
         }
         String message = messageSource.getMessage(messageCode, null, localeResolver.resolveLocale(request));
         LOGGER.info(message);
-        model.addAttribute("resultMessage", message);
-        return "forward:/catalog";
+        return "redirect:/result?resultMessage=" + message;
     }
 
 
     /**
-     * Delete a book by id and return message by the result of deleting
+     * Delete the book by identification and return message by the result of deleting
      * @param bookId identification of the book that is to be removed
      * @param model used for rendering views
-     * @param request HttpServletRequest is necessary for getting a current locale
-     * @return forward to catalog
+     * @param request used for getting a current locale
+     * @return redirect to result
      */
-    @PostMapping(value = "/delete/{id}")
-    public String deleteBook(@PathVariable("id") Integer bookId, Model model, HttpServletRequest request){
+    @GetMapping(value = "/delete/{id}")
+    public String deleteBook(@PathVariable("id") @Min(1) Integer bookId, Model model, HttpServletRequest request){
         LOGGER.info("Post delete a book /delete/bookId={}", bookId);
         String messageCode;
         if(bookService.delete(bookId)){
@@ -147,7 +146,6 @@ public class BookController {
         }
         String message = messageSource.getMessage(messageCode, null, localeResolver.resolveLocale(request));
         LOGGER.info(message);
-        model.addAttribute("resultMessage", message);
-        return "forward:/catalog";
+        return "redirect:/result?resultMessage=" + message;
     }
 }

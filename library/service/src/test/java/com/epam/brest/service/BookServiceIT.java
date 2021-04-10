@@ -7,7 +7,6 @@ import com.epam.brest.model.sample.BookSample;
 import com.epam.brest.model.sample.ReaderSample;
 import com.epam.brest.model.sample.SearchBookSample;
 import com.epam.brest.testdb.SpringTestConfig;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -56,6 +55,20 @@ public class BookServiceIT {
     }
 
     @Test
+    public void shouldReturnFalseWhenBookWasNotFound(){
+        Integer readerId = 1;
+        Integer bookId = 9999;
+        assertFalse(bookService.addReaderForBook(readerId, bookId));
+    }
+
+    @Test
+    public void shouldReturnFalseWhenReaderWasNotFound(){
+        Integer readerId = 99999;
+        Integer bookId = 1;
+        assertFalse(bookService.addReaderForBook(readerId, bookId));
+    }
+
+    @Test
     public void shouldDeleteBook(){
         Integer bookId = 1;
         BookSample book = bookService.findBookById(bookId);
@@ -85,17 +98,9 @@ public class BookServiceIT {
 
     @Test
     public void shouldSearchBook() {
-        BookSample bookSample = bookService.findBookById(1);
-        assertNotNull(bookSample);
-        assertEquals(1, bookSample.getId());
-        SearchBookSample searchBookSample = new SearchBookSample(bookSample.getAuthors(),
-                bookSample.getTitle(), bookSample.getGenre());
+        SearchBookSample searchBookSample = new SearchBookSample("о", "", Genre.DEFAULT);
         List<BookSample> books = bookService.searchBooks(searchBookSample);
         assertFalse(books.isEmpty());
-        assertEquals(1, books.size());
-        assertEquals(bookSample.getAuthors(), books.get(0).getAuthors());
-        assertEquals(bookSample.getTitle(), books.get(0).getTitle());
-        assertEquals(bookSample.getGenre(), books.get(0).getGenre());
     }
 
     @Test
@@ -107,6 +112,17 @@ public class BookServiceIT {
         assertTrue(bookService.removeFieldReaderFromBook(bookId, readerId));
          reader = readerService.getProfile(1);
         reader.getBooks().forEach(book -> assertNotEquals(bookId, book.getId()));
+    }
+
+    @Test
+    public void shouldNotRemoveFieldReaderFromBook() {
+        Integer readerId = 1;
+        Integer bookId = 199999999;
+        assertFalse(bookService.removeFieldReaderFromBook(bookId, readerId));
+
+        bookId = 1;
+        readerId = 199999999;
+        assertFalse(bookService.removeFieldReaderFromBook(bookId, readerId));
     }
 
     @Test

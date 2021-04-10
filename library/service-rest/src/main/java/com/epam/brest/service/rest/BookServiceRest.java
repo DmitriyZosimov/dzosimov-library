@@ -37,7 +37,7 @@ public class BookServiceRest implements IBookService {
         return (List<BookSample>) responseEntity.getBody();
     }
     /*
-    post /book/{bookId}/reader/{readerId}
+    get /book/{bookId}/reader/{readerId}
      */
     @Override
     public Boolean addReaderForBook(Integer readerId, Integer bookId) {
@@ -46,7 +46,7 @@ public class BookServiceRest implements IBookService {
         httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         HttpEntity<BookSample> entity = new HttpEntity<>(httpHeaders);
         ResponseEntity<Boolean> responseEntity = restTemplate.exchange(url + "/" + bookId + "/reader/" + readerId,
-                HttpMethod.POST, entity, Boolean.class);
+                HttpMethod.GET, entity, Boolean.class);
         return responseEntity.getBody();
     }
 
@@ -78,7 +78,7 @@ public class BookServiceRest implements IBookService {
     }
 
     /*
-    get /book/search
+    post /book/search
      */
     @Override
     public List<BookSample> searchBooks(SearchBookSample bookSample) {
@@ -87,7 +87,7 @@ public class BookServiceRest implements IBookService {
         httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         HttpEntity<SearchBookSample> entity = new HttpEntity<>(bookSample, httpHeaders);
         ResponseEntity responseEntity = restTemplate.exchange(url + "/search",
-                HttpMethod.GET, entity, new ParameterizedTypeReference<List<BookSample>>(){});
+                HttpMethod.POST, entity, new ParameterizedTypeReference<List<BookSample>>(){});
         return (List<BookSample>) responseEntity.getBody();
     }
     /*

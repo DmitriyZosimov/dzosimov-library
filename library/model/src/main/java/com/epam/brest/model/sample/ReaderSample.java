@@ -2,20 +2,20 @@ package com.epam.brest.model.sample;
 
 import com.epam.brest.model.Book;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.stereotype.Component;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
-
 import java.time.LocalDate;
 import java.util.List;
 
+@Component
 public class ReaderSample {
 
     //допускает двойные фамилии через "-"
     private final static String LAST_NAME = "[a-zA-Zа-яА-Я]+[\\-]?[a-zA-Zа-яА-Я]+";
-    private final static String FIRST_NAME = "[a-zA-Zа-яА-Я]+";
+    private final static String FIRST_NAME = "[a-zA-Zа-яА-Я]*";
 
     private Integer readerId;
     @NotBlank(message = "{not.blank}")
@@ -36,7 +36,7 @@ public class ReaderSample {
     public ReaderSample() {
     }
 
-    public ReaderSample(@NotBlank(message = "{not.blank}") @Pattern(regexp = FIRST_NAME, message = "{pattern.reader}") @Size(min = 3, max = 20, message = "{size.reader.firstName}") String firstName, @NotBlank @Pattern(regexp = LAST_NAME, message = "{pattern.reader}") @Size(min = 3, max = 30, message = "{size.reader.lastName}") String lastName, @Pattern(regexp = FIRST_NAME, message = "{pattern.reader}") @Size(max = 25, message = "{size.reader.patronymic}") String patronymic) {
+    public ReaderSample(String firstName, String lastName, String patronymic) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.patronymic = patronymic;
