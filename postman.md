@@ -1,10 +1,10 @@
-#Postman collection of the Library test application
-##Requirements
-###Postman
+# Postman collection of the Library test application
+## Requirements
+### Postman
  - Download and install Postman. Download Postman at 
    [Postman Download link](http://www.postman.com/downloads/)
  - Import collection [Library.json](Library.json) file in Postman
-##Postman collection structure
+## Postman collection structure
 API calls are organized under current structure.
 
 | API calls |
