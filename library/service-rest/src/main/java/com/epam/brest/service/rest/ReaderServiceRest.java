@@ -1,14 +1,17 @@
 package com.epam.brest.service.rest;
 
 import com.epam.brest.model.sample.ReaderSample;
+import com.epam.brest.model.sample.SearchReaderSample;
 import com.epam.brest.service.IReaderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class ReaderServiceRest implements IReaderService {
@@ -95,4 +98,31 @@ public class ReaderServiceRest implements IReaderService {
                 HttpMethod.PUT, entity, Boolean.class);
         return response.getBody();
     }
+
+    /*
+    get reader
+     */
+    @Override
+    public List<ReaderSample> findAll() {
+        LOGGER.info("findAllReader()");
+        ResponseEntity responseEntity = restTemplate
+                .exchange(url, HttpMethod.GET, null, new ParameterizedTypeReference<List<ReaderSample>>(){});
+        return (List<ReaderSample>) responseEntity.getBody();
+    }
+
+    /*
+    post /readers/search
+     */
+    @Override
+    public List<ReaderSample> searchReaders(SearchReaderSample searchReaderSample) {
+        LOGGER.info("searchReaders(searchReaderSample={})", searchReaderSample);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        HttpEntity<SearchReaderSample> entity = new HttpEntity<>(searchReaderSample, headers);
+        ResponseEntity<List<ReaderSample>> response = restTemplate.exchange(url + "s/search" ,
+                HttpMethod.POST, entity, new ParameterizedTypeReference<List<ReaderSample>>(){});
+        return response.getBody();
+    }
+
+
 }

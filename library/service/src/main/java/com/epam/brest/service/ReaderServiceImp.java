@@ -4,6 +4,7 @@ import com.epam.brest.dao.BookDao;
 import com.epam.brest.dao.ReaderDao;
 import com.epam.brest.model.Reader;
 import com.epam.brest.model.sample.ReaderSample;
+import com.epam.brest.model.sample.SearchReaderSample;
 import com.epam.brest.model.tools.ReaderMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Optional;
 
 @Service("readerService")
@@ -113,7 +116,25 @@ public class ReaderServiceImp implements IReaderService {
         return false;
     }
 
-    //TODO:maybe not needed
+    @Override
+    public List<ReaderSample> findAll() {
+        List<ReaderSample> readers = new LinkedList<>();
+        readerDao.findAll().forEach(r -> {
+            readers.add(ReaderMapper.getReaderSample(r));
+        });
+        return readers;
+    }
+
+    @Override
+    public List<ReaderSample> searchReaders(SearchReaderSample searchReaderSample) {
+        List<ReaderSample> readers = new LinkedList<>();
+        readerDao.findAllByDate(searchReaderSample.getFrom(), searchReaderSample.getTo())
+                .forEach(r -> {
+                    readers.add(ReaderMapper.getReaderSample(r));
+                });
+        return readers;
+    }
+
     private Boolean checkResult(Integer readerId, int result) {
         if (result == 1) {
             LOGGER.info("The reader(readerId={}) - all done correctly", readerId);

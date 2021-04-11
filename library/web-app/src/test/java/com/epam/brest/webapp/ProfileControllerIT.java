@@ -4,6 +4,8 @@ import com.epam.brest.model.Book;
 import com.epam.brest.model.Genre;
 import com.epam.brest.model.sample.BookSample;
 import com.epam.brest.model.sample.ReaderSample;
+import com.epam.brest.model.sample.SearchBookSample;
+import com.epam.brest.model.sample.SearchReaderSample;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.hamcrest.Matchers;
@@ -31,6 +33,8 @@ import java.util.Arrays;
 
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
@@ -39,6 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 public class ProfileControllerIT {
     private static final String READER_URL = "http://localhost:8060/reader";
+    private static final String READERS_SEARCH_URL = "http://localhost:8060/readers/search";
     private static final String READER_ID_URL = "http://localhost:8060/reader/1";
     @Autowired
     private WebApplicationContext wac;
@@ -327,7 +332,6 @@ public class ProfileControllerIT {
                 .andExpect(MockMvcResultMatchers.redirectedUrl("/result?resultMessage=" + message))
                 .andExpect(view().name("redirect:/result?resultMessage=" + message));
     }
-    //TODO: when response HttpStatus.Bad_Request
     @Test
     public void shouldRedirectToCatalogAfterRestoringReaderWithBadMessage() throws Exception {
         String message = "The reader was not restored";
@@ -358,6 +362,128 @@ public class ProfileControllerIT {
                 .andExpect(status().isFound())
                 .andExpect(MockMvcResultMatchers.redirectedUrl("/profile"))
                 .andExpect(view().name("redirect:/profile"));
+    }
+
+    @Test
+    public void shouldReturnReadersPage() throws Exception {
+        ReaderSample rs1 = createReaderSample();
+        ReaderSample rs2 = createReaderSample();
+        rs2.setReaderId(2);
+        ReaderSample rs3 = createReaderSample();
+        rs3.setReaderId(3);
+
+        server.expect(ExpectedCount.once(), requestTo(READER_URL))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withStatus(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(objectMapper.writeValueAsString(Arrays.asList(rs1, rs2, rs3))));
+
+        mockMvc.perform(
+                MockMvcRequestBuilders.get("/profiles")
+                .session(new MockHttpSession())
+        ).andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.content().contentType("text/html;charset=UTF-8"))
+                .andExpect(MockMvcResultMatchers.view().name("readers"))
+                .andExpect(MockMvcResultMatchers.model().attribute("readers", Matchers.hasItem(
+                        Matchers.allOf(
+                                hasProperty("readerId", is(rs1.getReaderId())),
+                                hasProperty("firstName", is(rs1.getFirstName())),
+                                hasProperty("lastName", is(rs1.getLastName())),
+                                hasProperty("patronymic", is(rs1.getPatronymic())),
+                                hasProperty("dateOfRegistry", is(rs1.getDateOfRegistry()))
+                        )
+                )))
+                .andExpect(MockMvcResultMatchers.model().attribute("readers", Matchers.hasItem(
+                        Matchers.allOf(
+                                hasProperty("readerId", is(rs2.getReaderId())),
+                                hasProperty("firstName", is(rs2.getFirstName())),
+                                hasProperty("lastName", is(rs2.getLastName())),
+                                hasProperty("patronymic", is(rs2.getPatronymic())),
+                                hasProperty("dateOfRegistry", is(rs2.getDateOfRegistry()))
+                        )
+                )))
+                .andExpect(MockMvcResultMatchers.model().attribute("readers", Matchers.hasItem(
+                        Matchers.allOf(
+                                hasProperty("readerId", is(rs3.getReaderId())),
+                                hasProperty("firstName", is(rs3.getFirstName())),
+                                hasProperty("lastName", is(rs3.getLastName())),
+                                hasProperty("patronymic", is(rs3.getPatronymic())),
+                                hasProperty("dateOfRegistry", is(rs3.getDateOfRegistry()))
+                        )
+                )));
+    }
+
+    @Test
+    public void shouldReturnReadersPageWithFoundReaders() throws Exception {
+        ReaderSample rs1 = createReaderSample();
+        ReaderSample rs2 = createReaderSample();
+        rs2.setReaderId(2);
+        ReaderSample rs3 = createReaderSample();
+        rs3.setReaderId(3);
+        SearchReaderSample searchReaderSample = new SearchReaderSample();
+        searchReaderSample.setFrom(LocalDate.of(2020, 01, 23));
+        searchReaderSample.setTo(LocalDate.now());
+        server.expect(ExpectedCount.once(), requestTo(READERS_SEARCH_URL))
+                .andExpect(method(HttpMethod.POST))
+                .andRespond(withStatus(HttpStatus.OK)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .body(objectMapper.writeValueAsString(Arrays.asList(rs1, rs2, rs3))));
+        mockMvc.perform(MockMvcRequestBuilders.get("/readers/search")
+                .session(new MockHttpSession())
+                .param("from", searchReaderSample.getFrom().toString())
+                .param("to", searchReaderSample.getTo().toString()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("readers"))
+                .andExpect(model().attribute("readers", Matchers.hasItem(
+                        Matchers.allOf(
+                                hasProperty("readerId", is(rs1.getReaderId())),
+                                hasProperty("firstName", is(rs1.getFirstName())),
+                                hasProperty("lastName", is(rs1.getLastName())),
+                                hasProperty("patronymic", is(rs1.getPatronymic())),
+                                hasProperty("dateOfRegistry", is(rs1.getDateOfRegistry()))
+                        )
+                )))
+                .andExpect(MockMvcResultMatchers.model().attribute("readers", Matchers.hasItem(
+                        Matchers.allOf(
+                                hasProperty("readerId", is(rs2.getReaderId())),
+                                hasProperty("firstName", is(rs2.getFirstName())),
+                                hasProperty("lastName", is(rs2.getLastName())),
+                                hasProperty("patronymic", is(rs2.getPatronymic())),
+                                hasProperty("dateOfRegistry", is(rs2.getDateOfRegistry()))
+                        )
+                )))
+                .andExpect(MockMvcResultMatchers.model().attribute("readers", Matchers.hasItem(
+                        Matchers.allOf(
+                                hasProperty("readerId", is(rs3.getReaderId())),
+                                hasProperty("firstName", is(rs3.getFirstName())),
+                                hasProperty("lastName", is(rs3.getLastName())),
+                                hasProperty("patronymic", is(rs3.getPatronymic())),
+                                hasProperty("dateOfRegistry", is(rs3.getDateOfRegistry()))
+                        )
+                )));
+    }
+
+    @Test
+    public void shouldReturnReadersPageWhenBindingResultHasErrors() throws Exception {
+        ReaderSample rs1 = createReaderSample();
+        ReaderSample rs2 = createReaderSample();
+        rs2.setReaderId(2);
+        ReaderSample rs3 = createReaderSample();
+        rs3.setReaderId(3);
+        SearchReaderSample searchReaderSample = new SearchReaderSample();
+        searchReaderSample.setFrom(LocalDate.of(2020, 01, 23));
+        searchReaderSample.setTo(LocalDate.now());
+
+        mockMvc.perform(MockMvcRequestBuilders.get("/readers/search")
+                .session(new MockHttpSession())
+                .param("from", searchReaderSample.getTo().toString())
+                .param("to", searchReaderSample.getFrom().toString()))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.view().name("readers"))
+                .andExpect(model().attributeHasFieldErrors("searchReaderSample", "from"));
     }
 
     private ReaderSample createReaderSample() {

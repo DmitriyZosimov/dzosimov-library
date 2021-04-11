@@ -6,6 +6,7 @@ import com.epam.brest.service.IReaderService;
 import com.epam.brest.service.rest.BookServiceRest;
 import com.epam.brest.service.rest.LoginServiceRest;
 import com.epam.brest.service.rest.ReaderServiceRest;
+import com.epam.brest.service.rest.SearchReaderValidator;
 import com.epam.brest.webapp.interceptor.LibraryCardInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -13,7 +14,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.validation.Validator;
@@ -94,6 +94,11 @@ public class ApplicationConfig implements WebMvcConfigurer {
     @Bean
     Validator validator(LocalValidatorFactoryBean localValidatorFactoryBean){
         return localValidatorFactoryBean;
+    }
+
+    @Bean
+    SearchReaderValidator searchReaderValidator(){
+        return new SearchReaderValidator();
     }
 
     @Override

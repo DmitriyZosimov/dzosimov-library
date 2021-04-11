@@ -2,6 +2,9 @@ package com.epam.brest.service;
 
 
 import com.epam.brest.model.sample.ReaderSample;
+import com.epam.brest.model.sample.SearchReaderSample;
+
+import java.util.List;
 
 public interface IReaderService {
 
@@ -45,5 +48,15 @@ public interface IReaderService {
      */
     Boolean restoreProfile(Integer id);
 
+    /**
+     * Find all readers
+     * @return list of the readers
+     */
+    List<ReaderSample> findAll();
 
+    /**
+     * Find readers by date
+     * @return list of the found readers
+     */
+    List<ReaderSample> searchReaders(SearchReaderSample searchReaderSample);
 }

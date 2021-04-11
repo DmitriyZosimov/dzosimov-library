@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../css/bootstrap.css"
+          th:href="@{../css/bootstrap.css}">
+    <title>Profiles</title>
+</head>
+<body class="bg-secondary">
+<header>
+    <div class="container-sm">
+        <div class="container-fluid py-1 d-none d-sm-block">
+            <div class="d-flex">
+                <div class="flex-grow-1"><span class="text-light h1" th:text="#{catalog.logo.text}">Library</span></div>
+                <div class="btn-group btn-group-sm my-auto">
+                    <a th:href="@{/profiles?lan=ru}" class="btn btn-outline-dark">ru</a>
+                    <a th:href="@{/profiles?lan=en}" class="btn btn-outline-dark">en</a>
+                </div>
+
+            </div>
+        </div>
+        <nav class="navbar navbar-expand-sm d-flex justify-content-between bg-dark">
+            <ul class="navbar-nav ms-2">
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/catalog}"><span th:text="#{nav.catalog}">Catalog</span></a>
+                </li>
+                <li class="navbar-item">
+                    <a class="nav-link" th:href="@{/profile}"><span th:text="#{nav.profile}">Profile</span></a>
+                </li>
+                <li class="navbar-item">
+                    <a class="nav-link" th:href="@{/profiles}"><span th:text="#{nav.profiles}">Profiles</span></a>
+                </li>
+            </ul>
+            <div class="d-flex mx-2">
+                <ul class="navbar-nav ms-2">
+                    <th:block th:if="${#session.getAttribute('libraryCard')} != null">
+                        <li class="nav-item px-1">
+                            <span class="text text-primary"
+                                  th:text="#{profile.card}+' : '+${#session.getAttribute('libraryCard')}"></span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-primary btn-sm d-none d-sm-block"
+                               th:href="@{/logout}">
+                                <span th:text="#{nav.logout}">Logout</span>
+                            </a>
+                        </li>
+                    </th:block>
+                    <th:block th:unless="${#session.getAttribute('libraryCard')} != null">
+                        <li class="nav-item">
+                            <a class="btn btn-outline-primary btn-sm d-none d-sm-block"
+                               th:href="@{/login}"><span th:text="#{nav.login}">Sing in</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="btn btn-outline-primary btn-sm d-none d-sm-block"
+                               th:href="@{/registry}"><span th:text="#{nav.registry}">Registry</span></a>
+                        </li>
+                    </th:block>
+                </ul>
+            </div>
+        </nav>
+        <div class="container py-3">
+            <h1 th:text="#{profiles.title}">Profile</h1>
+        </div>
+    </div>
+</header>
+<section>
+    <div class="container-sm">
+        <div class="d-flex mb-1 border-bottom border-dark">
+            <div class="flex-grow-1 px-1 mx-4">
+                <div class="mb-3">
+                    <form class="form-group row" th:action="@{/readers/search}"
+                          method="get" th:object="${searchReaderSample}">
+                        <div class="col-sm-4">
+                            <label for="from" th:text="#{profiles.from}">From:</label>
+                            <input id="from" class="form-control form-control-sm" type="date" th:field="*{from}"
+                                   th:classappend="${#fields.hasErrors('from')} ? ' is-invalid'"/>
+                            <div th:if="${#fields.hasErrors('from')}"
+                                 th:errors="*{from}"
+                                 class="invalid-feedback">
+                                date from error
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="to" th:text="#{profiles.to}">To:</label>
+                            <input id="to" class="form-control form-control-sm" type="date" th:field="*{to}"
+                                   th:classappend="${#fields.hasErrors('from')} ? ' is-invalid'"/>
+                        </div>
+                        <div class="col-sm-4">
+                            <button type="submit" class="btn btn-primary btn-sm" th:text="#{btn.search}">Search</button>
+                        </div>
+                    </form>
+                </div>
+                <table class="table table-hover table-sm">
+                    <thead class="table-dark">
+                    <th scope="col"><span th:text="#{profile.card}">Id</span></th>
+                    <th scope="col"><span th:text="#{profile.name.first}">First name</span></th>
+                    <th scope="col"><span th:text="#{profile.name.middle}">Patronymic</span></th>
+                    <th scope="col"><span th:text="#{profile.name.last}">Last name</span></th>
+                    <th scope="col"><span th:text="#{profile.date.of.registry}">Date of registry</span></th>
+                    </thead>
+                    <tbody id="myTable" class="table-warning">
+                    <tr th:each="reader : ${readers}">
+                        <td th:text="${reader.readerId}"></td>
+                        <td th:text="${reader.firstName}"></td>
+                        <td th:text="${reader.patronymic}"></td>
+                        <td th:text="${reader.lastName}"></td>
+                        <td th:text="${reader.dateOfRegistry}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+<footer>
+    <div class="container-sm">
+        <hr/>
+        <p class="text-center">Library &copy; 2021</p>
+    </div>
+</footer>
+<!--Bootstrap JS-->
+<script src="../js/bootstrap.bundle.js"></script>
+</body>
+</html>

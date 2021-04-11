@@ -2,6 +2,7 @@ package com.epam.brest.dao;
 
 import com.epam.brest.model.Reader;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,4 +75,12 @@ public interface ReaderDao {
      * @return true if the reader exists, or false
      */
     Boolean exist(Integer readerId, boolean active);
+
+    /**
+     * Find the readers by date
+     * @param from date from
+     * @param to date to
+     * @return list of the found readers
+     */
+    List<Reader> findAllByDate(LocalDate from, LocalDate to);
 }

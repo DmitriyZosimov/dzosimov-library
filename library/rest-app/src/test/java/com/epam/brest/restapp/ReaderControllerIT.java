@@ -1,6 +1,7 @@
 package com.epam.brest.restapp;
 
 import com.epam.brest.model.sample.ReaderSample;
+import com.epam.brest.model.sample.SearchReaderSample;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -20,6 +21,9 @@ import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -46,6 +50,17 @@ public class ReaderControllerIT {
                 .build();
         MockitoAnnotations.openMocks(this);
         mapper.registerModule(new JavaTimeModule());
+    }
+
+    @Test
+    public void shouldReturnListOfAllReaders() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(get(READER_URL)
+                .accept(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn().getResponse();
+        assertNotNull(response);
+        List<ReaderSample> readers = mapper.readValue(response.getContentAsString(), new TypeReference<List<ReaderSample>>() {});
+        assertFalse(readers.isEmpty());
     }
 
     @Test
@@ -245,5 +260,39 @@ public class ReaderControllerIT {
                 .andReturn().getResponse();
         assertNotNull(response);
         assertFalse(mapper.readValue(response.getContentAsString(), new TypeReference<Boolean>() {}));
+    }
+
+    @Test
+    public void shouldReturnListOfFoundReadersAfterSearchingReadersByDate() throws Exception {
+        SearchReaderSample searchReaderSample = new SearchReaderSample();
+        searchReaderSample.setFrom(LocalDate.of(2020, 01, 13));
+        searchReaderSample.setTo(LocalDate.now());
+        String json = mapper.writeValueAsString(searchReaderSample);
+        MockHttpServletResponse response = mockMvc.perform(post("/readers/search")
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .content(json)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andReturn().getResponse();
+        assertNotNull(response);
+        List<ReaderSample> list = mapper.readValue(response.getContentAsString(), new TypeReference<List<ReaderSample>>() {});
+        assertFalse(list.isEmpty());
+        list.forEach(r -> assertTrue(r.getDateOfRegistry().isAfter(searchReaderSample.getFrom()) &&
+                r.getDateOfRegistry().isBefore(searchReaderSample.getTo())));
+    }
+
+    @Test
+    public void shouldReturnValidationErrorAndHttpStatusBadRequestBeforeSearchingReadersByDate() throws Exception {
+        SearchReaderSample searchReaderSample = new SearchReaderSample();
+        searchReaderSample.setTo(LocalDate.of(2020, 01, 13));
+        searchReaderSample.setFrom(LocalDate.now());
+        String json = mapper.writeValueAsString(searchReaderSample);
+        MockHttpServletResponse response = mockMvc.perform(post("/readers/search")
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .content(json)
+                .contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
+                .andReturn().getResponse();
+        assertNotNull(response);
     }
 }

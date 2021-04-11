@@ -1,17 +1,24 @@
 package com.epam.brest.restapp;
 
 import com.epam.brest.model.sample.ReaderSample;
+import com.epam.brest.model.sample.SearchReaderSample;
 import com.epam.brest.service.IReaderService;
+import com.epam.brest.service.ISearchReaderValidator;
+import com.epam.brest.service.SearchReaderValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.util.List;
+
 @Validated
 @RestController
 public class ReaderController {
@@ -19,9 +26,18 @@ public class ReaderController {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReaderController.class);
 
     private final IReaderService readerService;
+    private final ISearchReaderValidator searchReaderValidator;
 
-    public ReaderController(IReaderService readerService) {
+    public ReaderController(IReaderService readerService, ISearchReaderValidator searchReaderValidator) {
         this.readerService = readerService;
+        this.searchReaderValidator = searchReaderValidator;
+    }
+
+    @GetMapping(value = "/reader", produces = "application/json")
+    public ResponseEntity<List<ReaderSample>> getAllReaders(){
+        LOGGER.info("getAllReaders()");
+        List<ReaderSample> readers = readerService.findAll();
+        return new ResponseEntity<List<ReaderSample>>(readers, HttpStatus.OK);
     }
 
     /**
@@ -98,5 +114,16 @@ public class ReaderController {
         Boolean result = readerService.removeProfile(id);
         return result ? new ResponseEntity<Boolean>(result, HttpStatus.OK)
                 : new ResponseEntity<Boolean>(result, HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping(value = "/readers/search", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<List<ReaderSample>> searchReadersByDate(@RequestBody SearchReaderSample searchReaderSample,
+                                                                  BindingResult bindingResult){
+        LOGGER.info("searchReadersByDate(SearchReaderSample={})", searchReaderSample);
+        searchReaderValidator.validate(searchReaderSample, bindingResult);
+        if(bindingResult.hasErrors()){
+            return new ResponseEntity(bindingResult.getFieldError("from").getDefaultMessage(), HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(readerService.searchReaders(searchReaderSample), HttpStatus.OK);
     }
 }

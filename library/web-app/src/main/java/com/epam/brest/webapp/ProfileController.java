@@ -1,8 +1,10 @@
 package com.epam.brest.webapp;
 
 import com.epam.brest.model.sample.ReaderSample;
+import com.epam.brest.model.sample.SearchReaderSample;
 import com.epam.brest.service.IBookService;
 import com.epam.brest.service.IReaderService;
+import com.epam.brest.service.rest.SearchReaderValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,14 +12,16 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.LocaleResolver;
-import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
+import java.util.List;
 
 @Controller
 public class ProfileController {
@@ -26,15 +30,32 @@ public class ProfileController {
 
     private final IReaderService readerService;
     private final IBookService bookService;
-    private LocaleResolver localeResolver;
+    private final LocaleResolver localeResolver;
     private final MessageSource messageSource;
+    private final SearchReaderValidator searchReaderValidator;
 
     @Autowired
-    public ProfileController(IReaderService readerService, IBookService bookService, LocaleResolver localeResolver, MessageSource messageSource) {
+    public ProfileController(IReaderService readerService, IBookService bookService, LocaleResolver localeResolver,
+                             MessageSource messageSource, SearchReaderValidator searchReaderValidator) {
         this.readerService = readerService;
         this.bookService = bookService;
         this.localeResolver = localeResolver;
         this.messageSource = messageSource;
+        this.searchReaderValidator = searchReaderValidator;
+    }
+
+    /**
+     * Goto readers list page
+     * @param model used for rendering views
+     * @return view readers page
+     */
+    @GetMapping(value = "/profiles")
+    public String getAllReaders(Model model){
+        LOGGER.info("GET /profiles");
+        List<ReaderSample> readers = readerService.findAll();
+        model.addAttribute("readers", readers);
+        model.addAttribute(new SearchReaderSample());
+        return "readers";
     }
 
     /**
@@ -209,6 +230,18 @@ public class ProfileController {
         Integer readerId = (Integer) session.getAttribute("libraryCard");
         bookService.removeFieldReaderFromBook(bookId, readerId);
         return "redirect:/profile";
+    }
+
+    @GetMapping(value = "/readers/search")
+    public String searchReaderByDate(SearchReaderSample searchReaderSample, BindingResult bindingResult,
+                                     Model model){
+        LOGGER.info("GET /readers/search");
+        searchReaderValidator.validate(searchReaderSample, bindingResult);
+        if(bindingResult.hasErrors()){
+            return "readers";
+        }
+        model.addAttribute("readers", readerService.searchReaders(searchReaderSample));
+        return "readers";
     }
 
 }

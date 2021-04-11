@@ -68,7 +68,6 @@ public class CatalogControllerIT {
 
         mockMvc.perform(
                 MockMvcRequestBuilders.get("/")
-                        .sessionAttr("bookSample", bookSample)
                         .sessionAttr("searchBookSample", searchBookSample)
         ).andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -101,8 +100,6 @@ public class CatalogControllerIT {
                                 hasProperty("quantity", is(bs3.getQuantity()))
                         )
                 )))
-                .andExpect(MockMvcResultMatchers.request().
-                        sessionAttribute("bookSample", bookSample))
                 .andExpect(MockMvcResultMatchers.request().
                         sessionAttribute("searchBookSample", searchBookSample));
     }

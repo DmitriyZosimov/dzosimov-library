@@ -4,6 +4,7 @@ import com.epam.brest.dao.ReaderDao;
 import com.epam.brest.dao.jdbc.BookDaoSpringJdbc;
 import com.epam.brest.dao.jdbc.ReaderDaoSpringJdbc;
 import com.epam.brest.model.sample.ReaderSample;
+import com.epam.brest.model.sample.SearchReaderSample;
 import com.epam.brest.testdb.SpringTestConfig;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -165,6 +169,25 @@ public class ReaderServiceIT {
     @Test
     public void shouldReturnFalseWhenReaderIsNotRemovedBeforeRestoringReader(){
         assertFalse(readerService.restoreProfile(1));
+    }
+
+    @Test
+    public void shouldReturnAllReaders(){
+        List<ReaderSample> readers = readerService.findAll();
+        assertFalse(readers.isEmpty());
+    }
+
+    @Test
+    public void shouldReturnAllFoundReaders(){
+        SearchReaderSample searchReaderSample = new SearchReaderSample();
+        searchReaderSample.setFrom(LocalDate.of(2020, 01, 13));
+        searchReaderSample.setTo(LocalDate.now());
+        List<ReaderSample> readers = readerService.searchReaders(searchReaderSample);
+        assertFalse(readers.isEmpty());
+        readers.forEach(r -> {
+            assertTrue(searchReaderSample.getFrom().isBefore(r.getDateOfRegistry()));
+            assertTrue(searchReaderSample.getTo().isAfter(r.getDateOfRegistry()));
+        });
     }
 
 }

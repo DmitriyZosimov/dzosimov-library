@@ -15,6 +15,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +38,8 @@ public class ReaderDaoSpringJdbc implements ReaderDao, InitializingBean {
     private String updateSql;
     @Value("${reader.jdbc.existAndActiveReader}")
     private String existReaderSql;
+    @Value("${reader.jdbc.findAllReadersByDate}")
+    private String findAllReadersByDateSql;
 
     private DataSource dataSource;
 
@@ -138,6 +141,16 @@ public class ReaderDaoSpringJdbc implements ReaderDao, InitializingBean {
         sqlParameterSource.addValue("active", active);
         return (Boolean) new ExistReader(dataSource, existReaderSql).
                 findObjectByNamedParam(sqlParameterSource.getValues());
+    }
+
+    @Override
+    public List<Reader> findAllByDate(LocalDate from, LocalDate to) {
+        LOGGER.info("findAllByDate() was started");
+        MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
+        sqlParameterSource.addValue("from", from);
+        sqlParameterSource.addValue("to", to);
+        return new FindAllReadersByDate(dataSource, findAllReadersByDateSql)
+                .executeByNamedParam(sqlParameterSource.getValues());
     }
 
     @Override

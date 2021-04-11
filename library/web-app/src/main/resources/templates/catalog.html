@@ -28,6 +28,9 @@
                 <li class="navbar-item">
                     <a class="nav-link" th:href="@{/profile}"><span th:text="#{nav.profile}">Profile</span></a>
                 </li>
+                <li class="navbar-item">
+                    <a class="nav-link" th:href="@{/profiles}"><span th:text="#{nav.profiles}">Profiles</span></a>
+                </li>
             </ul>
             <div class="d-flex mx-2">
                 <ul class="navbar-nav ms-2">
@@ -70,7 +73,6 @@
     <div class="container-sm">
         <div class="d-flex mb-1">
             <div class="flex-grow-1 px-1">
-                <!--TODO:placeholder, search form-->
                 <input class="form-control form-control-sm w-75" id="myInput" type="text" placeholder="Search..">
                 <!--Расширенный поиск-->
                 <div class="accordion accordion-flush" id="accordionFlush">
