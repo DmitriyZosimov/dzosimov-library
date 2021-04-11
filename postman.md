@@ -2,7 +2,7 @@
 ##Requirements
 ###Postman
  - Download and install Postman. Download Postman at 
-   [Postman Download link](http://www.getpostman.com/downloads/)
+   [Postman Download link](http://www.postman.com/downloads/)
  - Import collection [Library.json](Library.json) file in Postman
 ##Postman collection structure
 API calls are organized under current structure.

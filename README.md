@@ -1,4 +1,5 @@
-#Library test project
+[![Java CI with Maven](https://github.com/Brest-Java-Course-2021/dzosimov/actions/workflows/maven.yml/badge.svg)](https://github.com/Brest-Java-Course-2021/dzosimov/actions/workflows/maven.yml)
+#**Library test project**
 This is a sample of 'Library' web application.
 ##Requirements
  - JDK 11
