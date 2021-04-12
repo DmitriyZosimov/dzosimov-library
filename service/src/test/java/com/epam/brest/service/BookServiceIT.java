@@ -96,6 +96,24 @@ public class BookServiceIT {
     }
 
     @Test
+    public void shouldSavedBookTwiceAndGetQuantityIsTwo() {
+        BookSample bookSample = new BookSample("authors", "title", Genre.MYSTERY);
+
+        assertTrue(bookService.createBook(bookSample));
+        assertTrue(bookService.createBook(bookSample));
+
+        SearchBookSample searchBookSample = new SearchBookSample(bookSample.getAuthors(),
+                bookSample.getTitle(), bookSample.getGenre());
+        List<BookSample> books = bookService.searchBooks(searchBookSample);
+        assertFalse(books.isEmpty());
+        assertEquals(1, books.size());
+        assertEquals(bookSample.getAuthors(), books.get(0).getAuthors());
+        assertEquals(bookSample.getTitle(), books.get(0).getTitle());
+        assertEquals(bookSample.getGenre(), books.get(0).getGenre());
+        assertEquals(2, books.get(0).getQuantity());
+    }
+
+    @Test
     public void shouldSearchBook() {
         SearchBookSample searchBookSample = new SearchBookSample("o", "", Genre.DEFAULT);
         List<BookSample> books = bookService.searchBooks(searchBookSample);

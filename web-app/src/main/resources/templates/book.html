@@ -68,6 +68,7 @@
         <div class="d-flex mb-1">
             <div class="flex-grow-1 px-1">
                 <form th:action="@{${#httpServletRequest.servletPath}}" method="post" th:object="${bookSample}">
+                    <input type="hidden" th:field="*{id}" th:value="*{id}"/>
                     <div class="col-auto">
                         <label for="authors" th:text="#{catalog.table.authors}">Authors</label>
                         <input id="authors" type="text" th:field="*{authors}"

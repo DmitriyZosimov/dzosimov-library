@@ -31,6 +31,8 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
     private String findAllSql;
     @Value("${book.jdbc.findBookById}")
     private String findBookByIdSql;
+    @Value("${book.jdbc.findBookByAuthorsAndTitleAndGenre}")
+    private String findBookByAuthorsAndTitleAndGenreSql;
     @Value("${book.jdbc.save}")
     private String saveSql;
     @Value("${entity.jdbc.save}")
@@ -77,6 +79,19 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource("bookId", id);
         List<Book> books = namedParameterJdbcTemplate.
                 query(findBookByIdSql, sqlParameterSource, bookMapper);
+        return Optional.ofNullable(DataAccessUtils.uniqueResult(books));
+    }
+
+    @Override
+    public Optional<Book> findBookByAuthorsAndTitleAndGenre(BookSample bookSample) {
+        LOGGER.info("findBookByAuthorsAndTitleAndGenre(bookSample) was started");
+        LOGGER.debug("bookSample={}", bookSample);
+        MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource();
+        sqlParameterSource.addValue("authors", bookSample.getAuthors());
+        sqlParameterSource.addValue("title", bookSample.getTitle());
+        sqlParameterSource.addValue("genre", bookSample.getGenre().ordinal());
+        List<Book> books = namedParameterJdbcTemplate.
+                query(findBookByAuthorsAndTitleAndGenreSql, sqlParameterSource, bookMapper);
         return Optional.ofNullable(DataAccessUtils.uniqueResult(books));
     }
 

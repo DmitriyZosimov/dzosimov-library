@@ -23,6 +23,13 @@ public interface BookDao {
     Optional<Book> findBookById(Integer id);
 
     /**
+     * Find a book by authors, title and genre
+     * @param bookSample sample of the book
+     * @return Optional<BooK>
+     */
+    Optional<Book> findBookByAuthorsAndTitleAndGenre(BookSample bookSample);
+
+    /**
      * Save the book
      * @param book book which is to be saved
      * @return quantity of rows is added

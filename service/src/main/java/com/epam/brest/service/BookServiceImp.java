@@ -55,10 +55,12 @@ public class BookServiceImp implements IBookService {
     }
 
     public Boolean createBook(BookSample bookSample){
-        Book book = BookMapper.getBook(bookSample);
-        book = bookDao.save(book);
-        if(book.getId() == null){
-            return false;
+        Book book = bookDao.findBookByAuthorsAndTitleAndGenre(bookSample).orElse(null);
+        if(book == null){
+            book = bookDao.save(BookMapper.getBook(bookSample));
+            if(book.getId() == null){
+                return false;
+            }
         }
         Integer result = bookDao.saveEntity(book.getId());
         if(result < 1){

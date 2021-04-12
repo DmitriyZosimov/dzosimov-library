@@ -18,6 +18,10 @@ To start Web application:
 ```
 java -jar ./web-app/target/web-app-1.0-SNAPSHOT.jar
 ```
+## Existing library cards
+Eight readers are already registered in the database.
+You can use their profiles. For this you should sign in by identification
+from 1 to 8.
 ## Available REST endpoints
 ### Postman collection
 You can use the Postman.
