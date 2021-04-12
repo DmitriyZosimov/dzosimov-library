@@ -195,22 +195,4 @@ public class CatalogControllerMockTest {
         Assertions.assertEquals(sbs.getAuthors(), searchBookSample.getAuthors());
     }
 
-    @Disabled
-    @Test
-    public void shouldBindingResultGetErrors() throws Exception {
-        SearchBookSample sbs = new SearchBookSample("12", "tit325235le", Genre.MYSTERY);
-        BookSample bookSample = new BookSample();
-        bookSample.setId(1);
-
-        mockMvc.perform(
-                MockMvcRequestBuilders.post("/search")
-                .param("authors",sbs.getAuthors())
-                .param("title",sbs.getTitle())
-                .param("genre",sbs.getGenre().toString())
-        ).andDo(MockMvcResultHandlers.print())
-                .andExpect(MockMvcResultMatchers.model().attributeHasFieldErrors("searchBookSample", "authors"))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.view().name("catalog"));
-    }
-
 }

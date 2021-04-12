@@ -41,15 +41,14 @@ public class BookServiceIT {
     }
 
     /*
-    согласно тестовой базе данных book c id=1 имеет 5 экземпляров, 3 из которых уже заняты
-    читателя (reader), т.е. две свободные. по тесту читатель id=1 забирает 4-ую книгу,
-    потом 5-ую, а позже пытается 6-ую, которой нет, и поэтому возвращается false;
+    согласно тестовой базе данных book c id=1 имеет 5 экземпляров, 4 из которых уже заняты
+    читателя (reader), т.е. одна свободная. по тесту читатель id=1 забирает 5-ую книгу,
+    а позже пытается 6-ую, которой нет, и поэтому возвращается false;
      */
     @Test
     public void shouldReaderTryGetFreeBookInDao(){
         Integer readerId = 1;
         Integer bookId = 1;
-        assertTrue(bookService.addReaderForBook(readerId, bookId));
         assertTrue(bookService.addReaderForBook(readerId, bookId));
         assertFalse(bookService.addReaderForBook(readerId, bookId));
     }
@@ -98,7 +97,7 @@ public class BookServiceIT {
 
     @Test
     public void shouldSearchBook() {
-        SearchBookSample searchBookSample = new SearchBookSample("о", "", Genre.DEFAULT);
+        SearchBookSample searchBookSample = new SearchBookSample("o", "", Genre.DEFAULT);
         List<BookSample> books = bookService.searchBooks(searchBookSample);
         assertFalse(books.isEmpty());
     }

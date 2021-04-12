@@ -80,7 +80,7 @@ public class BookControllerIT {
 
     @Test
     public void shouldSearchBooks() throws Exception {
-        SearchBookSample bookSample = new SearchBookSample("о", "", Genre.DEFAULT);
+        SearchBookSample bookSample = new SearchBookSample("o", "", Genre.DEFAULT);
         List<BookSample> books = bookService.searchBooks(bookSample);
         assertNotNull(books);
         assertFalse(books.isEmpty());
