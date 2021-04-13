@@ -24,7 +24,7 @@ Server up on http://localhost:8070
 
 ##Database
 Also you can connect to the h2 database on http://localhost:8060/h2-console
-using default username "sa" without password.
+using default username "sa" without password and url "jdbc:h2:mem:testdb".
 
 ## Existing library cards
 Eight readers already exist in the database.
@@ -103,6 +103,8 @@ curl --request POST 'http://localhost:8060/book/search' \
     "quantity": 1
 }'
 ```
+
+### Readers
 #### Check if the reader is removed
 ```
 curl --request GET 'http://localhost:8060/login/1/removed'
