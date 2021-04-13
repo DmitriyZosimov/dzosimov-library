@@ -27,7 +27,6 @@ public class CustomControllerExceptionHandler {
         this.messageSource = messageSource;
     }
 
-
     @ExceptionHandler(HttpClientErrorException.class)
     public ModelAndView handlerHttpClientErrorException(HttpClientErrorException ex, HttpServletResponse response,
                                                         HttpServletRequest request){
@@ -40,17 +39,6 @@ public class CustomControllerExceptionHandler {
         return renderErrorPage(status, request, message);
     }
 
-    @ExceptionHandler(NoHandlerFoundException.class)
-    protected ModelAndView noHandlerFoundException(NoHandlerFoundException ex, HttpServletResponse response,
-                                                   HttpServletRequest request) {
-        LOGGER.warn("noHandlerFoundException, message: {}", ex.getMessage());
-        HttpStatus status = HttpStatus.NOT_FOUND;
-        ModelAndView mav = new ModelAndView();
-        response.setStatus(status.value());
-        String message = messageSource.getMessage("error." + status.value(), null,
-                localeResolver.resolveLocale(request));
-        return renderErrorPage(status, request, message);
-    }
     @ExceptionHandler(Exception.class)
     public ModelAndView handlerException(Exception ex, HttpServletResponse response,
                                                         HttpServletRequest request){

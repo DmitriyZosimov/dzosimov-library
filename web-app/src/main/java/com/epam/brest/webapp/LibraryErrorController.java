@@ -17,9 +17,16 @@ public class LibraryErrorController implements ErrorController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LibraryErrorController.class);
 
+    private final LocaleResolver localeResolver;
+    private final MessageSource messageSource;
+
+    public LibraryErrorController(LocaleResolver localeResolver, MessageSource messageSource) {
+        this.localeResolver = localeResolver;
+        this.messageSource = messageSource;
+    }
+
     @GetMapping("/error")
-    public String handleError(Model model, HttpServletRequest request, LocaleResolver localeResolver,
-                              MessageSource messageSource){
+    public String handleError(Model model, HttpServletRequest request){
         LOGGER.warn("handleError");
         Object status = request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
         if(status != null){
@@ -28,7 +35,7 @@ public class LibraryErrorController implements ErrorController {
                     localeResolver.resolveLocale(request));
             model.addAttribute("code", statusCode);
             model.addAttribute("message", message);
-            model.addAttribute("path", request.getServletPath());
+            model.addAttribute("path", request.getAttribute("javax.servlet.forward.request_uri"));
         }
         return "error";
     }

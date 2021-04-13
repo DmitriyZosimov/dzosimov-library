@@ -1,9 +1,9 @@
 # **Library test project**
-This is a sample of 'Library' web application.
+This is a sample of a 'Library' web application.
 ## Requirements
  - JDK 11
  - Apache Maven
-## Build application:
+## Build application
 ```
 mvn clean install
 ```
@@ -13,13 +13,21 @@ To start Rest server:
 ```
 java -jar ./rest-app/target/rest-app-1.0-SNAPSHOT.jar
 ```
+Server up on http://localhost:8060
+
 ### Start Web application
 To start Web application:
 ```
 java -jar ./web-app/target/web-app-1.0-SNAPSHOT.jar
 ```
+Server up on http://localhost:8070
+
+##Database
+Also you can connect to the h2 database on http://localhost:8060/h2-console
+using default username "sa" without password.
+
 ## Existing library cards
-Eight readers are already registered in the database.
+Eight readers already exist in the database.
 You can use their profiles. For this you should sign in by identification
 from 1 to 8.
 ## Available REST endpoints
@@ -28,11 +36,11 @@ You can use the Postman.
 See [postman.md](postman.md)
 
 
-### version
+### Version
 ```
 curl --request GET 'http://localhost:8060/version'
 ```
-### books
+### Books
 #### Find all books
 ```
 curl --request GET 'http://localhost:8060/book' | json_pp
@@ -54,7 +62,7 @@ curl --request POST 'http://localhost:8060/book' \
 }'
 ```
 
-#### Edit the book
+#### Edit a book
 ```
 curl --request PUT 'http://localhost:8060/book' \
 --header 'Accept: application/json' \
@@ -67,17 +75,17 @@ curl --request PUT 'http://localhost:8060/book' \
     "quantity": 1
 }'
 ```
-#### Delete the book by identification
+#### Delete a book by identification
 ```
 curl --request DELETE 'http://localhost:8060/book/1'
 ```
 
-#### Tie the reader and the book
+#### Tie a reader and a book
 ```
 curl --request GET 'http://localhost:8060/book/2/reader/3'
 ```
 
-#### Delete the tie of the reader and the book
+#### Delete a tie of a reader and a book
 ```
 curl --request DELETE 'http://localhost:8060/book/2/reader/3'
 ```
@@ -105,7 +113,7 @@ curl --request GET 'http://localhost:8060/login/1/removed'
 curl --request GET 'http://localhost:8060/login/1'
 ```
 
-#### Get profile of the reader by identification
+#### Get profile of a reader by identification
 ```
 curl --request GET 'http://localhost:8060/reader/1' | json_pp
 ```
@@ -122,7 +130,7 @@ curl --request POST 'http://localhost:8060/book/search' \
 }'
 ```
 
-#### Edit the reader
+#### Edit a reader
 ```
 curl --request PUT 'http://localhost:8060/reader' \
 --header 'Accept: application/json' \
@@ -135,12 +143,12 @@ curl --request PUT 'http://localhost:8060/reader' \
     "dateOfRegistry": "2021-04-09"
 }'
 ```
-#### Delete the reader by identification
+#### Delete a reader by identification
 ```
 curl --request DELETE 'http://localhost:8060/reader/1'
 ```
 
-#### Restore the reader by identification
+#### Restore a reader by identification
 ```
 curl --request PUT 'http://localhost:8060/reader/1'
 ```
@@ -150,7 +158,7 @@ curl --request PUT 'http://localhost:8060/reader/1'
 curl --request GET 'http://localhost:8060/reader' | json_pp
 ```
 
-#### Find the readers by date
+#### Find readers by date
 ```
 curl --request POST 'http://localhost:8060/readers/search' \
 --header 'Accept: application/json' \
