@@ -96,11 +96,9 @@ curl --request POST 'http://localhost:8060/book/search' \
 --header 'Accept: application/json' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-	"id": 1,
-    "authors": "postman",
-    "title": "postman",
-    "genre": "CHILDREN",
-    "quantity": 1
+    "authors": "o",
+    "title": "",
+    "genre": "DEFAULT"
 }'
 ```
 
