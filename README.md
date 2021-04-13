@@ -22,7 +22,7 @@ java -jar ./web-app/target/web-app-1.0-SNAPSHOT.jar
 ```
 Server up on http://localhost:8070
 
-##Database
+## Database
 Also you can connect to the h2 database on http://localhost:8060/h2-console
 using default username "sa" without password and url "jdbc:h2:mem:testdb".
 
