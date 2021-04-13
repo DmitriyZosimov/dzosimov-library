@@ -120,7 +120,7 @@ curl --request GET 'http://localhost:8060/reader/1' | json_pp
 
 #### Save a new reader
 ```
-curl --request POST 'http://localhost:8060/book/search' \
+curl --request POST 'http://localhost:8060/reader' \
 --header 'Accept: application/json' \
 --header 'Content-Type: application/json' \
 --data-raw '{
