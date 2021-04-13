@@ -35,8 +35,8 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
     private String findBookByAuthorsAndTitleAndGenreSql;
     @Value("${book.jdbc.save}")
     private String saveSql;
-    @Value("${entity.jdbc.save}")
-    private String saveEntitySql;
+    @Value("${book.copies.jdbc.save}")
+    private String saveBookCopiesSql;
     @Value("${book.jdbc.update}")
     private String updateSql;
     @Value("${book.jdbc.delete}")
@@ -109,11 +109,11 @@ public class BookDaoSpringJdbc implements BookDao, InitializingBean {
         return book;
     }
 
-    public Integer saveEntity(Integer id) {
+    public Integer saveBookCopies(Integer id) {
         LOGGER.info("saveEntity(id) was started");
         LOGGER.debug("id={}", id);
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource("bookId", id);
-        return namedParameterJdbcTemplate.update(saveEntitySql, sqlParameterSource);
+        return namedParameterJdbcTemplate.update(saveBookCopiesSql, sqlParameterSource);
     }
 
     @Override

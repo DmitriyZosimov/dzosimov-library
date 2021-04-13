@@ -62,7 +62,7 @@ public class BookServiceImp implements IBookService {
                 return false;
             }
         }
-        Integer result = bookDao.saveEntity(book.getId());
+        Integer result = bookDao.saveBookCopies(book.getId());
         if(result < 1){
             return false;
         }

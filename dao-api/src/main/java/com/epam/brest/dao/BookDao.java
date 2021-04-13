@@ -41,7 +41,7 @@ public interface BookDao {
      * @param id identification of the book
      * @return quantity of rows is added
      */
-    public Integer saveEntity(Integer id);
+    public Integer saveBookCopies(Integer id);
 
     /**
      * Update the book
