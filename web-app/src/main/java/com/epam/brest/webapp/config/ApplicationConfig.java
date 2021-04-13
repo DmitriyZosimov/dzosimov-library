@@ -8,6 +8,8 @@ import com.epam.brest.service.rest.LoginServiceRest;
 import com.epam.brest.service.rest.ReaderServiceRest;
 import com.epam.brest.service.rest.SearchReaderValidator;
 import com.epam.brest.webapp.interceptor.LibraryCardInterceptor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.ApplicationContext;
@@ -72,7 +74,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
     @Bean
     MessageSource resourceBundleMessageSource(){
         ResourceBundleMessageSource messageSource = new ResourceBundleMessageSource();
-        messageSource.addBasenames("messages", "validation");
+        messageSource.setBasenames("messages", "classpath:validationMessages");
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }
@@ -99,6 +101,13 @@ public class ApplicationConfig implements WebMvcConfigurer {
     @Bean
     SearchReaderValidator searchReaderValidator(){
         return new SearchReaderValidator();
+    }
+
+    @Bean
+    ObjectMapper objectMapper(){
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+        return objectMapper;
     }
 
     @Override

@@ -16,8 +16,9 @@
             </div>
         </div>
             <div th:if="${code != null}">
-                <h4 th:text="${code}"></h4>
-                <h4 th:text="${message}"/>
+                <h6>Status: <span th:text="${code}"></span></h6>
+                <h6>Message: <span th:text="${message}"></span></h6>
+                <h6>Path: <span th:text="${path}"></span></h6>
             </div>
             <div>
                 <a th:href="@{/catalog}"
