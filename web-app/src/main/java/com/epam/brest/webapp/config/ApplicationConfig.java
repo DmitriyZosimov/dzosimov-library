@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 @Configuration
-@PropertySource({"library.properties"})
+@PropertySource({"classpath:library.properties"})
 public class ApplicationConfig implements WebMvcConfigurer {
 
     @Value("${rest.server.protocol}")

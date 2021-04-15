@@ -16,7 +16,7 @@ import java.util.Arrays;
 
 @SpringBootApplication()
 @ComponentScan(basePackages = {"com.epam.brest"})
-@PropertySource({"classpath:dao.properties", "library.properties"})
+@PropertySource({"classpath:dao.properties", "classpath:library.properties"})
 public class ApplicationRest extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
