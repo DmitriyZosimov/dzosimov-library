@@ -22,7 +22,7 @@ java -jar ./web-app/target/web-app-1.0-SNAPSHOT.jar
 ```
 Server up on http://localhost:8070
 
-##Database
+## Database
 Also you can connect to the h2 database on http://localhost:8060/h2-console
 using default username "sa" without password and url "jdbc:h2:mem:testdb".
 
@@ -96,11 +96,9 @@ curl --request POST 'http://localhost:8060/book/search' \
 --header 'Accept: application/json' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-	"id": 1,
-    "authors": "postman",
-    "title": "postman",
-    "genre": "CHILDREN",
-    "quantity": 1
+    "authors": "o",
+    "title": "",
+    "genre": "DEFAULT"
 }'
 ```
 
@@ -122,7 +120,7 @@ curl --request GET 'http://localhost:8060/reader/1' | json_pp
 
 #### Save a new reader
 ```
-curl --request POST 'http://localhost:8060/book/search' \
+curl --request POST 'http://localhost:8060/reader' \
 --header 'Accept: application/json' \
 --header 'Content-Type: application/json' \
 --data-raw '{
