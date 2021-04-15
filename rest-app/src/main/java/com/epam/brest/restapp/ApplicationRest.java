@@ -1,6 +1,5 @@
 package com.epam.brest.restapp;
 
-import com.epam.brest.service.SearchReaderValidator;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,14 +10,13 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import java.util.Arrays;
 
 @SpringBootApplication()
 @ComponentScan(basePackages = {"com.epam.brest"})
-@PropertySource({"classpath:dao.properties"})
+@PropertySource({"classpath:dao.properties", "library.properties"})
 public class ApplicationRest extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
@@ -34,6 +32,8 @@ public class ApplicationRest extends SpringBootServletInitializer {
             for (String beanName : beanNames) {
                 System.out.println(beanName);
             }
+            System.out.println(context.getEnvironment().getProperty("library.rest"));
+            System.out.println("java.runtime.version: " + context.getEnvironment().getProperty("java.runtime.version"));
         };
     }
 
@@ -51,6 +51,4 @@ public class ApplicationRest extends SpringBootServletInitializer {
         bean.setValidationMessageSource(resourceBundleMessageSource());
         return bean;
     }
-
-
 }

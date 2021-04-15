@@ -16,6 +16,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
@@ -29,6 +30,7 @@ import java.util.Arrays;
 import java.util.Locale;
 
 @Configuration
+@PropertySource({"library.properties"})
 public class ApplicationConfig implements WebMvcConfigurer {
 
     @Value("${rest.server.protocol}")
@@ -115,6 +117,8 @@ public class ApplicationConfig implements WebMvcConfigurer {
             for (String beanName : beanNames) {
                 System.out.println(beanName);
             }
+            System.out.println(context.getEnvironment().getProperty("library.web"));
+            System.out.println("java.runtime.version: " + context.getEnvironment().getProperty("java.runtime.version"));
         };
     }
 }
