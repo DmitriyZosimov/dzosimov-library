@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -20,6 +21,7 @@ public class LoginServiceImp implements ILoginService{
         this.readerDao = readerDao;
     }
 
+    @Transactional(propagation = Propagation.NEVER)
     @Override
     public Boolean isExistCard(Integer card) {
         if(card == null){
@@ -28,6 +30,7 @@ public class LoginServiceImp implements ILoginService{
         return readerDao.exist(card);
     }
 
+    @Transactional(propagation = Propagation.NEVER)
     @Override
     public Boolean isRemovedCard(Integer card) {
         if(card == null){

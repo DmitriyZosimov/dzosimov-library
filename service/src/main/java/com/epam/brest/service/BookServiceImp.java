@@ -90,6 +90,7 @@ public class BookServiceImp implements IBookService {
         return checkResult(bookSample.getId(), result);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public BookSample findBookById(Integer id) {
         LOGGER.info("findBookById(id={})", id);

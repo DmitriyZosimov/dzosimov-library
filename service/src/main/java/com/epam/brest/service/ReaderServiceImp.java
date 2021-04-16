@@ -31,6 +31,7 @@ public class ReaderServiceImp implements IReaderService {
         this.bookDao = bookDao;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public ReaderSample getProfile(Integer id) {
         LOGGER.info("getProfile");
@@ -41,6 +42,7 @@ public class ReaderServiceImp implements IReaderService {
         return ReaderMapper.getReaderSample(readerOpt.get());
     }
 
+    @Transactional(readOnly = true)
     @Override
     public ReaderSample getProfileWithoutBooks(Integer id) {
         LOGGER.info("getProfileWithoutBooks");
@@ -116,6 +118,7 @@ public class ReaderServiceImp implements IReaderService {
         return false;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ReaderSample> findAll() {
         List<ReaderSample> readers = new LinkedList<>();
@@ -125,6 +128,7 @@ public class ReaderServiceImp implements IReaderService {
         return readers;
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<ReaderSample> searchReaders(SearchReaderSample searchReaderSample) {
         List<ReaderSample> readers = new LinkedList<>();
