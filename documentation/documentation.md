@@ -27,7 +27,7 @@
 Отношение lib_reader и lib_book_copies один к одному - у каждого читателя 
 может быть один экземпляр книги.
 
-![Pic diagramma_db](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov/main/library/documentation/diagramma_db.png)
+![Pic diagramma_db](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov-library/main/documentation/diagramma_db.png)
 
 ## **1. Каталог**
 ### **1.1 Просмотр списка книг в каталоге**
@@ -48,7 +48,7 @@
 - Edit - возможность редактировать книгу;
 - Delete - возможность удалить книгу и все ее экземпляры.
   
-![Pic 1.1](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov/main/library/documentation/html/img/catalog.png)
+![Pic 1.1](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov-library/main/documentation/html/img/catalog.png)
 
 Рисунок 1.1 - Просмотр списка книг в каталоге
 ### **1.2 Выбор книги для записи в профиль (читательский билет) пользователя**
@@ -63,7 +63,7 @@
 - пользователь, находясь на странице "Catalog", нажимает кнопку `Add a book`;
 - отображается форма для добавления книги;
 
-![Pic 1.2](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov/main/library/documentation/html/img/add_a_book.png)
+![Pic 1.2](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov-library/main/documentation/html/img/add_a_book.png)
 
   Рисунок 1.2 - Форма добавления книги
 - пользователь вводит данные и нажимает кнопку `Save`;
@@ -71,7 +71,7 @@
 - если данные корректны, то книга добавляется в базу данных библиотеки;
 - отображается страница "каталог", на которой выводится сообщение о результатах добавления.
 
-![Pic 1.3](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov/main/library/documentation/html/img/result_m_aft_add_b.png)
+![Pic 1.3](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov-library/main/documentation/html/img/result_m_aft_add_b.png)
 
 Рисунок 1.3 - Сообщение о результатах добавления
 ### **1.4 Редактирование книги в каталоге**
@@ -80,7 +80,7 @@
 - пользователь, находясь на странице "Catalog", нажимает кнопку `Edit` в строке книги, которую необходимо редактировать;
 - отображается форма для редактирования книги;
 
-![Pic 1.4](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov/main/library/documentation/html/img/edit_the_book.png)
+![Pic 1.4](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov-library/main/documentation/html/img/edit_the_book.png)
 
   Рисунок 1.4 - Форма редактирования книги
 - пользователь вводит данные и нажимает кнопку `Save`;
@@ -99,7 +99,7 @@
 - пользователь, находясь на странице "Catalog", нажимает кнопку `Delete` в строке книги, которую необходимо удалить;
 - отображается предупреждающее окно об удалении книги;
 
-![Pic 1.5](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov/main/library/documentation/html/img/del_b.png)
+![Pic 1.5](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov-library/main/documentation/html/img/del_b.png)
 
   Рисунок 1.5 - Предупреждающее окно удаления книги
 - если пользователь нажимает кнопку `Delete`, книга удаляется из базы данных библиотеки;
@@ -111,7 +111,7 @@
 - пользователь, находясь на странице "Catalog", вводит ключевые слова в форме для поиска;
 - отображается список книг отфильтрованный введенными ключевыми словами.
 
-![Pic 1.6](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov/main/library/documentation/html/img/filter.png)
+![Pic 1.6](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov-library/main/documentation/html/img/filter.png)
  
   Рисунок 1.6 - Поиск книги
 ### **1.8 Расширенный поиск книги по каталогу**
@@ -123,7 +123,7 @@
 - если данные введены некорректно, отображается предупреждение о вводе некорректных данных;
 - если данные введены корректно, отображается страница каталог с найденными книгами, если таковые имеются;
 
-![Pic 1.7](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov/main/library/documentation/html/img/adv_search.png)
+![Pic 1.7](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov-library/main/documentation/html/img/adv_search.png)
  
   Рисунок 1.7 - Расширенный поиск книги
 ## **2. Пользователь**  
@@ -136,7 +136,7 @@
 
 На странице профиля выводятся информация пользователя, а также список книг записанных на читательский билет.  
 
- ![Pic 2.1](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov/main/library/documentation/html/img/profile.png)
+ ![Pic 2.1](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov-library/main/documentation/html/img/profile.png)
   
 Рисунок 2.1 - Профиль пользователя   
 ### **2.2 Авторизация пользователя**
@@ -152,7 +152,7 @@
 - если такой пользователь не зарегистрирован, пользователь не авторизуется и отображается страница "каталог";
 - если такой пользователь зарегистрирован, но удален, то выводится информация "Пользователь удален. Восстановить?";
 
-![Pic 2.2](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov/main/library/documentation/html/img/login.png)
+![Pic 2.2](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov-library/main/documentation/html/img/login.png)
   
 Рисунок 2.2 - Авторизация пользователя   
 ### **2.3 Регистрация пользователя**
@@ -161,7 +161,7 @@
 - пользователь нажимает пункт меню `Registry`;
 - отображается форма добавления пользователя;
 
-![Pic 2.3](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov/main/library/documentation/html/img/registry.png)
+![Pic 2.3](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov-library/main/documentation/html/img/registry.png)
 
   Рисунок 2.3 - Регистрация пользователя
 - пользователь вводит данные в форму и нажимает `Save`; 
@@ -177,7 +177,7 @@
 - пользователь вводит читательский билет в форму и нажимает `Sign in`; 
 - если такой пользователь зарегистрирован, но удален, то выводится информация "The reader is removed. Do restore?";  
 
-![Pic 2.4](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov/main/library/documentation/html/img/rst_l.png)
+![Pic 2.4](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov-library/main/documentation/html/img/rst_l.png)
 
   Рисунок 2.4 - Восстановление пользователя
 - пользователь нажимает кнопку `Restore`;
@@ -189,7 +189,7 @@
 - пользователь, находясь на странице "профиль", нажимает кнопку `Edit`;
 - отображается форма редактирования пользователя;
 
-![Pic 2.5](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov/main/library/documentation/html/img/edit_the_p.png)
+![Pic 2.5](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov-library/main/documentation/html/img/edit_the_p.png)
 
   Рисунок 2.5 - Редактирование пользователя
 - пользователь вводит данные в форму и нажимает `Save`;
@@ -204,7 +204,7 @@
 - пользователь, находясь на странице "профиль", нажимает кнопку `Delete`;
 - отображается предупреждающее окно об удалении пользователя;
 
-![Pic 2.6](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov/main/library/documentation/html/img/del_p.png)
+![Pic 2.6](https://raw.githubusercontent.com/Brest-Java-Course-2021/dzosimov-library/main/documentation/html/img/del_p.png)
  
   Рисунок 2.6 - Предупреждающее окно удаления пользователя
 - если пользователь нажимает кнопку `Delete`, он удаляется из базы данных библиотеки;
