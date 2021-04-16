@@ -9,6 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -19,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Import({LoginServiceImp.class, ReaderDaoSpringJdbc.class, ReaderServiceImp.class})
 @ContextConfiguration(classes = {SpringTestConfig.class})
 @PropertySource({"classpath:dao.properties"})
-@Transactional
+@Transactional(propagation = Propagation.NEVER)
 public class LoginServiceIT {
 
     @Autowired
