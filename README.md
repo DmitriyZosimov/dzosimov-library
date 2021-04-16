@@ -1,3 +1,5 @@
+[![Java CI with Maven](https://github.com/Brest-Java-Course-2021/dzosimov-library/actions/workflows/main.yml/badge.svg)](https://github.com/Brest-Java-Course-2021/dzosimov-library/actions/workflows/main.yml)
+
 # **Library test project**
 This is a sample of a 'Library' web application.
 ## Requirements
