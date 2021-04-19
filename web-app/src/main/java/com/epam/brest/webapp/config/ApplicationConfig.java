@@ -1,12 +1,13 @@
 package com.epam.brest.webapp.config;
 
-import com.epam.brest.service.IBookService;
-import com.epam.brest.service.ILoginService;
-import com.epam.brest.service.IReaderService;
+import com.epam.brest.service.BookService;
+import com.epam.brest.service.LoginService;
+import com.epam.brest.service.ReaderService;
+import com.epam.brest.service.SearchReaderValidator;
 import com.epam.brest.service.rest.BookServiceRest;
 import com.epam.brest.service.rest.LoginServiceRest;
 import com.epam.brest.service.rest.ReaderServiceRest;
-import com.epam.brest.service.rest.SearchReaderValidator;
+import com.epam.brest.service.rest.SearchReaderValidatorRest;
 import com.epam.brest.webapp.interceptor.LibraryCardInterceptor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -46,19 +47,19 @@ public class ApplicationConfig implements WebMvcConfigurer {
     }
 
     @Bean
-    IBookService bookService(){
+    BookService bookService(){
         String url = String.format("%s://%s:%s/book", protocol, host, port);
         return new BookServiceRest(url, restTemplate());
     }
 
     @Bean
-    IReaderService readerService(){
+    ReaderService readerService(){
         String url = String.format("%s://%s:%s/reader", protocol, host, port);
         return new ReaderServiceRest(url, restTemplate());
     }
 
     @Bean
-    ILoginService loginService(){
+    LoginService loginService(){
         String url = String.format("%s://%s:%s/login", protocol, host, port);
         return new LoginServiceRest(url, restTemplate());
     }
@@ -87,7 +88,7 @@ public class ApplicationConfig implements WebMvcConfigurer {
 
     @Bean
     SearchReaderValidator searchReaderValidator(){
-        return new SearchReaderValidator();
+        return new SearchReaderValidatorRest();
     }
 
     @Bean

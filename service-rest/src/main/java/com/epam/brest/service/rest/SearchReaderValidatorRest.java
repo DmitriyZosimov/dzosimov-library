@@ -1,13 +1,14 @@
-package com.epam.brest.service;
+package com.epam.brest.service.rest;
 
 import com.epam.brest.model.sample.SearchReaderSample;
+import com.epam.brest.service.SearchReaderValidator;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.Errors;
 
 import java.time.LocalDate;
 
 @Service()
-public class SearchReaderValidator implements ISearchReaderValidator {
+public class SearchReaderValidatorRest implements SearchReaderValidator {
     @Override
     public boolean supports(Class<?> aClass) {
         return SearchReaderSample.class.equals(aClass);

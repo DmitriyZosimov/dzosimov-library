@@ -1,6 +1,6 @@
 package com.epam.brest.service;
 
-public interface ILoginService {
+public interface LoginService {
 
     /**
      * Check by identification if the reader is exist

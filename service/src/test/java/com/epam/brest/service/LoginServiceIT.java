@@ -24,9 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class LoginServiceIT {
 
     @Autowired
-    private ILoginService loginService;
+    private LoginService loginService;
     @Autowired
-    private IReaderService readerService;
+    private ReaderService readerService;
 
     @Test
     public void shouldReturnTrueWhenExistReader(){

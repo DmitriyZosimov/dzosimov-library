@@ -6,7 +6,7 @@ import com.epam.brest.model.sample.SearchReaderSample;
 
 import java.util.List;
 
-public interface IReaderService {
+public interface ReaderService {
 
     /**
      * Find a reader.

@@ -28,9 +28,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @Transactional
 public class BookServiceIT {
     @Autowired
-    private IBookService bookService;
+    private BookService bookService;
     @Autowired
-    private IReaderService readerService;
+    private ReaderService readerService;
 
     @Test
     public void shouldFindAll(){

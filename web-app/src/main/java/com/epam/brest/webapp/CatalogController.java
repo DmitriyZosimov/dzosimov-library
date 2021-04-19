@@ -1,7 +1,7 @@
 package com.epam.brest.webapp;
 
 import com.epam.brest.model.sample.SearchBookSample;
-import com.epam.brest.service.IBookService;
+import com.epam.brest.service.BookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +19,10 @@ public class CatalogController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CatalogController.class);
 
-    private final IBookService bookService;
+    private final BookService bookService;
 
     @Autowired
-    public CatalogController(IBookService bookService) {
+    public CatalogController(BookService bookService) {
         this.bookService = bookService;
     }
     /**

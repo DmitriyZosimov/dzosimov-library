@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Service("bookServiceImp")
 @Transactional
-public class BookServiceImp implements IBookService {
+public class BookServiceImp implements BookService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookServiceImp.class);
 

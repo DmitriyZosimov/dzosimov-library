@@ -2,9 +2,9 @@ package com.epam.brest.webapp;
 
 import com.epam.brest.model.sample.ReaderSample;
 import com.epam.brest.model.sample.SearchReaderSample;
-import com.epam.brest.service.IBookService;
-import com.epam.brest.service.IReaderService;
-import com.epam.brest.service.rest.SearchReaderValidator;
+import com.epam.brest.service.BookService;
+import com.epam.brest.service.ReaderService;
+import com.epam.brest.service.SearchReaderValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,14 +28,14 @@ public class ProfileController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProfileController.class);
 
-    private final IReaderService readerService;
-    private final IBookService bookService;
+    private final ReaderService readerService;
+    private final BookService bookService;
     private final LocaleResolver localeResolver;
     private final MessageSource messageSource;
     private final SearchReaderValidator searchReaderValidator;
 
     @Autowired
-    public ProfileController(IReaderService readerService, IBookService bookService, LocaleResolver localeResolver,
+    public ProfileController(ReaderService readerService, BookService bookService, LocaleResolver localeResolver,
                              MessageSource messageSource, SearchReaderValidator searchReaderValidator) {
         this.readerService = readerService;
         this.bookService = bookService;

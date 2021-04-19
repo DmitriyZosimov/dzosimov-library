@@ -2,30 +2,21 @@ package com.epam.brest.webapp;
 
 import com.epam.brest.model.Genre;
 import com.epam.brest.model.sample.BookSample;
-import com.epam.brest.service.IBookService;
-import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
+import com.epam.brest.service.BookService;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.context.MessageSource;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.ui.ConcurrentModel;
-import org.springframework.ui.ExtendedModelMap;
-import org.springframework.ui.Model;
-
-import java.util.Locale;
 
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -36,7 +27,7 @@ public class BookControllerMockTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private IBookService bookService;
+    private BookService bookService;
 
     @Test
     public void shouldReturnBookPage() throws Exception {

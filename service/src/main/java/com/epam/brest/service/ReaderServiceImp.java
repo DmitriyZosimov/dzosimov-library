@@ -19,7 +19,7 @@ import java.util.Optional;
 
 @Service("readerService")
 @Transactional
-public class ReaderServiceImp implements IReaderService {
+public class ReaderServiceImp implements ReaderService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReaderServiceImp.class);
 
     private final ReaderDao readerDao;

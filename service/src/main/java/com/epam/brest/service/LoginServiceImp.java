@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class LoginServiceImp implements ILoginService{
+public class LoginServiceImp implements LoginService{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginServiceImp.class);
 

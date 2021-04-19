@@ -3,7 +3,7 @@ package com.epam.brest.webapp;
 import com.epam.brest.model.Genre;
 import com.epam.brest.model.sample.BookSample;
 import com.epam.brest.model.sample.SearchBookSample;
-import com.epam.brest.service.IBookService;
+import com.epam.brest.service.BookService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
@@ -35,7 +35,7 @@ public class CatalogControllerMockTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private IBookService bookService;
+    private BookService bookService;
     @Captor
     private ArgumentCaptor<Integer> captor;
     @Captor

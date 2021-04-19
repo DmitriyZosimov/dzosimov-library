@@ -1,6 +1,6 @@
 package com.epam.brest.webapp;
 
-import com.epam.brest.service.ILoginService;
+import com.epam.brest.service.LoginService;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -22,7 +22,7 @@ public class LoginControllerMockTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private ILoginService loginService;
+    private LoginService loginService;
 
     @Test
     public void shouldGetLoginPage() throws Exception {

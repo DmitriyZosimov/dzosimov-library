@@ -1,7 +1,7 @@
 package com.epam.brest.webapp;
 
 import com.epam.brest.model.sample.BookSample;
-import com.epam.brest.service.IBookService;
+import com.epam.brest.service.BookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,12 +25,12 @@ public class BookController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookController.class);
 
-    private final IBookService bookService;
+    private final BookService bookService;
     private final LocaleResolver localeResolver;
     private final MessageSource messageSource;
 
     @Autowired
-    public BookController(IBookService bookService, LocaleResolver localeResolver, MessageSource messageSource) {
+    public BookController(BookService bookService, LocaleResolver localeResolver, MessageSource messageSource) {
         this.bookService = bookService;
         this.localeResolver = localeResolver;
         this.messageSource = messageSource;

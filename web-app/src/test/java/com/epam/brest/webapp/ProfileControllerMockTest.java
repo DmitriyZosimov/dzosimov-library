@@ -5,19 +5,14 @@ import com.epam.brest.model.Genre;
 import com.epam.brest.model.sample.BookSample;
 import com.epam.brest.model.sample.ReaderSample;
 import com.epam.brest.model.sample.SearchReaderSample;
-import com.epam.brest.service.IBookService;
-import com.epam.brest.service.IReaderService;
+import com.epam.brest.service.BookService;
+import com.epam.brest.service.ReaderService;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.web.client.ExpectedCount;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
@@ -31,11 +26,7 @@ import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 
 @WebMvcTest
 public class ProfileControllerMockTest {
@@ -44,9 +35,9 @@ public class ProfileControllerMockTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private IBookService bookService;
+    private BookService bookService;
     @MockBean
-    private IReaderService readerService;
+    private ReaderService readerService;
 
     @Test
     public void shouldReturnReadersPage() throws Exception {

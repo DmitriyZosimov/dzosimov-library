@@ -2,7 +2,7 @@ package com.epam.brest.restapp;
 
 import com.epam.brest.model.sample.BookSample;
 import com.epam.brest.model.sample.SearchBookSample;
-import com.epam.brest.service.IBookService;
+import com.epam.brest.service.BookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -14,15 +14,16 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
 import java.util.List;
+
 @Validated
 @RestController
 public class BookController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookController.class);
 
-    private final IBookService bookService;
+    private final BookService bookService;
 
-    public BookController(IBookService bookService) {
+    public BookController(BookService bookService) {
         this.bookService = bookService;
     }
 

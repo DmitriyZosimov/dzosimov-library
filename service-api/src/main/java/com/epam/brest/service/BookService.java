@@ -5,7 +5,7 @@ import com.epam.brest.model.sample.SearchBookSample;
 
 import java.util.List;
 
-public interface IBookService {
+public interface BookService {
 
     /**
      * Find all books

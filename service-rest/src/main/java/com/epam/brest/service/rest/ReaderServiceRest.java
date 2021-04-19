@@ -2,7 +2,7 @@ package com.epam.brest.service.rest;
 
 import com.epam.brest.model.sample.ReaderSample;
 import com.epam.brest.model.sample.SearchReaderSample;
-import com.epam.brest.service.IReaderService;
+import com.epam.brest.service.ReaderService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class ReaderServiceRest implements IReaderService {
+public class ReaderServiceRest implements ReaderService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReaderServiceRest.class);
 

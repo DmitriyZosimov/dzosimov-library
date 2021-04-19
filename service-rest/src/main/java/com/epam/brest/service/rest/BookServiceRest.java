@@ -2,7 +2,7 @@ package com.epam.brest.service.rest;
 
 import com.epam.brest.model.sample.BookSample;
 import com.epam.brest.model.sample.SearchBookSample;
-import com.epam.brest.service.IBookService;
+import com.epam.brest.service.BookService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class BookServiceRest implements IBookService {
+public class BookServiceRest implements BookService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BookServiceRest.class);
 

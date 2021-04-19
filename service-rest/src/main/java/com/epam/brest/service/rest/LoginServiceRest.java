@@ -1,6 +1,6 @@
 package com.epam.brest.service.rest;
 
-import com.epam.brest.service.ILoginService;
+import com.epam.brest.service.LoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class LoginServiceRest implements ILoginService {
+public class LoginServiceRest implements LoginService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginServiceRest.class);
 

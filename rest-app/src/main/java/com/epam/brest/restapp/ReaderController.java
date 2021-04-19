@@ -2,16 +2,13 @@ package com.epam.brest.restapp;
 
 import com.epam.brest.model.sample.ReaderSample;
 import com.epam.brest.model.sample.SearchReaderSample;
-import com.epam.brest.service.IReaderService;
-import com.epam.brest.service.ISearchReaderValidator;
+import com.epam.brest.service.ReaderService;
 import com.epam.brest.service.SearchReaderValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.Errors;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,10 +22,10 @@ public class ReaderController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReaderController.class);
 
-    private final IReaderService readerService;
-    private final ISearchReaderValidator searchReaderValidator;
+    private final ReaderService readerService;
+    private final SearchReaderValidator searchReaderValidator;
 
-    public ReaderController(IReaderService readerService, ISearchReaderValidator searchReaderValidator) {
+    public ReaderController(ReaderService readerService, SearchReaderValidator searchReaderValidator) {
         this.readerService = readerService;
         this.searchReaderValidator = searchReaderValidator;
     }

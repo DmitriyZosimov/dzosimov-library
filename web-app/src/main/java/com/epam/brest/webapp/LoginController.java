@@ -1,6 +1,6 @@
 package com.epam.brest.webapp;
 
-import com.epam.brest.service.ILoginService;
+import com.epam.brest.service.LoginService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -16,9 +16,9 @@ public class LoginController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LoginController.class);
 
-    private ILoginService loginService;
+    private LoginService loginService;
 
-    public LoginController(ILoginService loginService) {
+    public LoginController(LoginService loginService) {
         this.loginService = loginService;
     }
 
