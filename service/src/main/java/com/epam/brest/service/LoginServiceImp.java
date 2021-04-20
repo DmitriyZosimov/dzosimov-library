@@ -10,32 +10,28 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class LoginServiceImp implements LoginService{
+public class LoginServiceImp implements LoginService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoginServiceImp.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(LoginServiceImp.class);
 
-    private ReaderDao readerDao;
+  private final ReaderDao readerDao;
 
-    @Autowired
-    public LoginServiceImp(ReaderDao readerDao) {
-        this.readerDao = readerDao;
-    }
+  @Autowired
+  public LoginServiceImp(ReaderDao readerDao) {
+    this.readerDao = readerDao;
+  }
 
-    @Transactional(propagation = Propagation.NEVER)
-    @Override
-    public Boolean isExistCard(Integer card) {
-        if(card == null){
-            return false;
-        }
-        return readerDao.exist(card);
-    }
+  @Transactional(propagation = Propagation.NEVER)
+  @Override
+  public Boolean isExistCard(Integer card) {
+    LOGGER.info("isExistCard(card={})", card);
+    return readerDao.isExistAmongActiveReaders(card);
+  }
 
-    @Transactional(propagation = Propagation.NEVER)
-    @Override
-    public Boolean isRemovedCard(Integer card) {
-        if(card == null){
-            return false;
-        }
-        return readerDao.exist(card, false);
-    }
+  @Transactional(propagation = Propagation.NEVER)
+  @Override
+  public Boolean isRemovedCard(Integer card) {
+    LOGGER.info("isRemovedCard(card={})", card);
+    return readerDao.isExistAmongReadersByActive(card, false);
+  }
 }

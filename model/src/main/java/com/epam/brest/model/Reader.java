@@ -81,7 +81,7 @@ public class Reader {
         this.books = books;
     }
 
-    public Boolean getActive() {
+    public Boolean isActive() {
         return active;
     }
 

@@ -10,35 +10,36 @@ import org.springframework.web.client.RestTemplate;
 @Service
 public class LoginServiceRest implements LoginService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(LoginServiceRest.class);
+  private static final Logger LOGGER = LoggerFactory.getLogger(LoginServiceRest.class);
 
-    private String url;
-    private RestTemplate restTemplate;
+  private String url;
+  private RestTemplate restTemplate;
 
-    public LoginServiceRest(String url, RestTemplate restTemplate) {
-        this.url = url;
-        this.restTemplate = restTemplate;
-    }
-    /*
-    get /login/{id}
-     */
-    @Override
-    public Boolean isExistCard(Integer card) {
-        LOGGER.info("isExistCard(card={})", card);
-        return getInfoAboutCard(url + "/" + card);
-    }
+  public LoginServiceRest(String url, RestTemplate restTemplate) {
+    this.url = url;
+    this.restTemplate = restTemplate;
+  }
 
-    /*
-    get /login/{id}/removed
-     */
-    @Override
-    public Boolean isRemovedCard(Integer card) {
-        LOGGER.info("isRemovedCard(card={})", card);
-        return getInfoAboutCard(url + "/" + card + "/removed");
-    }
+  /*
+  get /login/{id}
+   */
+  @Override
+  public Boolean isExistCard(Integer card) {
+    LOGGER.info("isExistCard(card={})", card);
+    return getInfoAboutCard(url + "/" + card);
+  }
 
-    private Boolean getInfoAboutCard(String url) {
-        ResponseEntity<Boolean> response = restTemplate.getForEntity(url, Boolean.class);
-        return response.getBody();
-    }
+  /*
+  get /login/{id}/removed
+   */
+  @Override
+  public Boolean isRemovedCard(Integer card) {
+    LOGGER.info("isRemovedCard(card={})", card);
+    return getInfoAboutCard(url + "/" + card + "/removed");
+  }
+
+  private Boolean getInfoAboutCard(String url) {
+    ResponseEntity<Boolean> response = restTemplate.getForEntity(url, Boolean.class);
+    return response.getBody();
+  }
 }

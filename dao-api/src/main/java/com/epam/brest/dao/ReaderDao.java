@@ -1,7 +1,6 @@
 package com.epam.brest.dao;
 
 import com.epam.brest.model.Reader;
-
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -13,12 +12,6 @@ public interface ReaderDao {
      * @return list of the readers
      */
     List<Reader> findAll();
-
-    /**
-     * Find only active readers
-     * @return list of the readers
-     */
-    List<Reader> findAllActive();
 
     /**
      * Find the reader by identification without books
@@ -48,33 +41,33 @@ public interface ReaderDao {
     Integer update(Reader reader);
 
     /**
-     * Delete the reader
-     * @param reader reader who is to be deleted
+     * Set a reader not active
+     * @param reader reader who is to be not active
      * @return quantity of deleted rows
      */
-    Integer delete(Reader reader);
+    Integer changeReaderToNoActive(Reader reader);
 
     /**
-     * Restore the reader
-     * @param reader reader who is to be restored
+     * Set a reader active
+     * @param reader reader who is to be active
      * @return quantity of updated rows
      */
-    Integer restore(Reader reader);
+    Integer changeReaderToActive(Reader reader);
 
     /**
-     * Check if the reader exists
+     * Check if the reader is exist among active readers
      * @param readerId identification of the reader
      * @return true if the reader exists, or false
      */
-    Boolean exist(Integer readerId);
+    Boolean isExistAmongActiveReaders(Integer readerId);
 
     /**
-     * Check if the reader exists
+     * Check if the reader is exist among readers
      * @param readerId identification of the reader
-     * @param active true if the reader must be removed, or false
+     * @param active true if the reader must be no active, or false
      * @return true if the reader exists, or false
      */
-    Boolean exist(Integer readerId, boolean active);
+    Boolean isExistAmongReadersByActive(Integer readerId, boolean active);
 
     /**
      * Find the readers by date
