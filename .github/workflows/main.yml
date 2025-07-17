@@ -11,6 +11,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      BUILD_VERSION: 1.0.0
 
     steps:
       - uses: actions/checkout@v2
@@ -19,5 +21,8 @@ jobs:
         with:
           java-version: '11'
           distribution: 'adopt'
+      - name: Update the revision property in pom.xml
+        run: |
+          sed -i "s|<revision>DEV-BUILD</revision>|<revision>${BUILD_VERSION}</revision>|g" pom.xml
       - name: Build with Maven
         run: mvn -B package --file pom.xml
